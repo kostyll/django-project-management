@@ -1,0 +1,112 @@
+{% load rota_tags %}
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Project Management</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- (en) Add your meta data here -->
+<!-- (de) Fuegen Sie hier ihre Meta-Daten ein -->
+<link href="/site_media/css/layout_2col_left_13.css" rel="stylesheet" type="text/css"/>
+
+{% block additional_css %} {% endblock %}
+
+<link rel="stylesheet" href="/site_media/jquery/css/ui-lightness/jquery-ui-1.7.2.custom.css" type="text/css">
+</link>
+<script src="/site_media/jquery/js/jquery-1.3.2.min.js" type="text/javascript">
+</script>
+<script src="/site_media/jquery/js/jquery-ui-1.7.2.custom.min.js" type="text/javascript">
+</script>
+
+{% block additional_javascript %} {% endblock %}
+
+<script type="text/javascript">
+
+			$(document).ready(function() {
+			 });
+
+		
+			$(function(){
+
+$("#datepicker").datepicker({
+	dateFormat: "yy/mm/dd", 
+	onSelect: function(dateText, inst) {
+		window.location.replace("/Rota/AllRotas/Edit/" + dateText);	
+	 }
+});
+
+{% for team in teams %}
+{% for m in team.members.all %}	
+{% for day in this_week %}
+
+	$("#{{ m.username }}_{{ day|date:"Ymd" }}_activity").change(
+		function() {
+			$("#{{ m.id }}_{{ day|date:"Ymd" }}").load("/Rota/AllRotas/Ajax/Edit/{{ m.username }}/" + $("#{{ m.username }}_{{ day|date:"Ymd" }}_activity").val() + "/{{ day|date:"Y" }}/{{ day|date:"m" }}/{{ day|date:"d" }}/"); 
+		});
+
+{% endfor %}
+{% endfor %}
+{% endfor %}
+
+			});
+</script>
+
+
+</head>
+<body>
+
+  <div class="page">
+
+
+		<div class="toggler">
+			<div id="effect" class="ui-widget-content ui-corner-all">
+				<h3 class="ui-widget-header ui-corner-all">Edit Rota - <a href="/">Return to Main Site</a></h3>
+				<div id="toggle_effect">
+				<p>
+			
+				<div id="myrota">
+				{% for team in teams %}
+				<h3>{{ team.name }} Rota </h3>			
+
+				<table border="1">
+					<tr>
+							<td><!-- Name -->&nbsp;</td>
+						{% for day in this_week %}
+							<td>{% ifequal today  day %}<b>{% endifequal %}{{ day|date:"D d M Y" }}{% ifequal today day %}</b>{% endifequal %}</td>
+						{% endfor %}
+					</tr>
+				
+					{% for m in team.members.all %}	
+					<tr><td>{% if m.get_full_name %}{{ m.get_full_name }}{% else %}{{ m.username }}{% endif %}</td>
+						{% for day in this_week %}
+							<td>{% get_edit_rota_form_for_user m day %}</td>
+						{% endfor %}
+					</tr>
+					<tr><td><!-- name -->&nbsp;</td>
+						{% for day in this_week %}
+							<td><div id="{{ m.id }}_{{ day|date:"Ymd" }}"></div></td>
+						{% endfor %}
+					</tr>
+					<tr><td><!-- name -->&nbsp;</td>
+						{% for day in this_week %}
+							<td>{% get_project_task_for_day m day %}</td>
+						{% endfor %}
+					</tr>
+					{% endfor %}
+				</table>	
+				{% endfor %}
+				</div>
+				</p>
+				<h3>Choose a Date</h3>			
+				<div id="datepicker" align="center"></div>
+				</div> <!-- end: toggle_effect -->
+		</div>
+	</div>
+	</div>
+	<br>
+
+
+
+

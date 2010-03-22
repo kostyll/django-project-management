@@ -1,0 +1,59 @@
+{% extends 'base.html' %}	
+{% load rota_tags %}
+{% load humanize %}
+
+{% block additional_jquery %}
+
+$("#datepicker").datepicker({
+	dateFormat: "yy/mm/dd", 
+	firstDay: 1,
+	onSelect: function(dateText, inst) {
+		$("#myrota").load("/Rota/MyRota/Ajax/" + dateText);	
+	 }
+});
+
+{% endblock %}
+
+
+{% block main_content %}
+		<div class="toggler">
+			<div id="effect" class="ui-widget-content ui-corner-all">
+				<h3 class="ui-widget-header ui-corner-all"><a id="toggle_effect_button" href="#">Your Rota</a></h3>
+				<div id="toggle_effect">
+				<p>
+				
+				<h3>Your Rota</h3>			
+
+				<div id="myrota">
+				<table>
+					<tr>
+						{% for day in this_week %}
+							<td>{% ifequal today  day %}<b>{% endifequal %}{{ day|naturalday:"D d M Y"|capfirst }}{% ifequal today day %}</b>{% endifequal %}</td>
+						{% endfor %}
+					</tr>
+
+					<tr>
+						{% for day in this_week %}
+							<td>{% get_activity_for_day user day %}</td>
+						{% endfor %}
+					</tr>
+		
+					<tr>
+						{% for day in this_week %}
+							<td>{% get_project_task_for_day user day %}</td>
+						{% endfor %}
+					</tr>
+				</table>	
+				</div>
+				</p>
+				<h3>Choose a Date</h3>			
+				<div id="datepicker" align="center"></div>
+				</div> <!-- end: toggle_effect -->
+		</div>
+	</div>
+	<br>
+
+
+
+
+{% endblock %}

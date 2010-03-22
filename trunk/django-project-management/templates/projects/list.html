@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load rota_tags %}
+
+
+<script type="text/javascript">
+			$(function(){
+
+				// Accordion
+				$("#accordion").accordion({ header: "h3" });
+
+				$("a#toggle_effect_button").click(function(){
+					$("#toggle_effect").toggle('blind',500);
+					return false;
+				});
+
+				$("a#toggle_effect_button2").click(function(){
+					$("#toggle_effect2").toggle('blind',500);
+					return false;
+				});
+
+				$("a#toggle_effect_button3").click(function(){
+					$("#toggle_effect3").toggle('blind',500);
+					return false;
+				});
+
+
+			});
+</script>
+
+
+{% block main_content %}
+          <!-- skiplink anchor: Content -->
+		<div class="toggler">
+			<div id="effect" class="ui-widget-content ui-corner-all">
+				<h3 class="ui-widget-header ui-corner-all"><a id="toggle_effect_button" href="#">Your Projects</a></h3>
+				<div id="toggle_effect">
+				<p>
+				<table>
+					<tr> <td>Number</td><td>Name</td><td>Company</td><td>Status</td> </tr>
+					{% for proj in projects %}
+					<tr> <td><a href="{{ proj.get_absolute_url }}">{{ proj.project_number }}</a></td><td><a href="{{ proj.get_absolute_url }}">{{ proj.project_name }}</a></td><td>{{ proj.company.company_name }}</td><td>On Track</td></tr>
+					{% endfor %}
+				</table>
+				</p>
+				</div> <!-- end: toggle_effect -->
+		</div>
+
+</div>
+</div>
+{% endblock %}

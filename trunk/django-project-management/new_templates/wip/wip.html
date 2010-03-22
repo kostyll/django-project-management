@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block extra_javascript %}
+<link rel="stylesheet" type="text/css" href="/site_media/js/extjs/examples/ux/css/MultiSelect.css" />
+<link rel="stylesheet" type="text/css" href="/site_media/js/extjs/examples/shared/examples.css" />
+<script type="text/javascript" src="/site_media/js/extjs/examples/ux/MultiSelect.js"></script>
+<script type="text/javascript" src="/site_media/js/extjs/examples/ux/RowEditor.js"></script>
+<script type="text/javascript" src="/site_media/js/extjs/examples/ux/ItemSelector.js"></script> 
+<script type="text/javascript" src="/site_media/js/extjs/examples/ux/SliderTip.js"></script>
+<script type="text/javascript">
+	var wip_report = "{{ wip_report }}"
+</script>
+<script type="text/javascript" src="/site_media/js/view-wip.js"></script>
+
+{% endblock %}
+
+{% block main_content %}
+
+<div id="agenda" class="x-hide-display">
+	{{ wip_report.agenda|safe }}
+</div>
+{% endblock %}

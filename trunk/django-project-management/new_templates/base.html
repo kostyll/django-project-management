@@ -1,0 +1,33 @@
+<html>
+<head>
+   <title>Getting Started Example</title>
+   <link rel="stylesheet" type="text/css" href="/site_media/js/extjs/resources/css/ext-all.css" />
+   <link rel="stylesheet" type="text/css" href="/site_media/css/projects.css" />
+   <script src="/site_media/js/jquery-1.2.3.pack.js"></script>
+   <script src="site_media/js/extjs/adapter/jquery/ext-jquery-adapter.js"></script>
+   <script src="/site_media/js/extjs/adapter/ext/ext-base.js"></script>
+   <script src="/site_media/js/extjs/ext-all-debug.js"></script>
+   <script src="/site_media/js/main-ui.js"></script>
+	
+
+	{% block extra_javascript %} {% endblock %}
+	<script type="text/javascript">
+
+	Ext.onReady(function(){
+		var container=new Ext.Viewport({
+    		layout: 'border',
+    		defaults: { collapsible: true, split: true, bodyStyle: 'padding:15px' },
+    		items: [ west_panel, center_panel ]
+		});
+	});
+
+	</script>
+</head>
+<body>
+   <!-- Nothing in the body -->
+
+{% block main_content %}{% endblock %}
+
+</body>
+</html>
+

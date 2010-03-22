@@ -1,0 +1,965 @@
+{% extends 'base.html' %}	
+{% load risk_tags %}
+{% load deliverable_tags %}
+{% load issue_tags %}
+{% load lesson_tags %}
+{% load project_tags %}
+
+
+
+{% block additional_css %}
+<style>
+.project_permissions { {% get_css_for_permissions user project %} }
+</style>
+{% endblock %}
+
+
+{% block additional_jquery %}
+
+
+// Edit the Company a project belongs to
+$("#edit_dialog_company").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 300,
+	modal: true
+});
+
+$("a#link_edit_dialog_company").click(function(){
+	$('#edit_dialog_company').dialog('open');
+	return false;
+});
+
+
+// Edit the Project Manager for a project
+$("#edit_dialog_project_manager").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 300,
+	modal: true
+});
+
+$("a#link_edit_dialog_project_manager").click(function(){
+	$('#edit_dialog_project_manager').dialog('open');
+	return false;
+});
+
+// Edit the Team Managers for a project
+$("#edit_dialog_team_managers").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 300,
+	modal: true
+});
+
+$("a#link_edit_dialog_team_managers").click(function(){
+	$('#edit_dialog_team_managers').dialog('open');
+	return false;
+});
+
+
+// Edit the Sponsor for a project
+$("#edit_dialog_project_sponsor").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 300,
+	modal: true
+});
+
+$("a#link_edit_dialog_project_sponsor").click(function(){
+	$('#edit_dialog_project_sponsor').dialog('open');
+	return false;
+});
+
+// Edit the Project Description
+$("#edit_dialog_project_description").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 345,
+	width: 370,
+	modal: true
+});
+
+$("a#link_edit_dialog_project_description").click(function(){
+	$('#edit_dialog_project_description').dialog('open');
+	return false;
+});
+
+
+// Edit the Business Case
+$("#edit_dialog_business_case").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 345,
+	width: 370,
+	modal: true
+});
+
+$("a#link_edit_dialog_business_case").click(function(){
+	$('#edit_dialog_business_case').dialog('open');
+	return false;
+});
+
+// Edit the Business Benefits 
+$("#edit_dialog_business_benefits").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 345,
+	width: 370,
+	modal: true
+});
+
+$("a#link_edit_dialog_business_benefits").click(function(){
+	$('#edit_dialog_business_benefits').dialog('open');
+	return false;
+});
+
+// Edit the Project Scope
+$("#edit_dialog_project_scope").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 345,
+	width: 370,
+	modal: true
+});
+
+$("a#link_edit_dialog_project_scope").click(function(){
+	$('#edit_dialog_project_scope').dialog('open');
+	return false;
+});
+
+// Edit the Exclusions
+$("#edit_dialog_exclusions").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 345,
+	width: 370,
+	modal: true
+});
+
+$("a#link_edit_dialog_exclusions").click(function(){
+	$('#edit_dialog_exclusions').dialog('open');
+	return false;
+});
+
+// Edit the Assumptions
+$("#edit_dialog_assumptions").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 345,
+	width: 370,
+	modal: true
+});
+
+$("a#link_edit_dialog_assumptions").click(function(){
+	$('#edit_dialog_assumptions').dialog('open');
+	return false;
+});
+
+//********************************************************************
+// RISKS
+
+// Actions for Edit Risk button 
+$("a[id^='link_edit_dialog_risk_']").click(function(){
+	var risk_number = this.id.replace("link_edit_dialog_risk_", "");
+	$('#edit_dialog_risk_' + risk_number).dialog('open');
+	return false;
+});
+
+
+// Edit Risk Modal Dialog
+$("div[id^='edit_dialog_risk_']").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 560,
+	width: 630,
+	modal: true
+});
+
+// View Risk Modal Dialog
+$("div[id^='view_risk_']").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 560,
+	width: 630,
+	modal: true
+});
+
+// Actions for View Risk button 
+$("a[id^='link_view_risk_']").click(function(){
+	var risk_number = this.id.replace("link_view_risk_", "");
+	$('#view_risk_' + risk_number).dialog('open');
+	return false;
+});
+
+
+// Add New Risk
+$("#add_risk").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 560,
+	width: 630,
+	modal: true
+});
+
+$("a#link_add_risk").click(function(){
+	$('#add_risk').dialog('open');
+	return false;
+});
+
+//
+//********************************************************************
+
+//********************************************************************
+// DELIVERABLES
+
+// Edit Deliverable Modal Dialog
+$("div[id^='edit_dialog_deliverable_']").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 560,
+	width: 630,
+	modal: true
+});
+
+// Actions for Edit Deliverable button 
+$("a[id^='link_edit_dialog_deliverable_']").click(function(){
+	var deliverable_number = this.id.replace("link_edit_dialog_deliverable_", "");
+	$('#edit_dialog_deliverable_' + deliverable_number).dialog('open');
+	return false;
+});
+
+// View Deliverable Modal Dialog
+$("div[id^='view_deliverable_']").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 560,
+	width: 630,
+	modal: true
+});
+
+// Actions for Edit Deliverable button 
+$("a[id^='link_view_deliverable_']").click(function(){
+	var deliverable_number = this.id.replace("link_view_deliverable_", "");
+	$('#view_deliverable_' + deliverable_number).dialog('open');
+	return false;
+});
+
+// Add Deliverable
+$("#add_deliverable").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 560,
+	width: 630,
+	modal: true
+});
+
+$("a#link_add_deliverable").click(function(){
+	$('#add_deliverable').dialog('open');
+	return false;
+});
+
+//
+//********************************************************************
+
+//********************************************************************
+// ISSUES
+
+// Edit Issues Modal Dialog
+$("div[id^='edit_dialog_issue_']").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 560,
+	width: 630,
+	modal: true
+});
+
+// Actions for Edit Issue button 
+$("a[id^='link_edit_dialog_issue_']").click(function(){
+	var issue_number = this.id.replace("link_edit_issue__", "");
+	$('#edit_dialogue_issue_' + issue_number).dialog('open');
+	return false;
+});
+
+
+// View Issues Modal Dialog
+$("div[id^='view_issue_']").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 560,
+	width: 630,
+	modal: true
+});
+
+// Actions for View Issue button 
+$("a[id^='link_view_issue_']").click(function(){
+	var issue_number = this.id.replace("link_view_issue_", "");
+	$('#view_issue_' + issue_number).dialog('open');
+	return false;
+});
+
+// Add Issue
+$("#add_issue").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 560,
+	width: 630,
+	modal: true
+});
+
+$("a#link_add_issue").click(function(){
+	$('#add_issue').dialog('open');
+	return false;
+});
+
+//
+//********************************************************************
+
+//********************************************************************
+// LESSONS
+
+// Edit Lessons Modal Dialog
+$("div[id^='edit_dialog_lesson_']").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 560,
+	width: 630,
+	modal: true
+});
+
+// Actions for Edit Lesson button 
+$("a[id^='link_edit_dialog_lesson_']").click(function(){
+	var lesson_number = this.id.replace("link_edit_lesson__", "");
+	$('#edit_dialogue_lesson_' + lesson_number).dialog('open');
+	return false;
+});
+
+// View Lesson Modal Dialog
+$("div[id^='view_lesson_']").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 560,
+	width: 630,
+	modal: true
+});
+
+// Actions for View Lesson button 
+$("a[id^='link_view_lesson_']").click(function(){
+	var lesson_number = this.id.replace("link_view_lesson__", "");
+	$('#view_lesson_' + issue_number).dialog('open');
+	return false;
+});
+
+// Add Lesson 
+$("#add_lesson").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 560,
+	width: 630,
+	modal: true
+});
+
+$("a#link_add_lesson").click(function(){
+	$('#add_lesson').dialog('open');
+	return false;
+});
+
+//
+//********************************************************************
+
+// View WBS Modal Dialog
+$("div[id^='view_wbs_']").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 560,
+	width: 630,
+	modal: true
+});
+
+// Actions for View Lesson button 
+$("a[id^='link_view_wbs_']").click(function(){
+	var wbs_number = this.id.replace("link_view_wbs_", "");
+	$('#view_wbs_' + wbs_number).dialog('open');
+	return false;
+});
+
+
+// Add new Checkpoint report
+$("#add_checkpoint_report").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 560,
+	width: 630,
+	modal: true
+});
+
+$("a#link_add_checkpoint_report").click(function(){
+	$('#add_checkpoint_report').dialog('open');
+	return false;
+});
+
+
+// Add new File
+$("#add_file").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 560,
+	width: 630,
+	modal: true
+});
+
+$("a#link_add_file").click(function(){
+	$('#add_file').dialog('open');
+	return false;
+});
+
+
+{% endblock %}
+
+
+{% block main_content %}
+		<div class="toggler">
+			<div id="effect" class="ui-widget-content ui-corner-all">
+				<h3 class="ui-widget-header ui-corner-all"><a id="toggle_effect_button" href="#">Project {{ project.project_number }}</a></h3>
+				<div id="toggle_effect">
+				<p>
+				<table>
+					<tr> <th>Company</th><td>{{ project.company.company_name }}</td>
+							<td><a class="project_permissions" id="link_edit_dialog_company" href="#"><button class="ui-button ui-state-default ui-corner-all">Edit</button></a></td> 
+					</tr>
+
+					<tr> <th>Project Manager</th><td>{% if project.project_manager.get_full_name %}{{ project.project_manager.get_full_name }}
+														{% else %}{{ project.project_manager.username }}{% endif %}</td>
+							<td><a class="project_permissions" id="link_edit_dialog_project_manager" href="#"><button class="ui-button ui-state-default ui-corner-all">Edit</button></a></td> 
+					</tr>
+					<tr> <th>Team Managers</th><td><ul>{% for u in project.team_managers.all %}
+													<li>{% if u.get_full_name %}{{ u.get_full_name }}{% else %}{{ u.username }}{% endif %}</li>
+	
+														{% endfor %}</ul></td>
+							<td><a class="project_permissions" id="link_edit_dialog_team_managers" href="#"><button class="ui-button ui-state-default ui-corner-all">Edit</button></a></td> 
+					</tr>
+					<tr> <th>Project Sponsor</th><td>{{ project.project_sponsor }} </td>
+							<td><a class="project_permissions" id="link_edit_dialog_project_sponsor" href="#"><button class="ui-button ui-state-default ui-corner-all">Edit</button></a></td> 
+					</tr>
+					<tr> <th>Project Description</th><td>{{ project.project_description|linebreaks }}</td>
+							<td><a class="project_permissions" id="link_edit_dialog_project_description" href="#"><button class="ui-button ui-state-default ui-corner-all">Edit</button></a></td> 
+					</tr>
+					<tr> <th>Business Case</th><td>{{ project.business_case|linebreaks }}</td>
+							<td><a class="project_permissions" id="link_edit_dialog_business_case" href="#"><button class="ui-button ui-state-default ui-corner-all">Edit</button></a></td> 
+					</tr>
+					<tr> <th>Business Benefits</th><td>{{ project.business_benefits|linebreaks }}</td>
+							<td><a class="project_permissions" id="link_edit_dialog_business_benefits" href="#"><button class="ui-button ui-state-default ui-corner-all">Edit</button></a></td> 
+					</tr>
+					<tr> <th>Project Scope</th><td>{{ project.project_scope|linebreaks }}</td>
+							<td><a class="project_permissions" id="link_edit_dialog_project_scope" href="#"><button class="ui-button ui-state-default ui-corner-all">Edit</button></a></td> 
+					</tr>
+					<tr> <th>Exclusions</th><td>{{ project.exclusions|linebreaks }}</td>
+							<td><a class="project_permissions" id="link_edit_dialog_exclusions" href="#"><button class="ui-button ui-state-default ui-corner-all">Edit</button></a></td> 
+					</tr>
+					<tr> <th>Assumptions</th><td>{{ project.assumptions|linebreaks }}</td>
+							<td><a class="project_permissions" id="link_edit_dialog_assumptions" href="#"><button class="ui-button ui-state-default ui-corner-all">Edit</button></a></td> 
+					</tr>
+					<tr> <th>Percentage Complete</th><td>{% get_project_percent_complete project %} %</td>
+					</tr>
+					<tr> <th>RAG Status</th><td> <p class="{% get_project_rag_status_css_class project %}"> {% get_project_rag_status_brief project %}</td>
+					</tr>
+					<tr> <th>Documentation Status</th> <td> <p class="{% get_project_documentation_status_css_class project %}">{% get_project_documentation_status_brief project %}</p></td>
+					</tr>
+		
+				</table>
+				</p>
+				</div> <!-- end: toggle_effect -->
+		</div>
+		<br>
+
+
+		<div class="toggler">
+			<div id="effect" class="ui-widget-content ui-corner-all">
+				<h3 class="ui-widget-header ui-corner-all"><a id="toggle_effect_button2" href="#">Checkpoint Reports</a></h3>
+				<div id="toggle_effect2">
+				<p>
+				<table>
+					<tr> <th>Date</th><th>Author</th><th>Checkpoint Report</th><th></th> </tr>
+					{% for d in project.executive_summary.all %}
+						<tr> 	
+								<td>{{ d.created_date }}</td>
+								<td>{% if d.author.get_full_name %}{{ d.author.get_full_name }}{% else %}{{ d.author.username }}{% endif %}</td>
+								<td>{{ d.summary|linebreaks }}</td>
+						 </tr>
+					{% endfor %}
+				</table>
+				</p>
+				<div align="right"><a class="project_permissions" href="#" id="link_add_checkpoint_report"><button class="ui-button ui-state-default ui-corner-all">Add Checkpoint Report</button></a></div>
+				</div> <!-- end: toggle_effect -->
+			</div>
+		</div>
+		<br>
+
+
+		<div class="toggler">
+			<div id="effect" class="ui-widget-content ui-corner-all">
+				<h3 class="ui-widget-header ui-corner-all"><a id="toggle_effect_button3" href="#">Deliverables</a></h3>
+				<div id="toggle_effect3">
+				<p>
+				<table>
+					<tr> <th>Description</th><th>Tester</th><th>Expected Result</th><th></th> </tr>
+					{% for d in project.deliverables.all %}
+						<tr> 	<td><a id="link_view_deliverable_{{ d.id }}" href="#">{{ d.description|linebreaks }}</a></td>
+								<td>{{ d.deliverable_tester }}</td>
+								<td>{{ d.expected_result }}</td><td><a class="project_permissions" id="link_edit_dialog_deliverable_{{ d.id }}" href="#"><button class="ui-button ui-state-default ui-corner-all">Edit</button></a></td>
+						 </tr>
+					{% endfor %}
+				</table>
+				</p>
+				<div align="right"><a class="project_permissions" href="#" id="link_add_deliverable"><button class="ui-button ui-state-default ui-corner-all">Add Deliverable</button></a></div>
+				</div> <!-- end: toggle_effect -->
+			</div>
+		</div>
+		<br>
+		<div class="toggler">
+			<div id="effect" class="ui-widget-content ui-corner-all">
+				<h3 class="ui-widget-header ui-corner-all"><a id="toggle_effect_button4" href="#">Risks</a></h3>
+				<div id="toggle_effect4">
+				<p>
+				<table>
+					<tr> <th>Risk</th><th>Description</th><th>Owner</th><th>Rating</th><th><!-- Edit --></th> </tr>
+					{% for risk in project.risks.all %}
+						<tr> <td><a id="link_view_risk_{{ risk.risk_number }}" href="#">{{ risk.risk_number }}</a></td><td>{{ risk.description|linebreaks }}</td>
+								<td>{% if risk.owner.get_full_name %}{{ risk.owner.get_full_name }}{% else %}{{ risk.owner.username }}{% endif %}</td><td>{{ risk.rating }}</td>
+								<td><a class="project_permissions" id="link_edit_dialog_risk_{{ risk.risk_number }}" href="#"><button class="ui-button ui-state-default ui-corner-all">Edit</button></a></td>	
+						 </tr>
+					{% endfor %}
+				</table>
+				</p>
+				<div align="right"><a class="project_permissions" href="#" id="link_add_risk"><button class="ui-button ui-state-default ui-corner-all">Add Risk</button></a></div>
+			</div> <!-- end: toggle_effect -->
+		</div>
+		<br>
+		<div class="toggler">
+			<div id="effect" class="ui-widget-content ui-corner-all">
+				<h3 class="ui-widget-header ui-corner-all"><a id="toggle_effect_button5" href="#">Work Breakdown Structure</a></h3>
+				<div id="toggle_effect5">
+				<p>
+				<table>
+					<tr> <th>WBS</th><th>Description</th><th>Skillset</th><th>Owner</th><th>Engineering Days Booked</th><th>% Complete</th><th><!-- Edit --></th> </tr>
+					{% for w in project.work_items.all %}
+						{% if w.active %}
+						<tr style="border-style: none none dashed none ; border-color: silver;"> 
+							<td><p>{{ w.wbs_number }}<p></td>
+							<td><a href="#" id="link_view_wbs_{{ w.id }}"><p class="{% get_task_rag_status w %}"><b>{{ w.title }}</b><br>{{ w.description|truncatewords:10  }}</p></a></td>
+							<td>{{ w.skill_set.skill }}</td>
+							<td>{% if w.owner.get_full_name %} {{ w.owner.get_full_name }} {% else %} {{ w.owner|default_if_none:"No Owner" }} {% endif %}</td>
+							<td>{% if w.engineering_days.all  %} {% for day in w.engineering_days.all %} <li>{{ day.work_date|date:"jS M y" }} - {% get_initials_for_user day.resource %}</li> {% endfor %} {% else %} {% endif %}</td> 
+							<td> {{ w.percent_complete|default_if_none:"0" }} %</td>
+							<td><a href="/WBS/{{ project.project_number }}/{{ w.id }}/Edit/"><button onClick="window.location='/WBS/{{ project.project_number }}/{{ w.id }}/Edit/';" id="link_edit_wbs_{{ w.id }}" class="ui-button ui-state-default ui-corner-all">Edit</button></a></td>
+							</tr>
+						{% endif %}
+					{% endfor %}
+				</table>
+				</p>
+				<div align="right"><a class="project_permissions" href="/WBS/{{ project.project_number }}/Edit/"><button onClick="window.location='/WBS/{{ project.project_number }}/Edit/';" class="ui-button ui-state-default ui-corner-all">Edit WBS</button></a></div>
+			</div> <!-- end: toggle_effect -->
+		</div>
+		<br>
+
+
+		<div class="toggler">
+			<div id="effect" class="ui-widget-content ui-corner-all">
+				<h3 class="ui-widget-header ui-corner-all"><a id="toggle_effect_button6" href="#">Issues</a></h3>
+				<div id="toggle_effect6">
+				<p>
+				<table>
+					<tr> <th>Description</th><th>Owner</th><th>Priority</th><th>Status</th><th><!-- Edit --></th> </tr>
+					{% for i in project.issues.all %}
+						<tr> <td><a id="link_view_issue_{{ i.id }}" href="#">{{ i.description }}</a></td>
+								<td>{% if i.owner.get_full_name %}{{ i.owner.get_full_name }}{% else %}{{ i.owner.username }}{% endif %}</td>
+								<td>{{ i.get_priority_display }}</td>
+								<td>{{ i.status }}</td>
+								<td><a class="project_permissions" id="link_edit_dialog_issue_{{ i.id }}" href="#"><button class="ui-button ui-state-default ui-corner-all">Edit</button></a></td>	
+						 </tr>
+					{% endfor %}
+				</table>
+				</p>
+				<div align="right"><a class="project_permissions" href="#" id="link_add_issue"><button class="ui-button ui-state-default ui-corner-all">Add Issue</button></a></div>
+				</div> <!-- end: toggle_effect -->
+			</div><!-- end: #effect -->
+		</div><!-- end: #toggler -->
+		<br>
+
+
+
+		<div class="toggler">
+			<div id="effect" class="ui-widget-content ui-corner-all">
+				<h3 class="ui-widget-header ui-corner-all"><a id="toggle_effect_button7" href="#">Lessons Learned</a></h3>
+				<div id="toggle_effect7">
+				<p>
+				<table>
+					<tr> <th>Lesson</th><th>Author</th><th>Publish To Client</th><th></th> </tr>
+					{% for lesson in project.lessons_learnt.all %}
+						<tr> <td><a id="link_view_lesson_{{ lesson.id }}" href="#">{{ lesson.description|linebreaks }}</a></td>
+								<td>{% if lesson.author.get_full_name %}{{ lesson.author.get_full_name }}{% else %}{{ lesson.author.username }}{% endif %}</td><td>{{ lesson.publish_to_client }}</td>
+								<td><a class="project_permissions" id="link_edit_dialog_lesson_{{ lesson.id }}" href="#"><button class="ui-button ui-state-default ui-corner-all">Edit</button></a></td>	
+						 </tr>
+					{% endfor %}
+				</table>
+				</p>
+				<div align="right"><a class="project_permissions" href="#" id="link_add_lesson"><button class="ui-button ui-state-default ui-corner-all">Add Lesson Learned</button></a></div>
+				</div> <!-- end: toggle_effect -->
+			</div><!-- end: #effect -->
+		</div><!-- end: #toggler -->
+		<br>
+		<div class="toggler">
+			<div id="effect" class="ui-widget-content ui-corner-all">
+				<h3 class="ui-widget-header ui-corner-all"><a id="toggle_effect_button8" href="#">Download Files</a></h3>
+				<div id="toggle_effect8">
+				<p>
+				<table>
+					<tr> <th>Description</th><th>Date</th><th>Uploaded By</th><th><!-- Download link --></th> </tr>
+					<tr> <td><a href="/Files/{{ project.project_number }}/PID">Project Initiation Document</a></td><td>-</td><td>-</td>
+							<td><a href="/Files/{{ project.project_number }}/PID"><button onClick="window.location='/Files/{{ project.project_number }}/PID/';" class="ui-button ui-state-default ui-corner-all">Download</button></a></td></tr>
+					<tr> <td><a href="/Files/{{ project.project_number }}/RiskRegister">Risk Register</a></td><td>-</td><td>-</td>
+							<td><a href="/Files/{{ project.project_number }}/RiskRegister"><button onClick="window.location='/Files/{{ project.project_number }}/RiskRegister/';" class="ui-button ui-state-default ui-corner-all">Download</button></a></td></tr>
+					<!--<tr> <td><a href="/Files/{{ project.project_number }}/GanttChart">Gantt Chart</a></td><td>-</td><td>-</td>
+							<td><a href="/Files/{{ project.project_number }}/GanttChart"><button onClick="window.location='/Files/{{ project.project_number }}/GanttChart/';" class="ui-button ui-state-default ui-corner-all">Download</button></a></td></tr>-->
+					<tr> <td><a href="/Files/{{ project.project_number }}/WBS">Work Breakdown Structure</a></td><td>-</td><td>-</td>
+							<td><a href="/Files/{{ project.project_number }}/WBS"><button onClick="window.location='/Files/{{ project.project_number }}/WBS/';" class="ui-button ui-state-default ui-corner-all">Download</button></a></td></tr>
+					<tr> <td><a href="/Files/{{ project.project_number }}/IssueLog">Issue Log</a></td><td>-</td><td>-</td>
+							<td><a href="/Files/{{ project.project_number }}/IssueLog"><button onClick="window.location='/Files/{{ project.project_number }}/IssueLog/';" class="ui-button ui-state-default ui-corner-all">Download</button></a></td></tr>
+
+
+					{% for file in project.files.all %}
+					<tr> <td><a href="{{ file.filename.url }}">{{ file.description|linebreaks }}</a></td><td>{{ file.created_date|date:"jS M y" }}</td><td>
+								{% if file.author.get_full_name %}{{ file.author.get_full_name }} {% else %}{{ file.author.username }}{% endif %} </td>
+							<td><a href="{{ file.filename.url }}"><button onClick="window.location='{{ file.filename.url }}';" class="ui-button ui-state-default ui-corner-all">Download</button></a></td></tr>
+					{% endfor %}
+
+				</table>
+				<div align="right"><a class="project_permissions" href="#" id="link_add_file"><button class="ui-button ui-state-default ui-corner-all">Add File</button></a></div>
+				</div> <!-- end: toggle_effect -->
+			</div>
+		</div>
+
+
+	</div>
+</div>
+
+<div id="edit_dialog_company" title="Change Company">
+	<p id="validateTips">All form fields are required.</p>
+	<form action="/Projects/{{ project.project_number }}/Edit/DialogEditCompany/" method="POST">
+	<fieldset>
+		{{ forms.DialogEditCompany.as_p }}
+	</fieldset>
+	<input type="submit" name="submit" value="Submit">
+	</form>
+</div>
+
+<div id="edit_dialog_project_manager" title="Change Project Manager">
+	<p id="validateTips">All form fields are required.</p>
+	<form action="/Projects/{{ project.project_number }}/Edit/DialogEditProjectManager/" method="POST">
+	<fieldset>
+		{{ forms.DialogEditProjectManager.as_p }}
+	</fieldset>
+	<input type="submit" name="submit" value="Submit">
+	</form>
+</div>
+
+<div id="edit_dialog_team_managers" title="Change Project Team Managers">
+	<p id="validateTips">All form fields are required.</p>
+	<form action="/Projects/{{ project.project_number }}/Edit/DialogEditTeamManagers/" method="POST">
+	<fieldset>
+		{{ forms.DialogEditTeamManagers.as_p }}
+	</fieldset>
+	<input type="submit" name="submit" value="Submit">
+	</form>
+</div>
+
+<div id="edit_dialog_project_sponsor" title="Change Project Sponsor">
+	<p id="validateTips">All form fields are required.</p>
+	<form action="/Projects/{{ project.project_number }}/Edit/DialogEditProjectSponsor/" method="POST">
+	<fieldset>
+		{{ forms.DialogEditProjectSponsor.as_p }}
+	</fieldset>
+	<input type="submit" name="submit" value="Submit">
+	</form>
+</div>
+
+
+<div id="edit_dialog_project_description" title="Change Project Description">
+	<p id="validateTips">All form fields are required.</p>
+	<form action="/Projects/{{ project.project_number }}/Edit/DialogEditProjectDescription/" method="POST">
+	<fieldset>
+		{{ forms.DialogEditProjectDescription.as_p }}
+	</fieldset>
+	<input type="submit" name="submit" value="Submit">
+	</form>
+</div>
+
+<div id="edit_dialog_business_case" title="Change Business Case">
+	<p id="validateTips">All form fields are required.</p>
+	<form action="/Projects/{{ project.project_number }}/Edit/DialogEditBusinessCase/" method="POST">
+	<fieldset>
+		{{ forms.DialogEditBusinessCase.as_p }}
+	</fieldset>
+	<input type="submit" name="submit" value="Submit">
+	</form>
+</div>
+
+<div id="edit_dialog_business_benefits" title="Change Business Benefits">
+	<p id="validateTips">All form fields are required.</p>
+	<form action="/Projects/{{ project.project_number }}/Edit/DialogEditBusinessBenefits/" method="POST">
+	<fieldset>
+		{{ forms.DialogEditBusinessBenefits.as_p }}
+	</fieldset>
+	<input type="submit" name="submit" value="Submit">
+	</form>
+</div>
+
+<div id="edit_dialog_project_scope" title="Change Project Scope">
+	<p id="validateTips">All form fields are required.</p>
+	<form action="/Projects/{{ project.project_number }}/Edit/DialogEditProjectScope/" method="POST">
+	<fieldset>
+		{{ forms.DialogEditProjectScope.as_p }}
+	</fieldset>
+	<input type="submit" name="submit" value="Submit">
+	</form>
+</div>
+
+<div id="edit_dialog_exclusions" title="Change Exclusions">
+	<p id="validateTips">All form fields are required.</p>
+	<form action="/Projects/{{ project.project_number }}/Edit/DialogEditExclusions/" method="POST">
+	<fieldset>
+		{{ forms.DialogEditExclusions.as_p }}
+	</fieldset>
+	<input type="submit" name="submit" value="Submit">
+	</form>
+</div>
+
+<div id="edit_dialog_assumptions" title="Change Assumptions">
+	<p id="validateTips">All form fields are required.</p>
+	<form action="/Projects/{{ project.project_number }}/Edit/DialogEditAssumptions/" method="POST">
+	<fieldset>
+		{{ forms.DialogEditAssumptions.as_p }}
+	</fieldset>
+	<input type="submit" name="submit" value="Submit">
+	</form>
+</div>
+
+{% for risk in project.risks.all %}
+<div id="edit_dialog_risk_{{ risk.risk_number }}" title="Edit {{ risk.risk_number }}">
+	<p id="validateTips">All form fields are required.</p>
+	<table>
+	<form action="/Risks/{{ risk.risk_number }}/Edit/" method="POST">
+	<fieldset>
+	{% get_risk_form risk.risk_number %}
+	</fieldset>
+	<tr><td></td><td><input type="submit" name="submit" value="Submit"></td></tr>
+	</form>
+	</table>
+</div>
+
+
+<div id="view_risk_{{ risk.risk_number }}" title="{{ risk.risk_number }}">
+	<table>
+	<tr><th>Risk Number</th><td>{{ risk.risk_number }}</td></tr>
+	<tr><th>Date Created</th><td>{{ risk.created_date }}</td></tr>
+	<tr><th>Date Modified</th><td>{{ risk.modified_date }}</td></tr>
+	<tr><th>Risk Description</th><td>{{ risk.description|linebreaks }}</td></tr>
+	<tr><th>Owner</th><td>{{ risk.owner.get_full_name }}</td></tr>
+	<tr><th>Probability</th><td>{{ risk.probability }}</td></tr>
+	<tr><th>Impact</th><td>{{ risk.impact }}</td></tr>
+	<tr><th>Rating</th><td>{{ risk.rating }}</td></tr>
+	<tr><th>Counter-measure</th><td>{{ risk.get_counter_measure_display }}</td></tr>
+	<tr><th>Status</th><td>{{ risk.get_status_display }}</td></tr>
+	</table>
+</div>
+{% endfor %}
+
+<div id="add_risk" title="Add Risk">
+	<p id="validateTips">All form fields are required.</p>
+	<table>
+	<form action="/Risks/{{ project.project_number }}/Add/" method="POST">
+	<fieldset>
+		{{ forms.RiskForm.as_table }}	
+	</fieldset>
+	<tr><td></td><td><input type="submit" name="submit" value="Submit"></td></tr>
+	</form>
+	</table>
+</div>
+
+{% for d in project.deliverables.all %}
+
+<div id="edit_dialog_deliverable_{{ d.id }}" title="Edit Deliverable">
+	<p id="validateTips">All form fields are required.</p>
+	<table>
+	<form action="/Deliverables/{{ project.project_number }}/{{ d.id }}/Edit/" method="POST">
+	<fieldset>
+	{% get_deliverable_form d.id %}
+	</fieldset>
+	<tr><td></td><td><input type="submit" name="submit" value="Submit"></td></tr>
+	</form>
+	</table>
+</div>
+
+
+<div id="view_deliverable_{{ d.id }}" title="Deliverable">
+	<table>
+	<tr><th>Description</th><td>{{ d.description|linebreaks }}</td></tr>
+	<tr><th>Acceptance Criteria</th><td>{{ d.acceptance_criteria }}</td></tr>
+	<tr><th>Deliverable Tester</th><td>{{ d.deliverable_tester }}</td></tr>
+	<tr><th>Method</th><td>{{ d.method|linebreaks }}</td></tr>
+	<tr><th>Expected Result</th><td>{{ d.expected_result|linebreaks }}</td></tr>
+	<tr><th>Created Date</th><td>{{ d.created_date }}</td></tr>
+	<tr><th>Modified Date</th><td>{{ d.modified_date }}</td></tr>
+	</table>
+</div>
+{% endfor %}
+
+<div id="add_deliverable" title="Add Deliverable">
+	<p id="validateTips">All form fields are required.</p>
+	<table>
+	<form action="/Deliverables/{{ project.project_number }}/Add/" method="POST">
+	<fieldset>
+	{{ forms.DeliverableForm.as_table }}
+	</fieldset>
+	<tr><td></td><td><input type="submit" name="submit" value="Submit"></td></tr>
+	</form>
+	</table>
+</div>
+
+
+
+{% for i in project.issues.all %}
+
+<div id="edit_dialog_issue_{{ i.id }}" title="Edit Issue">
+	<p id="validateTips">All form fields are required.</p>
+	<table>
+	<form action="/Issues/{{ project.project_number }}/{{ i.id }}/Edit/" method="POST">
+	<fieldset>
+	{% get_issue_form i.id %}
+	</fieldset>
+	<tr><td></td><td><input type="submit" name="submit" value="Submit"></td></tr>
+	</form>
+	</table>
+</div>
+
+
+<div id="view_issue_{{ i.id }}" title="Issue">
+	<table>
+	<tr><td>Description</td><td>{{ i.description|linebreaks }}</td></tr>
+	<tr><td>Author</td><td>{% if i.author.get_full_name %}{{ i.author.get_full_name }}
+			{% else %}{{ i.author.username }}{% endif %}</td></tr>
+	<tr><td>Owner</td><td>{% if i.owner.get_full_name %}{{ i.owner.get_full_name }}
+			{% else %}{{ i.owner.username }}{% endif %}</td></tr>
+	<tr><td>Type</td><td>{{ i.type }}</td></tr>
+	<tr><td>Status</td><td>{{ i.status }}</td></tr>
+	<tr><td>Priority</td><td>{{ i.priority }}</td></tr>
+	<tr><td>Related RFC</td><td>{{ i.related_rfc }}</td></tr>
+	<tr><td>Related Helpdesk Ref</td><td>{{ i.related_helpdesk }}</td></tr>
+	<tr><td>Created Date</td><td>{{ i.created_date }}</td></tr>
+	<tr><td>Modified Date</td><td>{{ i.modified_date }}</td></tr>
+	</table>
+</div>
+
+{% endfor %}
+
+
+<div id="add_issue" title="Add Issue">
+	<p id="validateTips">All form fields are required.</p>
+	<table>
+	<form action="/Issues/{{ project.project_number }}/Add/" method="POST">
+	<fieldset>
+	{{ forms.IssueForm.as_table }}
+	</fieldset>
+	<tr><td></td><td><input type="submit" name="submit" value="Submit"></td></tr>
+	</form>
+	</table>
+</div>
+
+
+
+{% for l in project.lessons_learnt.all %}
+
+<div id="edit_dialog_lesson_{{ l.id }}" title="Edit Lesson">
+	<p id="validateTips">All form fields are required.</p>
+	<table>
+	<form action="/Lessons/{{ project.project_number }}/{{ l.id }}/Edit/" method="POST">
+	<fieldset>
+	{% get_lesson_form l.id %}
+	</fieldset>
+	<tr><td></td><td><input type="submit" name="submit" value="Submit"></td></tr>
+	</form>
+	</table>
+</div>
+
+
+<div id="view_lesson_{{ l.id }}" title="Lesson">
+	<table>
+	<tr><td>Description</td><td>{{ l.description|linebreaks }}</td></tr>
+	<tr><td>Author</td><td>{% if l.author.get_full_name %}{{ l.author.get_full_name }}
+			{% else %}{{ l.author.username }}{% endif %}</td></tr>
+	<tr><td>Publish To Client</td><td>{{ l.publish_to_client }}</td></tr>
+	<tr><td>Created Date</td><td>{{ l.created_date }}</td></tr>
+	<tr><td>Modified Date</td><td>{{ l.modified_date }}</td></tr>
+	</table>
+</div>
+{% endfor %}
+
+
+<div id="add_lesson" title="Add Lesson">
+	<p id="validateTips">All form fields are required.</p>
+	<table>
+	<form action="/Lessons/{{ project.project_number }}/Add/" method="POST">
+	<fieldset>
+	{{ forms.LessonForm.as_table }}
+	</fieldset>
+	<tr><td></td><td><input type="submit" name="submit" value="Submit"></td></tr>
+	</form>
+	</table>
+</div>
+
+{% for w in project.work_items.all %}
+
+<div id="view_wbs_{{ w.id }}" title="Work Item">
+	<table>
+	<tr><th>WBS #</th><td>{{ w.id }}</td></tr>
+	<tr><th>Author</th><td>{% if w.author.get_full_name %}{{ w.author.get_full_name }}
+			{% else %}{{ w.author.username }}{% endif %}</td></tr>
+	<tr><th>Title</th><td>{{ w.title }}</td></tr>
+	<tr><th>Description</th><td>{{ w.description|linebreaks }}</td></tr>
+	<tr><th>Resource</th><td>{% if w.owner.get_full_name %}{{ w.owner.get_full_name }}
+			{% else %}{{ w.owner.username }}{% endif %}</td></tr>
+	<tr><th>Days</th><td>{{ w.number_days }}</td></tr>
+	<tr><th>Cost</th><td>{{ w.cost }}</td></tr>
+	<tr><th>Depends upon</th><td>{{ w.depends.title }}</td></tr>
+	<tr><th>Created Date</th><td>{{ w.created_date }}</td></tr>
+	<tr><th>Modified Date</th><td>{{ w.modified_date }}</td></tr>
+	</table>
+</div>
+{% endfor %}
+
+
+<div id="add_checkpoint_report" title="Add Checkpoint Report">
+	<p id="validateTips">All form fields are required.</p>
+	<table>
+	<form action="/Projects/{{ project.project_number }}/Edit/AddCheckPointReport/" method="POST">
+	<fieldset>
+	{{ forms.ExecutiveSummary.as_table }}
+	</fieldset>
+	<tr><td></td><td><input type="submit" name="submit" value="Submit"></td></tr>
+	</form>
+	</table>
+</div>
+
+<div id="add_file" title="Add File">
+	<p id="validateTips">All form fields are required.</p>
+	<table>
+	<form enctype="multipart/form-data" action="/Files/{{ project.project_number }}/AddFile/" method="POST">
+	<fieldset>
+	{{ forms.DialogUploadFile.as_p }}
+	</fieldset>
+	<tr><td></td><td><input type="submit" name="submit" value="Submit"></td></tr>
+	</form>
+	</table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% load rota_tags %}
+
+{% block main_content %}
+
+				{% for team in user.teams.all %}				
+				<table border="1">
+					<tr>
+							<td><!-- Name -->&nbsp;</td>
+						{% for day in this_week %}
+							<td>{% ifequal today  day %}<b>{% endifequal %}{{ day|date:"D d M Y" }}{% ifequal today day %}</b>{% endifequal %}</td>
+						{% endfor %}
+					</tr>
+				
+					{% for m in team.members.all %}	
+					<tr><td>{% if m.get_full_name %}{{ m.get_full_name }}{% else %}{{ m.username }}{% endif %}</td>
+						{% for day in this_week %}
+							<td>{% get_activity_for_day m day %}</td>
+						{% endfor %}
+					</tr>
+					<tr><td><!-- name -->&nbsp;</td>
+						{% for day in this_week %}
+							<td>{% get_project_task_for_day m day %}</td>
+						{% endfor %}
+					</tr>
+					{% endfor %}
+				</table>	
+				{% endfor %}
+
+
+{% endblock %}

@@ -1,0 +1,211 @@
+{% extends 'base.html' %}	
+{% load wbs_tags %}
+{% load project_tags %}
+
+
+{% block additional_css %}
+<style>
+.project_permissions { {% get_css_for_permissions user project %} }
+</style>
+{% endblock %}
+
+
+
+{% block additional_javascript %}
+{{ forms.DialogEditProjectDescription.media }}
+{% endblock %}
+
+
+{% block additional_jquery %}
+
+
+// Reorder Work Items
+$("#reorder_work_items").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 600,
+	modal: true
+});
+
+$("a#link_reorder_work_items").click(function(){
+	$('#reorder_work_items').dialog('open');
+	return false;
+});
+
+
+$("#sortable").sortable({
+							update: function(){
+								var order = $("#sortable").sortable('serialize');
+								$("#id_work_item_order").val(order);
+								}
+						});
+
+
+
+$("#sortable").disableSelection();
+
+
+{% for w in project.work_items.all %}
+// View WBS {{ w.id }}
+$("#view_wbs_{{ w.id }}").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 400,
+	width: 630,
+	modal: true
+});
+
+$("a#link_view_wbs_{{ w.id }}").click(function(){
+	$('#view_wbs_{{ w.id }}').dialog('open');
+	return false;
+});
+
+// Add Engineering Day for {{ w.id }}
+$("#add_engineering_day_{{ w.id }}").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 300,
+	width: 630,
+	modal: true
+});
+
+$("#link_add_engineering_day_{{ w.id }}").click(function(){
+	$('#add_engineering_day_{{ w.id }}').dialog('open');
+	return false;
+});
+
+$("#id_engineering_day_{{ w.id }}_work_date").datepicker({
+	dateFormat: "yy-mm-dd", 
+	firstDay: 1
+});
+
+$("#id_engineering_day_{{ w.id }}_day_type").change(
+	function() {
+		$("#id_engineering_day_{{ w.id }}_resource").load("/WBS/{{ project.project_number }}/Ajax/EngineeringDay/{{ w.id }}/" + $("#id_engineering_day_{{ w.id }}_work_date").val() + "/" + $("#id_engineering_day_{{ w.id }}_day_type").val() + "/" );	
+	 });
+
+{% endfor %}
+
+
+{% endblock %}
+
+
+{% block main_content %}
+		<div class="toggler">
+			<div id="effect" class="ui-widget-content ui-corner-all">
+				<h3 class="ui-widget-header ui-corner-all"><a id="toggle_effect_button" href="#">Project {{ project.project_number }}</a></h3>
+				<div id="toggle_effect">
+				<p>
+				<table>
+					<tr> <th>WBS</th><th>Description</th><th>Skillset</th><th>Owner</th><th>Engineering Days Booked</th><th>% Complete</th><th><!-- Edit --></th> </tr>
+					{% for w in project.work_items.all %}
+
+						{% if w.active %}
+						<a name="{{ w.id }}"></a>
+						<tr> <td>{{ w.wbs_number }}</td>
+						<td><p class="{% get_task_rag_status w %}"><a href="#" id="link_view_wbs_{{ w.id }}"><b>{{ w.title }}</b><br>{{ w.description|truncatewords:10 }}</a></p></td>
+						<td>{{ w.skill_set.skill }}</td>
+						<td>{% if w.owner.get_full_name %} {{ w.owner.get_full_name }} {% else %} {{ w.owner|default_if_none:"No Owner" }} {% endif %}</td>
+						<td>{% if w.engineering_days.all  %} {% for day in w.engineering_days.all %}<li>{{ day.work_date|date:"jS M y" }} - {% get_initials_for_user day.resource %}</li> {% endfor %} {% else %} {% endif %}</td> 
+						<td>{{ w.percent_complete|default_if_none:"0" }} %</td></tr>
+						<tr style="border-style: none none dashed none ; border-color: silver;"><td><!-- WBS Number --></td><td colspan="5">
+						<button id="link_add_engineering_day_{{ w.id }}" class="project_permissions ui-button ui-state-default ui-corner-all">Add Engineering Day</button>
+
+						<a href="/WBS/{{ project.project_number }}/{{ w.id }}/Edit/"><button onClick="window.location='/WBS/{{ project.project_number }}/{{ w.id }}/Edit/';" id="link_edit_wbs_{{ w.id }}" class="ui-button ui-state-default ui-corner-all">Edit</button></a> </td></tr>
+						{% endif %}
+
+					{% endfor %}
+				</table>
+				<br>
+				<ul>
+					<li><a href="{{ project.get_absolute_url }}"><button onClick="window.location='{{ project.get_absolute_url }}';" class="ui-button ui-state-default ui-corner-all">Return to Project</button></a></li>
+					<li><a href="/WBS/{{ project.project_number }}/Add/"><button onClick="window.location='/WBS/{{ project.project_number }}/Add/';" class="ui-button ui-state-default ui-corner-all">Add WBS</button></a></li>
+					<li><a href="#" id="link_reorder_work_items"><button class="ui-button ui-state-default ui-corner-all">Reorder WBS</button></a></li>
+				</ul>
+
+				</p>
+				</div> <!-- end: toggle_effect -->
+		</div>
+		<br>
+
+		{% for w in project.work_items.all %}
+				{% if forloop.first %}
+		<div class="toggler">
+			<div id="effect" class="ui-widget-content ui-corner-all">
+				<h3 class="ui-widget-header ui-corner-all"><a id="toggle_effect_button2" href="#">Engineering Days</a></h3>
+				<div id="toggle_effect2">
+				<table>
+					<tr><th>Date</th><th>WBS</th><th>Day Type</th><th>Resource</th></tr>
+				{% endif %}
+			{% for day in w.engineering_days.all %}
+
+					<tr><td>{{ day.work_date }}</td><td>{{ day.work_item.all.0.title }}</td>
+						<td>{{ day.get_day_type_display }}</td>
+						<td> {% if day.resource.get_full_name %}{{ day.resource.get_full_name }} {% else %}{{ day.resource.username }}{% endif %}</td></tr>
+
+			{% endfor %}
+				{% if forloop.last %}
+					</table>
+				</div>
+			</div>
+		</div>
+				{% endif %}
+		{% endfor %}
+
+{% for w in project.work_items.all %}
+
+<div id="view_wbs_{{ w.id }}" title="Work Item">
+	<table>
+	<tr><td>WBS #</td><td>{{ w.wbs_number }}</td></tr>
+	<tr><td>Author</td><td>{% if w.author.get_full_name %}{{ w.author.get_full_name }}
+			{% else %}{{ w.author.username }}{% endif %}</td></tr>
+	<tr><td>Title</td><td>{{ w.title }}</td></tr>
+	<tr><td>Description</td><td>{{ w.description|linebreaks }}</td></tr>
+	<tr><td>Owner</td><td>{% if w.owner.get_full_name %}{{ w.owner.get_full_name }}
+			{% else %}{{ w.owner.username }}{% endif %}</td></tr>
+	<tr><td>Days</td><td>{{ w.number_days }}</td></tr>
+	<tr><td>Cost</td><td>{{ w.cost }}</td></tr>
+	<tr><td>Depends upon</td><td>{{ w.depends.title }}</td></tr>
+	<tr><td>Created Date</td><td>{{ w.created_date }}</td></tr>
+	<tr><td>Modified Date</td><td>{{ w.modified_date }}</td></tr>
+	</table>
+</div>
+{% endfor %}
+
+
+<div id="reorder_work_items" title="Work Item">
+<ul id="sortable">
+{% for w in project.work_items.all %}
+	{% if w.active %}
+	<li id="id_{{ w.id }}" class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>{{ w.title }}<p></li>
+	{% endif %}
+{% endfor %}
+</ul>
+
+<form action="/WBS/{{ project.project_number }}/WBSReorder/" id="wbs_reorder_form"  method="POST">
+{{ forms.WBSReorderForm.as_p }}
+<input type="submit" id="reorder_wbs_now" value="Save">
+</form>
+</div>
+
+
+
+{% for w in project.work_items.all %}
+	{% if w.active %}
+
+<div id="add_engineering_day_{{ w.id }}" title="Add Engineering Day">
+	<p id="validateTips">All form fields are required.</p>
+	<table>
+	<form action="/WBS/{{ project.project_number }}/{{ w.id }}/AddEngineeringDay/" method="POST">
+	<fieldset>
+	{% get_engineering_day_form w %}
+	</fieldset>
+	<tr><td></td><td><input type="submit" name="submit" value="Submit"></td></tr>
+	</form>
+	</table>
+</div>
+
+
+	{% endif %} 
+{% endfor %}
+{% endblock %}

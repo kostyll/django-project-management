@@ -1,0 +1,61 @@
+{% extends 'base.html' %}	
+{% load rota_tags %}
+
+{% block additional_jquery %}
+
+$("#datepicker").datepicker({
+	dateFormat: "yy/mm/dd", 
+	onSelect: function(dateText, inst) {
+		$("#myrota").load("/Rota/TeamRota/Ajax/" + dateText);	
+	 }
+});
+
+{% endblock %}
+
+
+{% block main_content %}
+		<div class="toggler">
+			<div id="effect" class="ui-widget-content ui-corner-all">
+				<h3 class="ui-widget-header ui-corner-all"><a id="toggle_effect_button" href="#">Your Teams Rota</a></h3>
+				<div id="toggle_effect">
+				<p>
+			
+				{% for team in user.teams.all %}				
+				<h3>{{ team.name }} Rota </h3>			
+
+				<div id="myrota">
+				<table border="1">
+					<tr>
+							<td><!-- Name -->&nbsp;</td>
+						{% for day in this_week %}
+							<td>{% ifequal today  day %}<b>{% endifequal %}{{ day|date:"D d M Y" }}{% ifequal today day %}</b>{% endifequal %}</td>
+						{% endfor %}
+					</tr>
+				
+					{% for m in team.members.all %}	
+					<tr><td>{% if m.get_full_name %}{{ m.get_full_name }}{% else %}{{ m.username }}{% endif %}</td>
+						{% for day in this_week %}
+							<td>{% get_activity_for_day m day %}</td>
+						{% endfor %}
+					</tr>
+					<tr><td><!-- name -->&nbsp;</td>
+						{% for day in this_week %}
+							<td>{% get_project_task_for_day m day %}</td>
+						{% endfor %}
+					</tr>
+					{% endfor %}
+				</table>	
+				{% endfor %}
+				</div>
+				</p>
+				<h3>Choose a Date</h3>			
+				<div id="datepicker" align="center"></div>
+				</div> <!-- end: toggle_effect -->
+		</div>
+	</div>
+	<br>
+
+
+
+
+{% endblock %}
