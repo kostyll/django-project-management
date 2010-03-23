@@ -50,14 +50,14 @@ def edit_deliverable(request, project_number, deliverable_id):
 			pass
 
 @login_required
-def deleteDeliverable(request, projectNumber, deliverableSlug):
+def delete_deliverable(request, project_number, deliverable_id):
 
-	project = Project.objects.get(projectNumber=projectNumber)
-	deliverable = Deliverable.objects.get(slug=deliverableSlug)
+	project = Project.objects.get(project_number=project_number)
+	deliverable = Deliverable.objects.get(id=deliverable_id)
 	project.deliverables.remove(deliverable)
-	request.user.message_set.create(message='''Deliverable %s Deleted''' % deliverable.slug )
-	updateLog(request, projectNumber, '''Deliverable %s Deleted''' % deliverable.slug)
-	return HttpResponseRedirect('/Projects/%s/Deliverables' % project.projectNumber)
+	project.save()
+	ret = {"success": True}
+	return HttpResponse(json.dumps(ret))
 	
 @login_required
 def view_deliverables(request, project_number):
