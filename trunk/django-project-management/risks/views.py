@@ -39,10 +39,10 @@ def get_risk_number(request):
 	return HttpResponse(json.dumps(ret))
 	
 @login_required
-def edit_risk(request, risk_number):
+def edit_risk(request, project_number, risk_number):
 
 	risk = Risk.objects.get(risk_number=risk_number)
-	project = risk.project.all()[0]
+	project = Project.objects.get(project_number=project_number)
 	
 	if request.method == 'POST':
 		form = RiskForm(request.POST, instance=risk)
@@ -53,19 +53,20 @@ def edit_risk(request, risk_number):
 			request.user.message_set.create(message='''Risk %s Edited''' % t.risk_number)
 			for change in form.changed_data:
 				updateLog(request, project.project_number, 'Risk %s: %s changed to %s' % ( t.risk_number, change, eval('''t.%s''' % change)))
-			return HttpResponseRedirect(project.get_absolute_url())
+			ret = {"success": True}
+			return HttpResponse(json.dumps(ret))
 		else:
 			pass
 
 @login_required
-def deleteRisk(request, projectNumber, riskNumber):
+def delete_risk(request, project_number, risk_number):
 
-	project = Project.objects.get(projectNumber=projectNumber)
-	risk = Risk.objects.get(riskNumber=riskNumber)
+	project = Project.objects.get(project_number=project_number)
+	risk = Risk.objects.get(risk_number=risk_number)
 	project.risks.remove(risk)
-	request.user.message_set.create(message='''Risk %s Deleted''' % risk.riskNumber)
-	updateLog(request, projectNumber, '''Risk %s Deleted''' % risk.riskNumber)
-	return HttpResponseRedirect('/Projects/%s/Risks' % project.projectNumber)
+	project.save()
+	ret = {"success": True}
+	return HttpResponse(json.dumps(ret))
 	
 def _calculate_risk(probability, impact):
 	return (probability * impact ) / 2			

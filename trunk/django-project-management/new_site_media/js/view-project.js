@@ -171,7 +171,7 @@ var risk_fields = [
 var add_risk = function(b,e){
 
 	
-	var form_risk_add = new Ext.form.FormPanel({ url: project_url + "/AddRisk", bodyStyle: "padding: 15px;", autoScroll: true, items: risk_fields});
+	var form_risk_add = new Ext.form.FormPanel({ url: "/Risks/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: risk_fields});
 
 	var window_risks = new Ext.Window({width: 620, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Risk", items: [ form_risk_add ],
 							buttons: [{ text:'Submit', disabled:true }, { text: 'Close', handler: function(){ window_risks.hide(); } }] });
