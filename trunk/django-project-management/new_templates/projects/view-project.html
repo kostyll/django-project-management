@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block title %}
+{{ project.project_number }}
+{% endblock %}
+
 {% block extra_javascript %}
 <link rel="stylesheet" type="text/css" href="/site_media/js/extjs/examples/ux/css/MultiSelect.css" />
 <link rel="stylesheet" type="text/css" href="/site_media/js/extjs/examples/shared/examples.css" />
