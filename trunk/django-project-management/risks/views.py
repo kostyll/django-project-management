@@ -39,9 +39,9 @@ def get_risk_number(request):
 	return HttpResponse(json.dumps(ret))
 	
 @login_required
-def edit_risk(request, project_number, risk_number):
+def edit_risk(request, project_number, risk_id):
 
-	risk = Risk.objects.get(risk_number=risk_number)
+	risk = Risk.objects.get(id=risk_id)
 	project = Project.objects.get(project_number=project_number)
 	
 	if request.method == 'POST':
