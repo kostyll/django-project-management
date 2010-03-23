@@ -67,7 +67,12 @@ var edit_deliverable = function(b,e){
                                          handler: function(){
                                          form_deliverable_edit.getForm().submit({
                                             success: function(f,a){
-                                            Ext.Msg.alert('Success', 'Deliverable Updated', function() { window_deliverable.hide(); window.location.reload();});
+                                            Ext.Msg.alert('Success', 'Deliverable Updated', 
+                                            function() { 
+                                            	window_deliverable.hide(); 
+                                            	Ext.getCmp("d_grid").store.load();
+                                            	Ext.getCmp("deliverable_detail").body.update('Please select a deliverable to see more details');
+                                            	});
 									    },  
                                             failure: function(f,a){
                                             Ext.Msg.alert('Warning', 'An Error occured');
@@ -118,6 +123,7 @@ var grid_deliverables = new Ext.grid.GridPanel({
 		sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
 		viewConfig: { forceFit: true },
         height: GRID_HEIGHT,
+        id:'d_grid',
 		width: GRID_WIDTH,
 		split: true,
 		region: 'west'
@@ -182,7 +188,7 @@ var add_risk = function(b,e){
 
 var edit_risk = function(b,e){
 	var	risk_id = grid_risks.getSelectionModel().getSelected().get("pk");
-	var form_risk_edit = new Ext.form.FormPanel({ url: "/Risks/" + project_url + "/" + risk_id + "/Edit/", bodyStyle: "padding: 15px;", autoScroll: true, items: risk_fields});
+	var form_risk_edit = new Ext.form.FormPanel({ url: "/Risks/" + project_number + "/" + risk_id + "/Edit/", bodyStyle: "padding: 15px;", autoScroll: true, items: risk_fields});
 	form_risk_edit.getForm().load({ url: "/Risks/" + project_number + "/" + risk_id + "/", method: "GET" });
 	var window_risks = new Ext.Window({width: 620, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Edit Risk", items: [ form_risk_edit ],
 							buttons: [ { text: 'Save',
