@@ -13,8 +13,9 @@ def get_companies(request):
 	return HttpResponse( serializers.serialize('json', Company.objects.filter(active=True)))	
 
 @login_required
-def get_users(request):
-	return HttpResponse( serializers.serialize('json', User.objects.filter(is_active=True)))	
+def get_users(request, project_number):
+	project = get_object_or_404(Project, project_number=project_number)
+	return HttpResponse( serializers.serialize('json', User.objects.filter( groups__in=project.read_acl.all()).distinct(), excludes=('is_active', 'is_superuser', 'is_staff', 'last_login', 'groups', 'user_permissions', 'password', 'email', 'date_joined') ))
 	
 @login_required
 def edit_pid(request, project_number):
