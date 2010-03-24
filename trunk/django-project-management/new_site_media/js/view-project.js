@@ -176,35 +176,36 @@ var risk_fields = [
     change : function(slider, newValue) { getRating(); }
    }
  },
-	{ xtype: "slider", minValue: 1, maxValue: 4, plugins: impact_tip, fieldLabel: "Impact", name: "impact", id: "impact",  listeners: {    
-    change : function(slider, newValue) { getRating(); }
+	{ xtype: "slider", minValue: 1, maxValue: 4, plugins: impact_tip, fieldLabel: "Impact", name: "impact", id: 'impact',  listeners: {    
+  change : function(slider, newValue) { getRating(); }
    }
  },
-	{ xtype: "textfield", fieldLabel: "Rating", name: "rating", readOnly: true, allowBlank: true, id:'rating' },
-	{ xtype: "combo", displayField: "d", valueField: "id", mode: "local", store: st_counter, fieldLabel: "Counter Measure", name: "counter_measure", triggerAction: "all" },
-	{ xtype: "combo", displayField: "d", valueField: "id", mode: "local", store: st_status, fieldLabel: "Status", name: "status", triggerAction: "all" },
-
-
+	{ xtype: "textfield", fieldLabel: "Rating", name: "rating", readOnly: true, allowBlank: true, id:'rating', valueField:"rating" },
+	{ xtype: "combo", displayField: "d", valueField: "id", hiddenName: 'counter_measure', mode: "local", store: st_counter, fieldLabel: "Counter Measure", name: "counter_measure", triggerAction: "all" },
+	{ xtype: "combo", displayField: "d", valueField: "id", hiddenName: 'status', mode: "local", store: st_status, fieldLabel: "Status", name: "status", triggerAction: "all" }
 ]
-
-//Ext.getCmp("rating").setValue(((Ext.getCmp("probability").value * Ext.getCmp("impact").value) / 2));
 
 function getRating()
 {
 	Ext.getCmp("rating").setValue(((Ext.getCmp("probability").value * Ext.getCmp("impact").value) / 2));
-	//Ext.getCmp("rating").update();
-	
 }
 
 var add_risk = function(b,e){
 
 	var form_risk_add = new Ext.form.FormPanel({ url: "/Risks/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: risk_fields});
 
-	var window_risks = new Ext.Window({width: 620, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Risk", items: [ form_risk_add ],
-							buttons: [{ text: 'Save',
+	var window_risks = new Ext.Window({
+															width: 620, 
+															height:540, 
+															closeAction:'hide', 
+															autoScroll: true, 
+															modal: true, 
+															title: "Add a Risk", 
+															items: [ form_risk_add ],
+															buttons: [{ text: 'Save',
                                          handler: function(){
-                                         form_risk_add.getForm().submit({
-											params: { probability: Ext.getCmp("probability").getValue(), impact: Ext.getCmp("impact").getValue()  },
+                                         							form_risk_add.getForm().submit({
+                                         							params: { probability: Ext.getCmp("probability").getValue(), impact: Ext.getCmp("impact").getValue()  },
 											
                                             success: function(f,a){
                                             Ext.Msg.alert('Success', 'Risks Updated', 
@@ -220,10 +221,16 @@ var add_risk = function(b,e){
                                         });
                                         }},
 							
-							
-							
-							
-											 { text: 'Close', handler: function(){ window_risks.hide(); } }] });
+											 { text: 'Close', handler: function(){ window_risks.hide(); } }],
+											 listeners: { 
+											 		init: function () {
+											 			//form_risk_add.doLayout();
+											 			
+											 			
+											 			//var ourImg = this.store.getAt(0);
+											 		}
+											 	} 
+											 	});
 	project_menu.hide();
 	tabpanel.activate(2);
 	window_risks.show();
@@ -231,9 +238,18 @@ var add_risk = function(b,e){
 
 var edit_risk = function(b,e){
 	var	risk_id = grid_risks.getSelectionModel().getSelected().get("pk");
-	var form_risk_edit = new Ext.form.FormPanel({ url: "/Risks/" + project_number + "/" + risk_id + "/Edit/", bodyStyle: "padding: 15px;", autoScroll: true, items: risk_fields});
+	var form_risk_edit = new Ext.form.FormPanel({ 
+																				url: "/Risks/" + project_number + "/" + risk_id + "/Edit/", bodyStyle: "padding: 15px;", 
+																				autoScroll: true, items: risk_fields,
+																				listeners: {
+																					render: function(){
+																						Ext.getCmp("probability").getEl().setValue(4);
+																						}
+																					}
+																				}
+																				);
 	form_risk_edit.getForm().load({ url: "/Risks/" + project_number + "/" + risk_id + "/", method: "GET" });
-	var window_risks = new Ext.Window({width: 620, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Edit Risk", items: [ form_risk_edit ],
+	var window_risks = new Ext.Window({width: 620, height:400, closeAction: "hide", autoScroll: true, modal: true, title: "Edit Risk", items: [ form_risk_edit ],
 							buttons: [ { text: 'Save',
                                          handler: function(){
                                          form_risk_edit.getForm().submit({
