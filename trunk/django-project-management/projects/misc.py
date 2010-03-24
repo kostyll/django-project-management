@@ -1,3 +1,5 @@
+import simplejson as json
+
 from django.contrib.auth.models import *
 from django.http import Http404
 
@@ -79,5 +81,9 @@ def handle_form_errors(error_dict):
 	for e in error_dict:
 		errors[e] = error_dict[e][0]
 	ret = {"success": False, "errors": errors}
-	return ret
+	return json.dumps(ret)
+	
+def return_json_success():
+	ret = {"success": True}
+	return json.dumps(ret)
 	
