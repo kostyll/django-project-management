@@ -172,14 +172,29 @@ var st_status = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"Closed"
 var risk_fields = [
 	{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
 	{ xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
-	{ xtype: "slider", minValue: 1, maxValue: 4, plugins: probability_tip, fieldLabel: "Probability", name: "probability", id: "probability" },
-	{ xtype: "slider", minValue: 1, maxValue: 4, plugins: impact_tip, fieldLabel: "Impact", name: "impact", id: "impact" },
-	{ xtype: "textfield", fieldLabel: "Rating", name: "rating", readOnly: true, allowBlank: true },
+	{ xtype: "slider", minValue: 1, maxValue: 4, plugins: probability_tip, fieldLabel: "Probability", name: "probability", id: "probability",  listeners: {    
+    change : function(slider, newValue) { getRating(); }
+   }
+ },
+	{ xtype: "slider", minValue: 1, maxValue: 4, plugins: impact_tip, fieldLabel: "Impact", name: "impact", id: "impact",  listeners: {    
+    change : function(slider, newValue) { getRating(); }
+   }
+ },
+	{ xtype: "textfield", fieldLabel: "Rating", name: "rating", readOnly: true, allowBlank: true, id:'rating' },
 	{ xtype: "combo", displayField: "d", valueField: "id", mode: "local", store: st_counter, fieldLabel: "Counter Measure", name: "counter_measure", triggerAction: "all" },
 	{ xtype: "combo", displayField: "d", valueField: "id", mode: "local", store: st_status, fieldLabel: "Status", name: "status", triggerAction: "all" },
 
 
 ]
+
+//Ext.getCmp("rating").setValue(((Ext.getCmp("probability").value * Ext.getCmp("impact").value) / 2));
+
+function getRating()
+{
+	Ext.getCmp("rating").setValue(((Ext.getCmp("probability").value * Ext.getCmp("impact").value) / 2));
+	//Ext.getCmp("rating").update();
+	
+}
 
 var add_risk = function(b,e){
 
