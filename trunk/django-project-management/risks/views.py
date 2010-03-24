@@ -11,6 +11,7 @@ from django.db.models import Q
 from projects.models import *
 from projects.views import updateLog
 from risks.forms import *
+from projects.misc import handle_form_errors
 import time
 
 @login_required
@@ -30,7 +31,8 @@ def add_risk(request, project_number):
 			updateLog(request, project.project_number, '''Risk %s Registered''' % t.risk_number)
 			return HttpResponseRedirect(project.get_absolute_url())
 		else:
-			pass
+			ret = handle_form_errors(form.errors)
+			return HttpResponse(json.dumps(ret))
 
 @login_required
 def get_risk_number(request):

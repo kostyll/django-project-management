@@ -74,3 +74,10 @@ def get_wip_assignee_list(wip_report):
 	return ret	
 
 	
+def handle_form_errors(error_dict):
+	errors = {}
+	for e in error_dict:
+		errors[e] = error_dict[e][0]
+	ret = {"success": False, "errors": errors}
+	return ret
+	
