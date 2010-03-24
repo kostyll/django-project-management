@@ -80,6 +80,7 @@ def handle_form_errors(error_dict):
 	errors = {}
 	for e in error_dict:
 		errors[e] = error_dict[e][0]
+	print dict([(k, [unicode(e) for e in v]) for k,v in errors.items()])
 	ret = {"success": False, "errors": errors}
 	return json.dumps(ret)
 	
