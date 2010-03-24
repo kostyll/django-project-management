@@ -1,3 +1,4 @@
+Ext.QuickTips.init();
 
 /* Some constants used in forms and grids */
 var GRID_HEIGHT = 210
@@ -12,7 +13,7 @@ var TEXTAREA_HEIGHT = 80
 
 
 var st_users = new Ext.data.Store({
-	proxy: new Ext.data.HttpProxy({ url: "/xhr/get_users" }),
+	proxy: new Ext.data.HttpProxy({ url: "/xhr/" + project_number + "/get_users/" }),
 	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"username", mapping: "fields.username"}]}),
 	autoLoad: true
 });
@@ -44,6 +45,9 @@ var add_deliverable = function(b,e){
 												form_add_deliverable.getForm().submit({
 													success: function(f,a){
                                             		Ext.Msg.alert('Success', 'Deliverable Added');
+                                            		window_deliverable.hide(); 
+                                            		Ext.getCmp("d_grid").store.load();
+                                            		Ext.getCmp("deliverable_detail").body.update('Please select a deliverable to see more details');
                                             		},  
                                             		failure: function(f,a){
                                             		Ext.Msg.alert('Warning', 'An Error occured');
@@ -161,26 +165,50 @@ probability_list = ["", "Very Unlikely", "Unlikely", "Possible", "Likely"]
 impact_list = ["", "Low Impact", "Some Impact", "High Impact", "Critical"]
 var probability_tip = new Ext.ux.SliderTip({ getText: function(slider){ return String.format('<b>{0}</b>', probability_list[slider.getValue()]); } }); 
 var impact_tip = new Ext.ux.SliderTip({ getText: function(slider){ return String.format('<b>{0}</b>', impact_list[slider.getValue()]); } }); 
+
 var st_counter = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"Prevention"],[2,"Acceptance"],[3,"Transfer"],[4,"Reduction"],[5,"Contingency"]]});
 var st_status = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"Closed"],[2,"Reducing"],[3,"Increasing"],[4,"No Change"]]});
 
 var risk_fields = [
-	{ xtype: "textfield", fieldLabel: "Risk Number", name: "risk_number" },
 	{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-	{ xtype: "combo", fieldLabel: "Owner", name: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
-	{ xtype: "slider", minValue: 1, maxValue: 4, plugins: probability_tip, fieldLabel: "Probability", name: "probability" },
-	{ xtype: "slider", minValue: 1, maxValue: 4, plugins: impact_tip, fieldLabel: "Impact", name: "impact" },
-	{ xtype: "textfield", fieldLabel: "Rating", name: "rating", readOnly: true },
+	{ xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
+	{ xtype: "slider", minValue: 1, maxValue: 4, plugins: probability_tip, fieldLabel: "Probability", name: "probability", id: "probability" },
+	{ xtype: "slider", minValue: 1, maxValue: 4, plugins: impact_tip, fieldLabel: "Impact", name: "impact", id: "impact" },
+	{ xtype: "textfield", fieldLabel: "Rating", name: "rating", readOnly: true, allowBlank: true },
 	{ xtype: "combo", displayField: "d", valueField: "id", mode: "local", store: st_counter, fieldLabel: "Counter Measure", name: "counter_measure", triggerAction: "all" },
-	{ xtype: "combo", displayField: "d", valueField: "id", mode: "local", store: st_status, fieldLabel: "Status", name: "status", triggerAction: "all" }]
+	{ xtype: "combo", displayField: "d", valueField: "id", mode: "local", store: st_status, fieldLabel: "Status", name: "status", triggerAction: "all" },
+
+
+]
 
 var add_risk = function(b,e){
 
-	
 	var form_risk_add = new Ext.form.FormPanel({ url: "/Risks/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: risk_fields});
 
 	var window_risks = new Ext.Window({width: 620, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Risk", items: [ form_risk_add ],
-							buttons: [{ text:'Submit', disabled:true }, { text: 'Close', handler: function(){ window_risks.hide(); } }] });
+							buttons: [{ text: 'Save',
+                                         handler: function(){
+                                         form_risk_add.getForm().submit({
+											params: { probability: Ext.getCmp("probability").getValue(), impact: Ext.getCmp("impact").getValue()  },
+											
+                                            success: function(f,a){
+                                            Ext.Msg.alert('Success', 'Risks Updated', 
+                                            function() { 
+                                            	window_risks.hide(); 
+                                            	Ext.getCmp("d_risk").store.load();
+                                            	Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
+                                            	});
+									    },  
+                                            failure: function(f,a){
+                                            Ext.Msg.alert('Warning', 'An Error occured');
+                                            }
+                                        });
+                                        }},
+							
+							
+							
+							
+											 { text: 'Close', handler: function(){ window_risks.hide(); } }] });
 	project_menu.hide();
 	tabpanel.activate(2);
 	window_risks.show();
