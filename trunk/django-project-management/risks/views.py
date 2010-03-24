@@ -11,13 +11,16 @@ from django.db.models import Q
 from projects.models import *
 from projects.views import updateLog
 from risks.forms import *
-from projects.misc import handle_form_errors
+from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success
 import time
 
 @login_required
 def add_risk(request, project_number):
 
-	project = Project.objects.get(project_number=project_number)
+	# Some security - only allow users to view objects they are allowed to via read_acl
+	project = get_object_or_404(Project, project_number=project_number)
+	check_project_read_acl(project, request.user)	# Will return Http404 if user isn't allowed to view project
+
 	if request.method == 'POST':
 		form = RiskForm(request.POST)
 		if form.is_valid():
@@ -29,10 +32,9 @@ def add_risk(request, project_number):
 			project.save()
 			request.user.message_set.create(message='''Risk %s Registered''' % t.risk_number)
 			updateLog(request, project.project_number, '''Risk %s Registered''' % t.risk_number)
-			return HttpResponseRedirect(project.get_absolute_url())
+			return HttpResponse( return_json_success )
 		else:
-			ret = handle_form_errors(form.errors)
-			return HttpResponse(json.dumps(ret))
+			return HttpResponse( handle_form_errors(form.errors))
 
 @login_required
 def get_risk_number(request):
@@ -55,10 +57,9 @@ def edit_risk(request, project_number, risk_id):
 			request.user.message_set.create(message='''Risk %s Edited''' % t.risk_number)
 			for change in form.changed_data:
 				updateLog(request, project.project_number, 'Risk %s: %s changed to %s' % ( t.risk_number, change, eval('''t.%s''' % change)))
-			ret = {"success": True}
-			return HttpResponse(json.dumps(ret))
+			return HttpResponse( return_json_success )
 		else:
-			pass
+			return HttpResponse( handle_form_errors(form.errors))
 
 @login_required
 def delete_risk(request, project_number, risk_number):
