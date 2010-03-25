@@ -39,18 +39,18 @@ var add_deliverable = function(b,e){
 	
 	var form_add_deliverable = new Ext.form.FormPanel({ url: "/Deliverables/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: deliverable_fields });
 										
-	var window_deliverable = new Ext.Window({width: 620, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Deliverable", items: [ form_add_deliverable ],
+	var window_deliverable = new Ext.Window({autoHeight: true, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Deliverable", items: [ form_add_deliverable ],
 							buttons: [	{ 	text:'Submit', 
 											handler: function(){
 												form_add_deliverable.getForm().submit({
 													success: function(f,a){
                                             		Ext.Msg.alert('Success', 'Deliverable Added');
                                             		window_deliverable.hide(); 
-                                            		Ext.getCmp("d_grid").store.load();
+                                            		Ext.getCmp("grid_deliverables").store.load();
                                             		Ext.getCmp("deliverable_detail").body.update('Please select a deliverable to see more details');
                                             		},  
                                             		failure: function(f,a){
-                                            		Ext.Msg.alert('Warning', 'An Error occured');
+                                            		Ext.Msg.alert('Warning', a.result.errormsg);
 													}
 												});
 										}}
@@ -74,12 +74,12 @@ var edit_deliverable = function(b,e){
                                             Ext.Msg.alert('Success', 'Deliverable Updated', 
                                             function() { 
                                             	window_deliverable.hide(); 
-                                            	Ext.getCmp("d_grid").store.load();
+                                            	Ext.getCmp("grid_deliverables").store.load();
                                             	Ext.getCmp("deliverable_detail").body.update('Please select a deliverable to see more details');
                                             	});
 									    },  
                                             failure: function(f,a){
-                                            Ext.Msg.alert('Warning', 'An Error occured');
+                                            	Ext.Msg.alert('Warning', a.result.errormsg);
                                             }
                                         });
                                         }}   
@@ -127,7 +127,7 @@ var grid_deliverables = new Ext.grid.GridPanel({
 		sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
 		viewConfig: { forceFit: true },
         height: GRID_HEIGHT,
-        id:'d_grid',
+        id:'grid_deliverables',
 		width: GRID_WIDTH,
 		split: true,
 		region: 'west'
@@ -195,28 +195,28 @@ var add_risk = function(b,e){
 	var form_risk_add = new Ext.form.FormPanel({ url: "/Risks/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: risk_fields});
 
 	var window_risks = new Ext.Window({
-															width: 620, 
-															height:540, 
-															closeAction:'hide', 
-															autoScroll: true, 
-															modal: true, 
-															title: "Add a Risk", 
-															items: [ form_risk_add ],
-															buttons: [{ text: 'Save',
-                                         handler: function(){
-                                         							form_risk_add.getForm().submit({
-                                         							params: { probability: Ext.getCmp("probability").getValue(), impact: Ext.getCmp("impact").getValue()  },
-											
-                                            success: function(f,a){
-                                            Ext.Msg.alert('Success', 'Risks Updated', 
-                                            function() { 
-                                            	window_risks.hide(); 
-                                            	Ext.getCmp("d_risk").store.load();
-                                            	Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
+		width: 620, 
+		height:540, 
+		closeAction:'hide', 
+		autoScroll: true, 
+		modal: true, 
+		title: "Add a Risk", 
+		items: [ form_risk_add ],
+		buttons: [{ text: 'Save',
+			handler: function(){
+                       		form_risk_add.getForm().submit({
+                       		params: { probability: Ext.getCmp("probability").getValue(), impact: Ext.getCmp("impact").getValue()  },
+									
+			success: function(f,a){
+			Ext.Msg.alert('Success', 'Risks Updated', 
+                           function() { 
+                              	window_risks.hide(); 
+                              	Ext.getCmp("grid_risks").store.load();
+                               	Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
                                             	});
 									    },  
                                             failure: function(f,a){
-                                            Ext.Msg.alert('Warning', 'An Error occured');
+                                           Ext.Msg.alert('Warning', a.result.errormsg);
                                             }
                                         });
                                         }},
@@ -239,31 +239,31 @@ var add_risk = function(b,e){
 var edit_risk = function(b,e){
 	var	risk_id = grid_risks.getSelectionModel().getSelected().get("pk");
 	var form_risk_edit = new Ext.form.FormPanel({ 
-																				url: "/Risks/" + project_number + "/" + risk_id + "/Edit/", bodyStyle: "padding: 15px;", 
-																				autoScroll: true, items: risk_fields,
-																				listeners: {
-																					render: function(){
-																						Ext.getCmp("probability").getEl().setValue(4);
-																						}
-																					}
-																				}
-																				);
+		url: "/Risks/" + project_number + "/" + risk_id + "/Edit/", bodyStyle: "padding: 15px;", 
+		id: "form_risk_edit",
+		autoScroll: true, items: risk_fields,
+		});
 	form_risk_edit.getForm().load({ url: "/Risks/" + project_number + "/" + risk_id + "/", method: "GET" });
 	var window_risks = new Ext.Window({width: 620, height:400, closeAction: "hide", autoScroll: true, modal: true, title: "Edit Risk", items: [ form_risk_edit ],
+		listeners: {
+			activate: function(){
+				Ext.getCmp("impact").setValue( 3, false);
+			}
+		},
 							buttons: [ { text: 'Save',
                                          handler: function(){
                                          form_risk_edit.getForm().submit({
+                       			params: { probability: Ext.getCmp("probability").getValue(), impact: Ext.getCmp("impact").getValue()  },
                                             success: function(f,a){
                                             Ext.Msg.alert('Success', 'Risk Updated', 
-                                            function() { 
-                                            	window_risks.hide(); 
-                                            	//window.location.reload();
-                                            	Ext.getCmp("r_grid").store.load();
-                                            	Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
+                           function() { 
+                              	window_risks.hide(); 
+                              	Ext.getCmp("grid_risks").store.load();
+                               	Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
                                             	});
 									    },  
-                                            failure: function(f,a){
-                                            Ext.Msg.alert('Warning', 'An Error occured');
+                                           	failure: function(f,a){
+                                           Ext.Msg.alert('Warning', a.result.errormsg);
                                             }
                                         });
                                         }}   
@@ -311,7 +311,7 @@ var grid_risks = new Ext.grid.GridPanel({
 		viewConfig: { forceFit: true },
         tbar: [ btn_update_risk, btn_delete_risk ],
         height: GRID_HEIGHT,
-        id:'r_grid',
+        id:'grid_risks',
 		width: GRID_WIDTH,
 		split: true,
 		region: 'west'
@@ -342,39 +342,40 @@ grid_risks.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
 });
 
 /*
- *
  * Create the WBS Grid 
- *
- * 
  */
- 
- /* Edit WBS */
-// var edit_wbs = function(b,e){
-//	var	wbs_id = grid_wbs.getSelectionModel().getSelected().get("pk");
-//	var form_wbs_edit = new Ext.form.FormPanel({ url: "/wbs/" + project_number + "/" + wbs_id + "/Edit/", bodyStyle: "padding: 15px;", autoScroll: true, items: wbs_fields});
-//	form_wbs_edit.getForm().load({ url: "/wbs/" + project_number + "/" + wbs_id + "/", method: "GET" });
-//	var window_wbs = new Ext.Window({width: 620, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Edit Work Item", items: [ form_wbs_edit ],
-//							buttons: [ { text: 'Save',
-//                                         handler: function(){
-//                                         form_wbs_edit.getForm().submit({
-//                                            success: function(f,a){
-//                                            Ext.Msg.alert('Success', 'Work Item Updated', 
-//                                            function() { 
-//                                            	window_risks.hide(); 
-//                                            	//window.location.reload();
-//                                            	Ext.getCmp("wbs_grid").store.load();
-//                                            	Ext.getCmp("wbs_detail").body.update('Please select a work item to see more details');
-//                                            	});
-//									    },  
-//                                            failure: function(f,a){
-//                                            Ext.Msg.alert('Warning', 'An Error occured');
-//                                            }
-//                                        });
-//                                        }}   
-//									, { text: 'Close', handler: function(){ window_wbs.hide(); } }] });
-//	window_wbs.show();
-//
-//}
+var st_skillset = new Ext.data.Store({
+	proxy: new Ext.data.HttpProxy({ url: "/xhr/" + project_number + "/get_skillset/" }),
+	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk",mapping:"pk"},{name:"skill",mapping:"fields.skill"}]}),
+	autoLoad: true
+});
+
+var st_project_phase = new Ext.data.Store({
+	proxy: new Ext.data.HttpProxy({ url: "/Projects/" + project_number + "/Phases/" }),
+	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk",mapping:"pk"},{name:"phase",mapping:"fields.project_phase.fields.phase"}]}),
+	autoLoad: true
+});
+
+
+
+var wbs_fields = [ 
+		{ xtype: "combo", fieldLabel: "Skill Set", name: "skill_set", hiddenName: "skill_set", lazyInit: false, store: st_skillset, mode: "local", displayField: "skill", valueField: "pk", triggerAction: "all" },
+		{ xtype: "textfield", fieldLabel: "Title", name: "title" },
+		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
+		{ xtype: "textfield", fieldLabel: "Number of Days", name: "number_of_days" },
+		{ xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
+		{ xtype: "textfield", fieldLabel: "Percent Complete", name: "percent_complete" },
+		{ xtype: "datefield", fieldLable: "Start Date", name: "start_date" },
+		{ xtype: "datefield", fieldLable: "Finish Date", name: "finish_date" },
+		{ xtype: "textfield", fieldLabel: "WBS Number", name: "wbs_number" },
+		{ xtype: "textfield", fieldLabel: "Cost", name: "cost" },
+		{ xtype: "textarea", fieldLabel: "History", name: "history", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH }
+]
+var add_wbs = function(b,e){
+	var form_wbs_add = new Ext.form.FormPanel({ url: "/WBS/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: wbs_fields});
+
+
+}
 
 var st_wbs = new Ext.data.GroupingStore({
 	proxy: new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/" }),
@@ -401,8 +402,10 @@ var st_wbs = new Ext.data.GroupingStore({
 });
 
 
+var btn_add_wbs = { iconCls: 'icon-add', text: 'Add Work Item', handler: null }
 var btn_update_wbs = { iconCls: 'icon-update', text: 'Update Work Item', handler: null }
 var btn_delete_wbs = { iconCls: 'icon-complete', text: 'Delete Work Item', handler: null }
+var btn_add_engineering_day = { iconCls: 'icon-add', text: 'Add Engineering Day', handler: null }
 
 var grid_wbs = new Ext.grid.GridPanel({
         store: st_wbs,
@@ -422,7 +425,7 @@ var grid_wbs = new Ext.grid.GridPanel({
             {header: "Finish Date", dataIndex: 'finish_date', hidden: true, sortable: true },
             {header: "Cost", dataIndex: 'cost'}
 		],
-        tbar: [ btn_update_wbs, btn_delete_wbs ],
+        tbar: [ btn_add_wbs, btn_update_wbs, btn_delete_wbs, btn_add_engineering_day ],
 		sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
 		view: new Ext.grid.GroupingView({
             forceFit:true,
