@@ -864,8 +864,25 @@ var edit_project_initiation = function(b,e){
 	var pid_win = new Ext.Window({width: 620, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Edit Project Initiation", items: [ project_initiation_form ],
 							buttons: [ { text: 'Save',
                                          handler: function(){
+                                         	// New Code Added
+                                            		var itemCount = project_initiation_fields[5].multiselects[1].store.data.items.length;
+                                            		var postString = new Array(itemCount);
+                                            		
+                                            		for(i = 0;i<itemCount;i++)
+                                            		{
+                                            			postString[i] = new Array(2);
+                                            			postString[i][0] = "team_managers";
+                                            			postString[i][1] = project_initiation_fields[5].multiselects[1].store.data.items[i].data.pk;
+                                            		}
+                                            		
+//																								// End New Code Added
+                                         	var jsondata = Ext.util.JSON.encode( postString );
+                                         	
+//                                        
                                          project_initiation_form.getForm().submit({
+                                         	params: { paramsWithArrayJson: jsondata  },
                                             success: function(f,a){
+                                            		
                                             Ext.Msg.alert('Success', 'Project Initiation Update', function() { pid_win.hide(); window.location.reload();});
 					    },  
                                             failure: function(f,a){
@@ -877,11 +894,9 @@ var edit_project_initiation = function(b,e){
                                         }}   
 									, { text: 'Close', handler: function(){ pid_win.hide(); } }] });
 	project_menu.hide();
-	tabpanel.activate(0);
+	tabpanel.activate(0);	
 	pid_win.show();
 }
-
-
 
 
 /*
