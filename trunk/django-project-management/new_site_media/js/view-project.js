@@ -763,13 +763,11 @@ grid_lessons.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
  * Create the Project Report Grid
  *
  */
+var st_report_type = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"Checkpoint Report"],[2,"Executive Summary"]]});
  
  var report_fields = [
-		{ xtype: "textfield", fieldLabel: "Author", name: "author" },
 		{ xtype: "textarea", fieldLabel: "Summary", name: "summary", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "textfield", fieldLabel: "Type", name: "type" },
-		{ xtype: "textfield", fieldLabel: "Created Date", name: "created_date" },
-		{ xtype: "textfield", fieldLabel: "Modified Date", name: "modified_date" } ]
+		{ xtype: "combo", fieldLabel: "Type", hiddenName: "type", name: "type", lazyInit: false, store: st_report_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" } ]
  
   /* Edit Reports */
  var edit_report = function(b,e){
@@ -780,12 +778,12 @@ grid_lessons.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
 							buttons: [ { text: 'Save',
                                          handler: function(){
                                          form_report_edit.getForm().submit({
+											params: { author: user_id },
                                             success: function(f,a){
                                             Ext.Msg.alert('Success', 'Report Updated', 
                                             function() { 
                                             	window_report.hide(); 
-                                            	//window.location.reload();
-                                            	Ext.getCmp("report_grid").store.load();
+                                            	Ext.getCmp("grid_reports").store.load();
                                             	Ext.getCmp("report_detail").body.update('Please select a report to see more details');
                                             	});
 									    },  
@@ -799,9 +797,36 @@ grid_lessons.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
 
 }
 
+var add_report = function(b,e){
+	var form_add_report = new Ext.form.FormPanel({ url: "/Projects/" + project_number + "/Reports/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: report_fields });
+	var window_report = new Ext.Window({autoHeight: true, autoWidth: true, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Report", items: [ form_add_report ],
+				buttons: [ {	text: "Submit",
+								handler: function(){
+									form_add_report.getForm().submit({
+										params: { author: user_id },
+										success: function(f,a){
+											Ext.Msg.alert("Success", "Report Added");
+											window_report.hide();
+											Ext.getCmp("grid_reports").store.load();
+											Ext.getCmp("report_detail").body.update("Please select a Report to see more details");
+										},
+										failure: function(f,a){
+											Ext.Msg.alert("Warning", a.result.errormsg);	
+										}
+									});
+								}},
+							{ text: "Close", handler: function(){ window_report.hide(); }}]
+	});
+	project_menu.hide();
+	tabpanel.activate(6);
+	window_report.show();
+}
+
+
 var st_report = new Ext.data.Store({
 	proxy: new Ext.data.HttpProxy({ url: "/Projects/" + project_number + "/Reports/" }),
 	reader: new Ext.data.JsonReader({ root: "", fields: [
+		{ name: "pk", mapping: "pk" },
 		{ name: "author", mapping: "fields.author.fields.username" },
 		{ name: "type", mapping: "fields.type" },
 		{ name: "created_date", mapping: "fields.created_date" },
@@ -822,10 +847,10 @@ var grid_report = new Ext.grid.GridPanel({
             {header: "Type", dataIndex: 'type', hidden: true, sortable: true },
             {header: "Modified Date", dataIndex: 'modified_date', sortable: true, hidden: true}
 	],
-    tbar: [ btn_update_report ],
+    tbar: [ btn_update_report, btn_delete_report ],
 	sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
 	viewConfig: { forceFit: true },
-	id:'report_grid',
+	id:'grid_reports',
     height: GRID_HEIGHT,
 	width: GRID_WIDTH,
 	split: true,
@@ -951,7 +976,7 @@ var project_menu =  new Ext.menu.Menu({	items: [{ text: "Add Deliverable", handl
 											{ text: "Add Risk", handler: add_risk },
 											{ text: "Add Issue", handler: add_issue },
 											{ text: "Add Lesson Learnt", handler: add_lesson },
-											{ text: "Add Report", href: "/WIP/NEW" },
+											{ text: "Add Report", handler: add_report },
 											{ text: "Add File", href: "/WIP/NEW" },
 											{ text: "Edit Project Initiation", handler: edit_project_initiation },
 											{ text: "Edit Work Breakdown Structure", handler: edit_project_initiation } ]});

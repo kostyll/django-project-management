@@ -20,7 +20,7 @@ from deliverables.forms import DeliverableForm
 from backends.authlib import *
 from backends.pdfexport import render_to_pdf
 from rota.views import calculate_week
-from projects.misc import check_project_read_acl, check_project_write_acl
+from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success
 from wbs.models import ProjectPhase
 
 @login_required
@@ -96,11 +96,9 @@ def edit_project(request, project_number, form_type):
 			request.user.message_set.create(message='''Project %s Edited''' % t.project_number)
 			for change in form.changed_data:
 				updateLog(request, t.project_number, '%s Updated' % change)
-			ret = {"success": True}
-			return HttpResponse(json.dumps(ret))
+			return HttpResponse( return_json_success() )
 		else:
-			print form.errors
-			pass
+			return HttpResponse( handle_form_errors(form.errors))
 
 @login_required
 def updateLog(request, project_number, message):
@@ -132,9 +130,24 @@ def add_checkpoint_report(request, project_number):
 			project.executive_summary.add(t)
 			project.save()
 			request.user.message_set.create(message='''Checkpoint Report added''')
-			return HttpResponseRedirect('''%s''' % project.get_absolute_url())
+			return HttpResponse( return_json_success() )
 		else:
-			pass
+			return HttpResponse( handle_form_errors(form.errors))
+
+@login_required
+def edit_checkpoint_report(request, project_number, report_id):
+
+	report = ExecutiveSummary.objects.get(id=report_id)
+	project = Project.objects.get(project_number=project_number)
+	
+	if request.method == 'POST':
+		form = DialogExecutiveSummary(request.POST, instance=report)
+		if form.is_valid():
+			t = form.save()
+			request.user.message_set.create(message='''Report Edited''')
+			return HttpResponse( return_json_success() )
+		else:
+			return HttpResponse( handle_form_errors(form.errors))
 
 @login_required
 def view_checkpoint_reports(request, project_number):	
@@ -142,6 +155,17 @@ def view_checkpoint_reports(request, project_number):
 	project = get_object_or_404(Project, project_number=project_number)
 	check_project_write_acl(project, request.user)	# Will return Http404 if user isn't allowed to write to project
 	return HttpResponse( serializers.serialize('json', project.executive_summary.all(), relations=('author',), display=['type']))
+
+@login_required
+def view_checkpoint_report(request, project_number, report_id):	
+	# Some security - only allow users to view objects they are allowed to via write_acl
+	project = get_object_or_404(Project, project_number=project_number)
+	report = ExecutiveSummary.objects.get(id=report_id)
+	JSONSerializer = serializers.get_serializer('json')
+	j = JSONSerializer()
+	j.serialize([report], fields=('author', 'type', 'summary'))
+	
+	return HttpResponse( '''{ success: true, data: %s }''' % json.dumps(j.objects[0]['fields']))
 
 
 @login_required
