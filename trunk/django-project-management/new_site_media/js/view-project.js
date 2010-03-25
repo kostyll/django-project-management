@@ -590,40 +590,76 @@ grid_issues.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
  *
  */
 
+// Add Lesson
+var lesson_fields = [
+		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
+		{ xtype: "checkbox", fieldLabel: "Publish to Client", name: "publish_to_client" }
+]
 
- /* Edit Lessons */
- var edit_lessons = function(b,e){
+var add_lesson = function(b,e){
+	var form_add_lesson = new Ext.form.FormPanel({ url: "/Lessons/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: lesson_fields });
+	
+	var window_lesson = new Ext.Window({autoHeight: true, autoWidth: true, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Lesson", items: [ form_add_lesson ],
+				buttons: [ {	text: "Submit",
+								handler: function(){
+									form_add_lesson.getForm().submit({
+										params: { author: user_id },
+										success: function(f,a){
+											Ext.Msg.alert("Success", "Lesson Added");
+											window_lesson.hide();
+											Ext.getCmp("grid_lessons").store.load();
+											Ext.getCmp("lessons_detail").body.update("Please select a lesson to see more details");
+										},
+										failure: function(f,a){
+											Ext.Msg.alert("Warning", a.result.errormsg);	
+										}
+									});
+								}},
+							{ text: "Close", handler: function(){ window_lesson.hide(); }}]
+	});
+	project_menu.hide();
+	tabpanel.activate(5);
+	window_lesson.show();
+}
+
+
+
+
+/* Edit Lessons */
+var edit_lessons = function(b,e){
 	var	lessons_id = grid_lessons.getSelectionModel().getSelected().get("pk");
-	var form_lessons_edit = new Ext.form.FormPanel({ url: "/lessons/" + project_number + "/" + lessons_id + "/Edit/", bodyStyle: "padding: 15px;", autoScroll: true, items: lessons_fields});
-	form_lessons_edit.getForm().load({ url: "/lessons/" + project_number + "/" + lessons_id + "/", method: "GET" });
+	var form_lessons_edit = new Ext.form.FormPanel({ url: "/Lessons/" + project_number + "/" + lessons_id + "/Edit/", bodyStyle: "padding: 15px;", autoScroll: true, items: lesson_fields});
+	form_lessons_edit.getForm().load({ url: "/Lessons/" + project_number + "/" + lessons_id + "/", method: "GET" });
 	var window_lessons = new Ext.Window({width: 620, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Edit Lesson", items: [ form_lessons_edit ],
 							buttons: [ { text: 'Save',
                                          handler: function(){
                                          form_lessons_edit.getForm().submit({
+											params: { author: user_id },
                                             success: function(f,a){
-                                            Ext.Msg.alert('Success', 'Lesson Updated', 
-                                            function() { 
-                                            	window_lessons.hide(); 
-                                            	//window.location.reload();
-                                            	Ext.getCmp("lessons_grid").store.load();
-                                            	Ext.getCmp("lessons_detail").body.update('Please select a lesson to see more details');
-                                            	});
+                                            			Ext.Msg.alert('Success', 'Lesson Updated', 
+                                            				function() { 
+                                            					window_lessons.hide(); 
+                                            					Ext.getCmp("grid_lessons").store.load();
+                                            					Ext.getCmp("lessons_detail").body.update('Please select a lesson to see more details');
+                                            					});
 									    },  
                                             failure: function(f,a){
-                                            Ext.Msg.alert('Warning', 'An Error occured');
+                                           Ext.Msg.alert('Warning', a.result.errormsg);
                                             }
                                         });
                                         }}   
-									, { text: 'Close', handler: function(){ window_lessons.hide(); } }] });
+									, { text: 'Close', handler: function(){ window_lessons.hide(); } }
+									] 
+	});
 	window_lessons.show();
-
 }
 
 
 var st_lessons = new Ext.data.Store({
 	proxy: new Ext.data.HttpProxy({ url: "/Lessons/" + project_number + "/" }),
 	reader: new Ext.data.JsonReader({ root: "", fields: [
-		{ name: "author", mapping: "fields.author" },
+		{name:"pk", mapping: "pk"},
+		{ name: "author", mapping: "fields.author.fields.username" },
 		{ name: "description", mapping: "fields.description" },
 		{ name: "created_date", mapping: "fields.created_date" },
 		{ name: "modified_date", mapping: "fields.modified_date" },
@@ -647,7 +683,7 @@ var grid_lessons = new Ext.grid.GridPanel({
 	sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
 	viewConfig: { forceFit: true },
     height: GRID_HEIGHT,
-    id:'lessons_grid',
+    id:'grid_lessons',
 	width: GRID_WIDTH,
 	split: true,
 	region: 'west'
@@ -851,7 +887,7 @@ var edit_project_initiation = function(b,e){
 var project_menu =  new Ext.menu.Menu({	items: [{ text: "Add Deliverable", handler: add_deliverable}, 
 											{ text: "Add Risk", handler: add_risk },
 											{ text: "Add Issue", handler: add_issue },
-											{ text: "Add Lesson Learnt", href: "/WIP/NEW" },
+											{ text: "Add Lesson Learnt", handler: add_lesson },
 											{ text: "Add Report", href: "/WIP/NEW" },
 											{ text: "Add File", href: "/WIP/NEW" },
 											{ text: "Edit Project Initiation", handler: edit_project_initiation },
