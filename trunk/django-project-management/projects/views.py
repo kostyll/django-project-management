@@ -21,6 +21,7 @@ from backends.authlib import *
 from backends.pdfexport import render_to_pdf
 from rota.views import calculate_week
 from projects.misc import check_project_read_acl, check_project_write_acl
+from wbs.models import ProjectPhase
 
 @login_required
 def home_page(request):
@@ -140,4 +141,9 @@ def view_checkpoint_reports(request, project_number):
 	return HttpResponse( serializers.serialize('json', project.executive_summary.all(), relations=('author',), display=['type']))
 
 
-
+@login_required
+def view_project_phases(request, project_number):
+	# Some security - only allow users to view objects they are allowed to via write_acl
+	project = get_object_or_404(Project, project_number=project_number)
+	check_project_write_acl(project, request.user)	# Will return Http404 if user isn't allowed to write to project
+	return HttpResponse( serializers.serialize('json', ProjectPhase.objects.filter(work_items__project=project)))

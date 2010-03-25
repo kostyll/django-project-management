@@ -77,11 +77,8 @@ def get_wip_assignee_list(wip_report):
 
 	
 def handle_form_errors(error_dict):
-	errors = {}
-	for e in error_dict:
-		errors[e] = error_dict[e][0]
-	print dict([(k, [unicode(e) for e in v]) for k,v in errors.items()])
-	ret = {"success": False, "errors": errors}
+	errors =  dict([(k, [unicode(e) for e in v]) for k,v in error_dict.items()])
+	ret = { "success": False, "errors": errors, "errormsg": "Sorry, there was an error with your submission" }
 	return json.dumps(ret)
 	
 def return_json_success():

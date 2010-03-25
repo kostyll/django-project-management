@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.core import serializers
 from projects.models import *
 from projects.misc import check_project_read_acl, check_project_write_acl
+from wbs.models import SkillSet
 
 @login_required
 def get_companies(request):
@@ -28,3 +29,9 @@ def edit_pid(request, project_number):
 	j.serialize([project], fields=('project_name', 'project_number', 'project_status', 'company', 'project_manager', 'team_managers', 'project_sponsor', 'project_description', 'business_case', 'business_benefits', 'project_scope', 'exclusions', 'assumptions'))
 	return HttpResponse( '''{ success: true, data: %s }''' % json.dumps(j.objects[0]['fields']))
 	
+def get_skillset(request, project_number):
+	# Some security - only allow users to view objects they are allowed to via read_acl
+	project = get_object_or_404(Project, project_number=project_number)
+	check_project_read_acl(project, request.user)	# Will return Http404 if user isn't allowed to view project
+
+	return HttpResponse( serializers.serialize('json', SkillSet.objects.all()))
