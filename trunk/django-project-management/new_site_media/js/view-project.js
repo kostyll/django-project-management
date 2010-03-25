@@ -173,7 +173,8 @@ var risk_fields = [
 	{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
 	{ xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
 	{ xtype: "slider", minValue: 1, maxValue: 4, plugins: probability_tip, fieldLabel: "Probability", name: "probability", id: "probability",  listeners: {    
-    change : function(slider, newValue) { getRating(); }
+    change : function(slider, newValue) { getRating(); },
+    setValue: function(slider) { slider.getValue(); }
    }
  },
 	{ xtype: "slider", minValue: 1, maxValue: 4, plugins: impact_tip, fieldLabel: "Impact", name: "impact", id: 'impact',  listeners: {    
@@ -241,13 +242,17 @@ var edit_risk = function(b,e){
 	var form_risk_edit = new Ext.form.FormPanel({ 
 		url: "/Risks/" + project_number + "/" + risk_id + "/Edit/", bodyStyle: "padding: 15px;", 
 		id: "form_risk_edit",
-		autoScroll: true, items: risk_fields,
+		autoScroll: true, items: risk_fields
 		});
 	form_risk_edit.getForm().load({ url: "/Risks/" + project_number + "/" + risk_id + "/", method: "GET" });
 	var window_risks = new Ext.Window({width: 620, height:400, closeAction: "hide", autoScroll: true, modal: true, title: "Edit Risk", items: [ form_risk_edit ],
 		listeners: {
 			activate: function(){
-				Ext.getCmp("impact").setValue( 3, false);
+				var impactVal = grid_risks.getSelectionModel().getSelected().get("impact"); 
+				var probabilityVal = grid_risks.getSelectionModel().getSelected().get("probability"); 
+				Ext.getCmp("impact").setValue( impactVal, false);
+				Ext.getCmp("probability").setValue( probabilityVal, false);
+				
 			}
 		},
 							buttons: [ { text: 'Save',

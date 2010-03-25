@@ -1,7 +1,7 @@
-# Django settings for dj_projects project.
+# Django settings
 import os
 PROJECT_DIR = os.path.abspath('.')
-
+PROJECT_DIR = r'C:\\Documents and Settings\\Administrator\\Desktop\\django-project-management\\django-project-management'
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -12,11 +12,11 @@ ADMINS = (
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = ''             # Or path to database file if using sqlite3.
-DATABASE_USER = ''             # Not used with sqlite3.
-DATABASE_PASSWORD = ''         # Not used with sqlite3.
-DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
-DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
+DATABASE_NAME = 'projects_dev' 	# Or path to database file if using sqlite3.
+DATABASE_USER = 'projects_dev'# Not used with sqlite3.
+DATABASE_PASSWORD = 'projects_dev'         # Not used with sqlite3.
+DATABASE_HOST = 'cmdb.wtms.com'             # Set to empty string for localhost. Not used with sqlite3.
+DATABASE_PORT = '3306'             # Set to empty string for default. Not used with sqlite3.
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -37,7 +37,7 @@ USE_I18N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = PROJECT_DIR + '/new_site_media/'
+MEDIA_ROOT = os.path.join(PROJECT_DIR, 'new_site_media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -66,7 +66,7 @@ MIDDLEWARE_CLASSES = (
 	'django.middleware.locale.LocaleMiddleware',
 )
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'django-project-management.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -98,9 +98,10 @@ INSTALLED_APPS = (
 	'sorl.thumbnail',
 )
 
-STATIC_DOC_ROOT = PROJECT_DIR + '/new_site_media/'
+STATIC_DOC_ROOT = PROJECT_DIR + '/site_media/'
 
 AUTHENTICATION_BACKENDS = (
+#	'backends.ldapBackend.ActiveDirectoryBackend',
 	'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -118,3 +119,4 @@ CMS_USE_TINYMCE = True
 SERIALIZATION_MODULES = {
     'json': 'wadofstuff.django.serializers.json'
 }
+

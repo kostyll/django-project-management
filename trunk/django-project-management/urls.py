@@ -17,7 +17,7 @@ urlpatterns = patterns('',
     (r'^admin/(.*)', admin.site.root),
 	
 	(r'^$', 'projects.views.home_page'),
-	(r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_DOC_ROOT}),
+	(r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
 
 	# Application URLS
 	(r'^xhr/',      include('projects.xhr-urls')),
