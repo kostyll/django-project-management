@@ -501,7 +501,9 @@ var issue_fields = [
 	{ xtype: "combo", fieldLabel: "Status", hiddenName: "status", name: "status", lazyInit: false, store: st_issue_status, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" },
 	{ xtype: "combo", fieldLabel: "Priority", hiddenName: "priority", name: "priority", lazyInit: false, store: st_issue_priority, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" }, 
 	{ xtype: "textfield", fieldLabel: "Related RFC", name: "related_rfc" },
-	{ xtype: "textfield", fieldLabel: "Related Helpdesk", name: "related_helpdesk" }]
+	{ xtype: "textfield", fieldLabel: "Related Helpdesk", name: "related_helpdesk" },
+	{ xtype: "hidden", fieldLabel: "Author", name: "author" }
+	]
 
 var add_issue = function(b,e){
 	var form_add_issue = new Ext.form.FormPanel({ url: "/Issues/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: issue_fields});
@@ -528,9 +530,39 @@ var add_issue = function(b,e){
 	window_issues.show();
 }
 
+var edit_issue = function(b,e){
+	var	issue_id = grid_issues.getSelectionModel().getSelected().get("pk");
+	var form_issue_edit = new Ext.form.FormPanel({ 
+		url: "/Issues/" + project_number + "/" + issue_id + "/Edit/", bodyStyle: "padding: 15px;", 
+		id: "form_issue_edit",
+		autoScroll: true, items: issue_fields
+		});
+	form_issue_edit.getForm().load({ url: "/Issues/" + project_number + "/" + issue_id + "/", method: "GET" });
+	var window_issues = new Ext.Window({width: 620, height:400, closeAction: "hide", autoScroll: true, modal: true, title: "Edit Issue", items: [ form_issue_edit ],
+							buttons: [ { text: 'Save',
+                                         handler: function(){
+                                         form_issue_edit.getForm().submit({
+                                            success: function(f,a){
+                                            Ext.Msg.alert('Success', 'Issue Updated',function() { 
+                                            	window_issues.hide(); 
+                                            	Ext.getCmp("issues_grid").store.load();
+                                            	Ext.getCmp("issues_detail").body.update('Please select an issue to see more details');
+                                            	});
+									    },  
+                                           	failure: function(f,a){
+                                           Ext.Msg.alert('Warning', a.result.errormsg);
+                                            }
+                                        });
+                                        }}   
+									, { text: 'Close', handler: function(){ window_issues.hide(); } }] });
+	window_issues.show();
+
+}
+
 var st_issues = new Ext.data.GroupingStore({
 	proxy: new Ext.data.HttpProxy({ url: "/Issues/" + project_number + "/" }),
 	reader: new Ext.data.JsonReader({ root: "", fields: [
+		{name:"pk", mapping: "pk"},
 		{ name: "created_date", mapping: "fields.created_date" },
 		{ name: "modified_date", mapping: "fields.modified_date" },
 		{ name: "description", mapping: "fields.description" },
@@ -546,8 +578,8 @@ var st_issues = new Ext.data.GroupingStore({
 	sortInfo:{field: 'description', direction: "ASC"}
 });
 
-var btn_update_issues = { iconCls: 'icon-update', text: 'Update Issue', handler: edit_deliverable }
-var btn_delete_issues = { iconCls: 'icon-complete', text: 'Delete Issue', handler: edit_deliverable }
+var btn_update_issues = { iconCls: 'icon-update', text: 'Update Issue', handler: edit_issue }
+var btn_delete_issues = { iconCls: 'icon-complete', text: 'Delete Issue', handler: edit_issue }
 
 var grid_issues = new Ext.grid.GridPanel({
 	store: st_issues,
