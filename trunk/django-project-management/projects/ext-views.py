@@ -41,7 +41,7 @@ def get_team_managers(request, project_number):
 	project = get_object_or_404(Project, project_number=project_number)
 	check_project_read_acl(project, request.user)	# Will return Http404 if user isn't allowed to view project
 
-	return HttpResponse( serializers.serialize('json', User.objects.filter(id__in=project.team_managers.all()), excludes=('is_active', 'is_superuser', 'is_staff', 'last_login', 'groups', 'user_permissions', 'password', 'email', 'date_joined')))	
+	return HttpResponse( serializers.serialize('json', User.objects.filter(id__in=project.team_managers.all().distinct()), excludes=('is_active', 'is_superuser', 'is_staff', 'last_login', 'groups', 'user_permissions', 'password', 'email', 'date_joined')))	
 
 
 def get_non_team_managers(request, project_number):
@@ -49,5 +49,5 @@ def get_non_team_managers(request, project_number):
 	project = get_object_or_404(Project, project_number=project_number)
 	check_project_read_acl(project, request.user)	# Will return Http404 if user isn't allowed to view project
 
-	return HttpResponse( serializers.serialize('json', User.objects.filter(is_active=True, groups__in=project.read_acl.all()).exclude(id__in=project.team_managers.all()), excludes=('is_active', 'is_superuser', 'is_staff', 'last_login', 'groups', 'user_permissions', 'password', 'email', 'date_joined')))
+	return HttpResponse( serializers.serialize('json', User.objects.filter(is_active=True, groups__in=project.read_acl.all().distinct()).exclude(id__in=project.team_managers.all()), excludes=('is_active', 'is_superuser', 'is_staff', 'last_login', 'groups', 'user_permissions', 'password', 'email', 'date_joined')))
 
