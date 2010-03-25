@@ -81,5 +81,4 @@ def view_lesson(request, project_number, lesson_id):
 	j.serialize([lesson], fields=('description', 'publish_to_client'))
 	
 	return HttpResponse( '''{ success: true, data: %s }''' % json.dumps(j.objects[0]['fields']))
-	return HttpResponse( serializers.serialize('json', LessonLearnt.objects.filter(id=lesson_id)))
 	
