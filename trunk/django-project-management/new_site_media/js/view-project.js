@@ -18,6 +18,18 @@ var st_users = new Ext.data.Store({
 	autoLoad: true
 });
 
+var st_managers = new Ext.data.Store({
+	proxy: new Ext.data.HttpProxy({ url: "/xhr/" + project_number + "/get_team_managers/" }),
+	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"username", mapping: "fields.username"}]}),
+	autoLoad: true
+})
+
+var st_non_managers = new Ext.data.Store({
+	proxy: new Ext.data.HttpProxy({ url: "/xhr/" + project_number + "/get_non_team_managers/" }),
+	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"username", mapping: "fields.username"}]}),
+	autoLoad: true
+})
+
 
 /* 
  *
@@ -823,7 +835,6 @@ var edit_project_initiation = function(b,e){
 
 	var st_project_status = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[0,"Proposed"],[1,"Draft"],[2,"Active"],[3,"On Hold"],[4,"Completed"],[5,"Archived"]]});
 
-
 	var project_initiation_fields = [
 		{ xtype: "textfield", fieldLabel: "Project Name", name: "project_name" },
 		{ xtype: "textfield", fieldLabel: "Project Number", name: "project_number" },
@@ -839,14 +850,14 @@ var edit_project_initiation = function(b,e){
 				scroll: true,
                 width: 200,
                 height: 200,
-                store: st_users,
+                store: st_non_managers,
                 displayField: 'username',
                 valueField: 'pk'
             },{
 				legend: "Team Managers",
                 width: 200,
                 height: 200,
-                store: new Ext.data.ArrayStore({ data: [ ], fields: ['pk', 'path']}),
+                store: st_managers,
                 displayField: 'username',
                 valueField: 'pk'
 	        }]
