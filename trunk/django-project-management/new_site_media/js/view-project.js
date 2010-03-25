@@ -479,27 +479,29 @@ var st_issue_status = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"O
 var st_issue_priority = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"1"],[2,"2"],[3,"3"],[4,"4"],[5,"5"]]});
 var issue_fields = [
 	{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-	{ xtype: "combo", fieldLabel: "Owner", name: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
-	{ xtype: "combo", fieldLabel: "Author", name: "author", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
-	{ xtype: "combo", fieldLabel: "Type", name: "type", lazyInit: false, store: st_issue_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" },
-	{ xtype: "combo", fieldLabel: "Status", name: "status", lazyInit: false, store: st_issue_status, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" },
-	{ xtype: "combo", fieldLabel: "Priority", name: "priority", lazyInit: false, store: st_issue_priority, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" }, 
+	{ xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", name: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
+	{ xtype: "combo", fieldLabel: "Type", hiddenName: "type", name: "type", lazyInit: false, store: st_issue_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" },
+	{ xtype: "combo", fieldLabel: "Status", hiddenName: "status", name: "status", lazyInit: false, store: st_issue_status, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" },
+	{ xtype: "combo", fieldLabel: "Priority", hiddenName: "priority", name: "priority", lazyInit: false, store: st_issue_priority, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" }, 
 	{ xtype: "textfield", fieldLabel: "Related RFC", name: "related_rfc" },
 	{ xtype: "textfield", fieldLabel: "Related Helpdesk", name: "related_helpdesk" }]
 
 var add_issue = function(b,e){
-	var form_add_issue = new Ext.form.FormPanel({ url: "/Issues/" + project_url + "/AddIssue/", bodyStyle: "padding: 15px;", autoScroll: true, items: issue_fields});
+	var form_add_issue = new Ext.form.FormPanel({ url: "/Issues/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: issue_fields});
 	var window_issues = new Ext.Window({width: 620, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Issue", items: [ form_add_issue ],
 							buttons: [	{ 	text:'Submit', 
 											handler: function(){
 												form_add_issue.getForm().submit({
+													params: { author: user_id },
 													success: function(f,a){
-                                            		Ext.Msg.alert('Success', 'Issue Added');
-                                            		Ext.getCmp("issues_grid").store.load();
-                                            		Ext.getCmp("issues_detail").body.update('Please select an issue to see more details');
+                                            		Ext.Msg.alert('Success', 'Issue Added', function(){
+														window_issues.hide();
+                                            			Ext.getCmp("issues_grid").store.load();
+                                            			Ext.getCmp("issues_detail").body.update('Please select an issue to see more details');
+													});
                                             	},  
                                             		failure: function(f,a){
-                                            		Ext.Msg.alert('Warning', 'An Error occured');
+                                            		Ext.Msg.alert('Warning', a.result.errormsg);
 													}
 												});
 										}}

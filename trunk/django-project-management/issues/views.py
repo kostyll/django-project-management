@@ -9,7 +9,7 @@ from django.db.models import Q
 from django.template.defaultfilters import slugify
 from projects.models import *
 from projects.views import updateLog
-from projects.misc import check_project_read_acl, check_project_write_acl
+from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success
 from issues.forms import *
 import time
 
@@ -28,9 +28,9 @@ def add_issue(request, project_number):
 			project.save()
 			request.user.message_set.create(message='''Issue %s Registered''' % t.id)
 			updateLog(request, project_number, '''Issue %s Registered''' % t.id)
-			return HttpResponseRedirect(project.get_absolute_url())
+			return HttpResponse( return_json_success() )
 		else:
-			pass
+			return HttpResponse( handle_form_errors(form.errors))
 
 @login_required
 def edit_issue(request, project_number, issue_id):
@@ -45,9 +45,9 @@ def edit_issue(request, project_number, issue_id):
 			request.user.message_set.create(message='''Issue %s Edited''' % t.id)
 			for change in form.changed_data:
 				updateLog(request, project_number, 'Issue %s updated' % ( t.id ))
-			return HttpResponseRedirect(project.get_absolute_url())
+			return HttpResponse( return_json_success() )
 		else:
-			pass
+			return HttpResponse( handle_form_errors(form.errors))
 
 @login_required
 def deleteIssue(request, projectNumber, issueSlug):
