@@ -816,7 +816,7 @@ grid_report.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
  * */
 var edit_project_initiation = function(b,e){
 	var st_company = new Ext.data.Store({
-		proxy: new Ext.data.HttpProxy({ url: "/xhr/get_companies" }),
+		proxy: new Ext.data.HttpProxy({ url: "/xhr/get_companies/" }),
 		reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"name", mapping: "fields.company_name"}]}),
 		autoLoad: true
 	});
@@ -829,7 +829,7 @@ var edit_project_initiation = function(b,e){
 		{ xtype: "textfield", fieldLabel: "Project Number", name: "project_number" },
 		{ xtype: "combo", fieldLabel: "Project Status", hiddenName: "project_status", lazyInit: false,  store: st_project_status, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" },
 		{ xtype: "combo", fieldLabel: "Company", hiddenName: "company", lazyInit: false,  store: st_company, mode: "local", displayField: "name", valueField: "pk", triggerAction: "all" },
-		{ xtype: "textfield", fieldLabel: "Project Manager", name: "project_manager" },
+		{ xtype: "combo", fieldLabel: "Project Manager", hiddenName: "project_manager", lazyInit: false,  store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
 
 		{ xtype: 'itemselector', name: "team_managers_placeholder", hiddenName: 'team_managers_placeholder', fieldLabel: 'Team Managers',
 	        imagePath: '/site_media/js/extjs/examples/ux/images/',
