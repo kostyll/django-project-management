@@ -7,16 +7,19 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Context, Template, RequestContext
 from django.template.loader import get_template
 from django.template.defaultfilters import slugify
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.db.models import Q
 from projects.models import *
 from projects.views import updateLog
 from deliverables.forms import *
+from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success
 
 @login_required
 def add_deliverable(request, project_number):
 
-	project = Project.objects.get(project_number=project_number)
+	# Some security - only allow users to view objects they are allowed to via read_acl
+	project = get_object_or_404(Project, project_number=project_number)
+	check_project_read_acl(project, request.user)	# Will return Http404 if user isn't allowed to view project
 	if request.method == 'POST':
 		form = DeliverableForm(request.POST)
 		if form.is_valid():
@@ -26,10 +29,9 @@ def add_deliverable(request, project_number):
 			project.save()
 			request.user.message_set.create(message='''Deliverable %s Registered''' % t.id)
 			updateLog(request, project_number, '''Deliverable %s Registered''' % t.id)
-			ret = {"success": True}
-			return HttpResponse(json.dumps(ret))
+			return HttpResponse( return_json_success() )
 		else:
-			pass
+			return HttpResponse( handle_form_errors(form.errors))
 
 @login_required
 def edit_deliverable(request, project_number, deliverable_id):
@@ -44,10 +46,9 @@ def edit_deliverable(request, project_number, deliverable_id):
 			request.user.message_set.create(message='''Deliverable %s Edited''' % t.id)
 			for change in form.changed_data:
 				updateLog(request, project_number, '''%s changed to %s''' % ( change, eval('''t.%s''' % change)))		
-			ret = {"success": True}
-			return HttpResponse(json.dumps(ret))
+			return HttpResponse( return_json_success() )
 		else:
-			pass
+			return HttpResponse( handle_form_errors(form.errors))
 
 @login_required
 def delete_deliverable(request, project_number, deliverable_id):
