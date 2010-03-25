@@ -90,6 +90,9 @@ def edit_project(request, project_number, form_type):
 		form = eval(form_type)(request.POST, instance=project)
 		if form.is_valid():
 			t = form.save()
+			for id in request.POST['team_managers_placeholder'].split(','):
+				t.team_managers.add(id)
+			t.save()
 			request.user.message_set.create(message='''Project %s Edited''' % t.project_number)
 			for change in form.changed_data:
 				updateLog(request, t.project_number, '%s Updated' % change)
