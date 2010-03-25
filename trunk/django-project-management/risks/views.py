@@ -6,7 +6,7 @@ from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Context, Template, RequestContext
 from django.template.loader import get_template
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.db.models import Q
 from projects.models import *
 from projects.views import updateLog
@@ -32,7 +32,7 @@ def add_risk(request, project_number):
 			project.save()
 			request.user.message_set.create(message='''Risk %s Registered''' % t.risk_number)
 			updateLog(request, project.project_number, '''Risk %s Registered''' % t.risk_number)
-			return HttpResponse( return_json_success )
+			return HttpResponse( return_json_success() )
 		else:
 			return HttpResponse( handle_form_errors(form.errors))
 
@@ -57,7 +57,7 @@ def edit_risk(request, project_number, risk_id):
 			request.user.message_set.create(message='''Risk %s Edited''' % t.risk_number)
 			for change in form.changed_data:
 				updateLog(request, project.project_number, 'Risk %s: %s changed to %s' % ( t.risk_number, change, eval('''t.%s''' % change)))
-			return HttpResponse( return_json_success )
+			return HttpResponse( return_json_success() )
 		else:
 			return HttpResponse( handle_form_errors(form.errors))
 
