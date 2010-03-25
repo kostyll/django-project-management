@@ -774,8 +774,8 @@ grid_lessons.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
   /* Edit Reports */
  var edit_report = function(b,e){
 	var	report_id = grid_report.getSelectionModel().getSelected().get("pk");
-	var form_report_edit = new Ext.form.FormPanel({ url: "/report/" + project_number + "/" + report_id + "/Edit/", bodyStyle: "padding: 15px;", autoScroll: true, items: report_fields});
-	form_report_edit.getForm().load({ url: "/report/" + project_number + "/" + report_id + "/", method: "GET" });
+	var form_report_edit = new Ext.form.FormPanel({ url: "/Projects/" + project_number + "/Reports/" + report_id + "/Edit/", bodyStyle: "padding: 15px;", autoScroll: true, items: report_fields});
+	form_report_edit.getForm().load({ url: "/Projects/" + project_number + "/Reports/" + report_id + "/", method: "GET" });
 	var window_report = new Ext.Window({width: 620, height:348, closeAction: "hide", autoScroll: true, modal: true, title: "Edit Report", items: [ form_report_edit ],
 							buttons: [ { text: 'Save',
                                          handler: function(){
@@ -800,7 +800,7 @@ grid_lessons.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
 }
 
 var st_report = new Ext.data.Store({
-	proxy: new Ext.data.HttpProxy({ url: "/Projects/" + project_number + "/Updates/" }),
+	proxy: new Ext.data.HttpProxy({ url: "/Projects/" + project_number + "/Reports/" }),
 	reader: new Ext.data.JsonReader({ root: "", fields: [
 		{ name: "author", mapping: "fields.author.fields.username" },
 		{ name: "type", mapping: "fields.type" },
