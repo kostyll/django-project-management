@@ -61,7 +61,7 @@ class WorkItem(models.Model):
 	created_date = models.DateTimeField(auto_now_add=True)
 	modified_date = models.DateTimeField(auto_now=True)
 	skill_set = models.ForeignKey(SkillSet, verbose_name='Skill set required')
-	project_phase = models.ForeignKey(ProjectPhase, verbose_name='Project Phase')
+	project_phase = models.ForeignKey(ProjectPhase, verbose_name='Project Phase', related_name='work_items')
 	author = models.ForeignKey(User, related_name='authored_tasks')
 	title = models.CharField('Title', max_length=255)
 	description = models.TextField('Description')
