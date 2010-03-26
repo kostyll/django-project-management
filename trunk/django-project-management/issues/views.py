@@ -1,4 +1,5 @@
 # Create your views here.
+import simplejson as json
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect
@@ -67,3 +68,13 @@ def view_issues(request, project_number):
 	check_project_read_acl(project, request.user)	# Will return Http404 if user isn't allowed to view project
 
 	return HttpResponse( serializers.serialize('json', project.issues.all(), relations=('owner', 'author'), display=['type', 'status', 'priority']))
+
+@login_required
+def view_issue(request, project_number, issue_id):
+	issue = Issue.objects.get(id=issue_id)
+	JSONSerializer = serializers.get_serializer('json')
+	j = JSONSerializer()
+	j.serialize([issue], fields=('description', 'owner', 'author', 'type', 'status', 'priority', 'related_rfc', 'related_helpdesk'))
+	
+	return HttpResponse( '''{ success: true, data: %s }''' % json.dumps(j.objects[0]['fields']))
+	
