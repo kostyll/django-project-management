@@ -344,7 +344,7 @@ function delete_risk() {
 		Ext.Msg.show({
 			title: 'Remove Risk',
 			buttons: Ext.MessageBox.YESNO,
-			msg: 'Remove <b>'+sel.data.description+'</b>?',
+			msg: 'Remove <b>'+sel.data.risk_number+'</b>?',
 			closable: false, 
 			fn: function(btn){
 				if (btn == 'yes'){
@@ -361,9 +361,9 @@ function delete_risk() {
                             
                              if (res.success == true)
                              {
-                             	Ext.Msg.alert('Success', 'Risk Updated', 
+                             	Ext.Msg.alert('Success', sel.data.risk_number + " has been removed", 
                            function() { 
-                              	window_risks.destroy(); 
+                              	//window_risks.destroy(); 
                               	Ext.getCmp("grid_risks").store.load();
                                	Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
                                             	});
@@ -371,7 +371,7 @@ function delete_risk() {
                             else {
                                Ext.Msg.alert('Error', res.errormsg, 
                            function() { 
-                           	  	window_risks.destroy(); 
+                           	  	//window_risks.destroy(); 
                            	  	Ext.getCmp("grid_risks").store.load();
                                	Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
                                             	});
