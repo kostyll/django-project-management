@@ -100,8 +100,36 @@ var edit_deliverable = function(b,e){
 }
 
 // Delete Deliverable
-var delete_deliverable = function(){
-	Ext.Msg.alert("Warning", "Placeholder... code to be written here");
+function delete_deliverable() {
+	var deliverableId = grid_deliverables.getSelectionModel().getSelected().get("pk");
+	var sm = grid_deliverables.getSelectionModel();
+	var sel = sm.getSelected();
+	if (sm.hasSelection()){
+		Ext.Msg.show({
+			title: 'Remove Deliverable',
+			buttons: Ext.MessageBox.YESNOCANCEL,
+			msg: 'Remove '+sel.data.acceptance_criteria+'?',
+			fn: function(btn){
+				if (btn == 'yes'){
+						Ext.Ajax.request({
+        url: "/Deliverables/" + project_number + "/" + deliverableId + "/" + "Delete/",
+        method: "POST",
+        params: {"pk": deliverableId
+            
+        },
+        failure: function (response) {
+            Ext.Msg.alert('Error', response.responseText);
+        },
+        success: function (response) {
+            Ext.Msg.alert('Success', sel.data.acceptance_criteria + " has been removed");
+           Ext.getCmp("grid_deliverables").store.load();
+           Ext.getCmp("deliverable_detail").body.update('Please select a deliverable to see more details');
+           }
+    });
+				}
+			}
+		});
+	};
 }
  
 // Show Deliverables... 
