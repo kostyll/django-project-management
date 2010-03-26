@@ -600,21 +600,21 @@ var grid_wbs = new Ext.grid.GridPanel({
 
 var markup_wbs = [
 	'<table class="project_table">',
-	'<tr><td>WBS Number</th> <td>{wbs_number}</td></tr>',
-	'<tr><td>Skillset</th> <td>{skill_set}</td></tr>',
-	'<tr><td>Phase</th> <td>{phase}</td></tr>',
-	'<tr><td>Title</th> <td>{title}</td></tr>',
-	'<tr><td>Description</th> <td>{description}</td></tr>',
-	'<tr><td>Author</th> <td>{author}</td></tr>',
-	'<tr><td>Depends Upon</th> <td>{depends}</td></tr>',
-	'<tr><td>Number of Days</th> <td>{number_days}</td></tr>',
-	'<tr><td>Owner</th> <td>{owner}</td></tr>',
-	'<tr><td>Cost</th> <td>{cost}</td></tr>',
-	'<tr><td>Percent Complete</th> <td>{percent_complete}</td></tr>',
-	'<tr><td>Start Date</th> <td>{start_date}</td></tr>',
-	'<tr><td>Finish Date</th> <td>{finish_date}</td></tr>',
-	'<tr><td>Created Date</th> <td>{created_date}</td></tr>',
-	'<tr><td>Modified Date</th> <td>{modified_date}</td></tr>', '</table>' ];
+	'<tr><th>WBS Number</th> <td>{wbs_number}</td></tr>',
+	'<tr><th>Skillset</th> <td>{skill_set}</td></tr>',
+	'<tr><th>Phase</th> <td>{phase}</td></tr>',
+	'<tr><th>Title</th> <td>{title}</td></tr>',
+	'<tr><th>Description</th> <td>{description}</td></tr>',
+	'<tr><th>Author</th> <td>{author}</td></tr>',
+	'<tr><th>Depends Upon</th> <td>{depends}</td></tr>',
+	'<tr><th>Number of Days</th> <td>{number_days}</td></tr>',
+	'<tr><th>Owner</th> <td>{owner}</td></tr>',
+	'<tr><th>Cost</th> <td>{cost}</td></tr>',
+	'<tr><th>Percent Complete</th> <td>{percent_complete}</td></tr>',
+	'<tr><th>Start Date</th> <td>{start_date}</td></tr>',
+	'<tr><th>Finish Date</th> <td>{finish_date}</td></tr>',
+	'<tr><th>Created Date</th> <td>{created_date}</td></tr>',
+	'<tr><th>Modified Date</th> <td>{modified_date}</td></tr>', '</table>' ];
 var tpl_wbs = new Ext.Template(markup_wbs);
 
 var panel_wbs = new Ext.Panel({
@@ -800,16 +800,16 @@ var grid_issues = new Ext.grid.GridPanel({
 
 var markup_issues = [
 	'<table class="project_table">',
-	'<tr><td>Owner</th> <td>{owner}</td></tr>',
-	'<tr><td>Description</th> <td>{description}</td></tr>',
-	'<tr><td>Author</th> <td>{author}</td></tr>',
-	'<tr><td>Type</th> <td>{type}</td></tr>',
-	'<tr><td>Status</th> <td>{status}</td></tr>',
-	'<tr><td>Priority</th> <td>{priority}</td></tr>',
-	'<tr><td>Related RFC</th> <td>{related_rfc}</td></tr>',
-	'<tr><td>Related Helpdesk</th> <td>{related_helpdesk}</td></tr>',
-	'<tr><td>Created Date</th> <td>{created_date}</td></tr>',
-	'<tr><td>Modified Date</th> <td>{modified_date}</td></tr>', '</table>' ];
+	'<tr><th>Owner</th> <td>{owner}</td></tr>',
+	'<tr><th>Description</th> <td>{description}</td></tr>',
+	'<tr><th>Author</th> <td>{author}</td></tr>',
+	'<tr><th>Type</th> <td>{type}</td></tr>',
+	'<tr><th>Status</th> <td>{status}</td></tr>',
+	'<tr><th>Priority</th> <td>{priority}</td></tr>',
+	'<tr><th>Related RFC</th> <td>{related_rfc}</td></tr>',
+	'<tr><th>Related Helpdesk</th> <td>{related_helpdesk}</td></tr>',
+	'<tr><th>Created Date</th> <td>{created_date}</td></tr>',
+	'<tr><th>Modified Date</th> <td>{modified_date}</td></tr>', '</table>' ];
 var tpl_issues = new Ext.Template(markup_issues);
 
 var panel_issues = new Ext.Panel({
@@ -965,11 +965,11 @@ var grid_lessons = new Ext.grid.GridPanel({
 
 var markup_lessons = [
 	'<table class="project_table">',
-	'<tr><td>Description</th> <td>{description}</td></tr>',
-	'<tr><td>Author</th> <td>{author}</td></tr>',
-	'<tr><td>Publish To Client</th> <td>{publish_to_client}</td></tr>',
-	'<tr><td>Created Date</th> <td>{created_date}</td></tr>',
-	'<tr><td>Modified Date</th> <td>{modified_date}</td></tr>', '</table>' ];
+	'<tr><th>Description</th> <td>{description}</td></tr>',
+	'<tr><th>Author</th> <td>{author}</td></tr>',
+	'<tr><th>Publish To Client</th> <td>{publish_to_client}</td></tr>',
+	'<tr><th>Created Date</th> <td>{created_date}</td></tr>',
+	'<tr><th>Modified Date</th> <td>{modified_date}</td></tr>', '</table>' ];
 var tpl_lessons = new Ext.Template(markup_lessons);
 
 var panel_lessons = new Ext.Panel({
