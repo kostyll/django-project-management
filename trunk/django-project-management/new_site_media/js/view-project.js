@@ -241,7 +241,7 @@ var add_risk = function(b,e){
 	var window_risks = new Ext.Window({
 		width: 620, 
 		height:540, 
-		closeAction:'hide', 
+		closeAction:'close', 
 		autoScroll: true, 
 		modal: true, 
 		title: "Add a Risk", 
@@ -254,18 +254,19 @@ var add_risk = function(b,e){
 			success: function(f,a){
 			Ext.Msg.alert('Success', 'Risks Updated', 
                            function() { 
-                              	window_risks.hide(); 
+                              	window_risks.destroy(); 
                               	Ext.getCmp("grid_risks").store.load();
                                	Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
                                             	});
 									    },  
                                             failure: function(f,a){
+                                            	window_risks.destroy();
                                            Ext.Msg.alert('Warning', a.result.errormsg);
                                             }
                                         });
                                         }},
 							
-											 { text: 'Close', handler: function(){ window_risks.hide(); } }],
+											 { text: 'Close', handler: function(){ window_risks.destroy(); } }],
 											 listeners: { 
 											 		init: function () {
 											 			//form_risk_add.doLayout();
@@ -288,7 +289,7 @@ var edit_risk = function(b,e){
 		autoScroll: true, items: risk_fields
 		});
 	form_risk_edit.getForm().load({ url: "/Risks/" + project_number + "/" + risk_id + "/", method: "GET" });
-	var window_risks = new Ext.Window({width: 620, height:400, closeAction: "hide", autoScroll: true, modal: true, title: "Edit Risk", items: [ form_risk_edit ],
+	var window_risks = new Ext.Window({width: 620, autoHeight: true, closeAction: "close", autoScroll: true, modal: true, title: "Edit Risk", items: [ form_risk_edit ],
 		listeners: {
 			activate: function(){
 				var impactVal = grid_risks.getSelectionModel().getSelected().get("impact"); 
@@ -305,7 +306,7 @@ var edit_risk = function(b,e){
                                             success: function(f,a){
                                             Ext.Msg.alert('Success', 'Risk Updated', 
                            function() { 
-                              	window_risks.hide(); 
+                              	window_risks.destroy(); 
                               	Ext.getCmp("grid_risks").store.load();
                                	Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
                                             	});
