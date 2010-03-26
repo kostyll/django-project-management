@@ -11,7 +11,7 @@ from django.db.models import Q
 from projects.models import *
 from projects.views import updateLog
 from risks.forms import *
-from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success
+from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success, handle_generic_error
 import time
 
 @login_required
@@ -62,14 +62,16 @@ def edit_risk(request, project_number, risk_id):
 			return HttpResponse( handle_form_errors(form.errors))
 
 @login_required
-def delete_risk(request, project_number, risk_number):
+def delete_risk(request, project_number, risk_id):
 
 	project = Project.objects.get(project_number=project_number)
-	risk = Risk.objects.get(risk_number=risk_number)
+	try:
+		risk = Risk.objects.get(risk_number=risk_id)
+	except Risk.DoesNotExist:
+		return HttpResponse( handle_generic_error("Risk does not exist"))
 	project.risks.remove(risk)
 	project.save()
-	ret = {"success": True}
-	return HttpResponse(json.dumps(ret))
+	return HttpResponse( return_json_success() )
 	
 def _calculate_risk(probability, impact):
 	return (probability * impact ) / 2			

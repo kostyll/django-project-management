@@ -84,4 +84,8 @@ def handle_form_errors(error_dict):
 def return_json_success():
 	ret = {"success": True}
 	return json.dumps(ret)
+
+def handle_generic_error(error_msg):
+	ret = { "success": False, "errormsg": error_msg }
+	return json.dumps(ret)
 	
