@@ -303,14 +303,29 @@ var edit_risk = function(b,e){
                                          handler: function(){
                                          form_risk_edit.getForm().submit({
                        			params: { probability: Ext.getCmp("probability").getValue(), impact: Ext.getCmp("impact").getValue()  },
-                                            success: function(f,a){
+                                            success:
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                             function(f,a){
                                             Ext.Msg.alert('Success', 'Risk Updated', 
                            function() { 
                               	window_risks.destroy(); 
                               	Ext.getCmp("grid_risks").store.load();
                                	Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
                                             	});
-									    },  
+									    }
+									    
+									    
+									    
+									    
+									    
+									    
+									    
+									    ,  
                                            	failure: function(f,a){
                                            Ext.Msg.alert('Warning', a.result.errormsg);
                                             }
@@ -341,16 +356,33 @@ function delete_risk() {
         failure: function (response) {
             Ext.Msg.alert('Error', response.responseText);
         },
-        success: function (response) {
-            Ext.Msg.alert('Success', sel.data.description + " has been removed");
-           Ext.getCmp("grid_risks").store.load();
-           Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
-           }
-    });
+        success: function(result, request) { 
+                            var res = new Object();
+                            res = Ext.util.JSON.decode(result.responseText);
+                            
+                             if (res.success == true)
+                             {
+                             	Ext.Msg.alert('Success', 'Risk Updated', 
+                           function() { 
+                              	window_risks.destroy(); 
+                              	Ext.getCmp("grid_risks").store.load();
+                               	Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
+                                            	});
+                            }
+                            else {
+                               Ext.Msg.alert('Error', res.errormsg, 
+                           function() { 
+                           	  	window_risks.destroy(); 
+                           	  	Ext.getCmp("grid_risks").store.load();
+                               	Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
+                                            	});
+                             }
+  						  }
+ 					 });
 				}
 			}
 		});
-	};
+	}
 }
 
 
