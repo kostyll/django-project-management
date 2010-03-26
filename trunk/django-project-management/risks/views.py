@@ -66,7 +66,7 @@ def delete_risk(request, project_number, risk_id):
 
 	project = Project.objects.get(project_number=project_number)
 	try:
-		risk = Risk.objects.get(risk_number=risk_id)
+		risk = Risk.objects.get(id=risk_id)
 	except Risk.DoesNotExist:
 		return HttpResponse( handle_generic_error("Risk does not exist"))
 	project.risks.remove(risk)
