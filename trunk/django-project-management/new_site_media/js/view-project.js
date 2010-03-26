@@ -1049,7 +1049,7 @@ function delete_report() {
 			fn: function(btn){
 				if (btn == 'yes'){
 						Ext.Ajax.request({
-        url: "/Reoorts/" + project_number + "/" + reportId + "/Delete/",
+        url: "/Reports/" + project_number + "/" + reportId + "/Delete/",
         method: "POST",
         params: {"pk": reportId
             
