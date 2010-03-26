@@ -716,24 +716,37 @@ function delete_issue() {
 			fn: function(btn){
 				if (btn == 'yes'){
 						Ext.Ajax.request({
-        url: "/Issues/" + project_number + "/" + issueId + "/" + "Delete/",
+        url: "/Issues/" + project_number + "/" + issueId + "/Delete/",
         method: "POST",
-        params: {"pk": issueId
-            
-        },
+        params: {"pk": issueId },
         failure: function (response) {
             Ext.Msg.alert('Error', response.responseText);
         },
-        success: function (response) {
-            Ext.Msg.alert('Success', sel.data.description + " has been removed");
-           Ext.getCmp("grid_issues").store.load();
-           Ext.getCmp("issue_detail").body.update('Please select a issue to see more details');
-           }
-    });
+        success: function(result, request) { 
+                            var res = new Object();
+                            res = Ext.util.JSON.decode(result.responseText);
+                            
+                             if (res.success == true)
+                             {
+                             	Ext.Msg.alert('Success', 'Issue Deleted', 
+                           function() { 
+                              	Ext.getCmp("issues_grid").store.load();
+                               	Ext.getCmp("issues_detail").body.update('Please select an issue to see more details');
+                                            	});
+                            }
+                            else {
+                               Ext.Msg.alert('Error', res.errormsg, 
+                           function() { 
+                           	  	Ext.getCmp("issues_grid").store.load();
+                               	Ext.getCmp("issues_detail").body.update('Please select an issue to see more details');
+                                            	});
+                             }
+  						  }
+ 					 });
 				}
 			}
 		});
-	};
+	}
 }
 
 
