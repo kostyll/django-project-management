@@ -1049,7 +1049,7 @@ function delete_report() {
 			fn: function(btn){
 				if (btn == 'yes'){
 						Ext.Ajax.request({
-        url: "/Reports/" + project_number + "/" + reportId + "/Delete/",
+        url: "/Projects/" + project_number + "/Reports/" + reportId + "/Delete/",
         method: "POST",
         params: {"pk": reportId
             
@@ -1058,7 +1058,7 @@ function delete_report() {
             Ext.Msg.alert('Error', response.responseText);
         },
         success: function (response) {
-            Ext.Msg.alert('Success', sel.data.description + " has been removed");
+            Ext.Msg.alert('Success', sel.data.summary + " has been removed");
            Ext.getCmp("grid_reports").store.load();
            Ext.getCmp("report_detail").body.update('Please select a report to see more details');
            }

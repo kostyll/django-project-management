@@ -20,7 +20,7 @@ from deliverables.forms import DeliverableForm
 from backends.authlib import *
 from backends.pdfexport import render_to_pdf
 from rota.views import calculate_week
-from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success
+from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success, handle_generic_error
 from wbs.models import ProjectPhase
 
 @login_required
@@ -148,6 +148,20 @@ def edit_checkpoint_report(request, project_number, report_id):
 			return HttpResponse( return_json_success() )
 		else:
 			return HttpResponse( handle_form_errors(form.errors))
+
+
+@login_required
+def delete_checkpoint_report(request, project_number, report_id):
+
+	project = Project.objects.get(project_number=project_number)
+	try:
+		report = ExecutiveSummary.objects.get(id=report_id)
+	except ExecutiveSummary.DoesNotExist:
+		return HttpResponse( handle_generic_error("Report does not exist"))
+	project.executive_summary.remove(report)
+	project.save()
+	return HttpResponse( return_json_success() )
+	
 
 @login_required
 def view_checkpoint_reports(request, project_number):	
