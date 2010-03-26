@@ -107,8 +107,9 @@ function delete_deliverable() {
 	if (sm.hasSelection()){
 		Ext.Msg.show({
 			title: 'Remove Deliverable',
-			buttons: Ext.MessageBox.YESNOCANCEL,
-			msg: 'Remove '+sel.data.acceptance_criteria+'?',
+			buttons: Ext.MessageBox.YESNO,
+			msg: 'Remove <b>'+sel.data.description+'</b>?',
+			closable: false, 
 			fn: function(btn){
 				if (btn == 'yes'){
 						Ext.Ajax.request({
@@ -121,7 +122,7 @@ function delete_deliverable() {
             Ext.Msg.alert('Error', response.responseText);
         },
         success: function (response) {
-            Ext.Msg.alert('Success', sel.data.acceptance_criteria + " has been removed");
+            Ext.Msg.alert('Success', sel.data.description + " has been removed");
            Ext.getCmp("grid_deliverables").store.load();
            Ext.getCmp("deliverable_detail").body.update('Please select a deliverable to see more details');
            }
@@ -231,6 +232,8 @@ function getRating()
 	Ext.getCmp("rating").setValue(((Ext.getCmp("probability").value * Ext.getCmp("impact").value) / 2));
 }
 
+
+
 var add_risk = function(b,e){
 
 	var form_risk_add = new Ext.form.FormPanel({ url: "/Risks/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: risk_fields});
@@ -312,15 +315,43 @@ var edit_risk = function(b,e){
                                             }
                                         });
                                         }}   
-									, { text: 'Close', handler: function(){ window_risks.hide(); } }] });
+									, { text: 'Close', handler: function(){ window_risks.destroy(); } }] });
 	window_risks.show();
 
 }
 
-
 // Delete Risk
-var delete_risk = function(){
-	Ext.Msg.alert("Warning", "Placeholder... code to be written here");
+function delete_risk() {
+	var riskId = grid_risks.getSelectionModel().getSelected().get("pk");
+	var sm = grid_risks.getSelectionModel();
+	var sel = sm.getSelected();
+	if (sm.hasSelection()){
+		Ext.Msg.show({
+			title: 'Remove Risk',
+			buttons: Ext.MessageBox.YESNO,
+			msg: 'Remove <b>'+sel.data.description+'</b>?',
+			closable: false, 
+			fn: function(btn){
+				if (btn == 'yes'){
+						Ext.Ajax.request({
+        url: "/Risks/" + project_number + "/" + riskId + "/" + "Delete/",
+        method: "POST",
+        params: {"pk": riskId
+            
+        },
+        failure: function (response) {
+            Ext.Msg.alert('Error', response.responseText);
+        },
+        success: function (response) {
+            Ext.Msg.alert('Success', sel.data.description + " has been removed");
+           Ext.getCmp("grid_risks").store.load();
+           Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
+           }
+    });
+				}
+			}
+		});
+	};
 }
 
 
@@ -438,6 +469,40 @@ var add_wbs = function(b,e){
 
 }
 
+// Delete Work Item
+function delete_wbs() {
+	var wbsId = grid_wbs.getSelectionModel().getSelected().get("pk");
+	var sm = grid_wbs.getSelectionModel();
+	var sel = sm.getSelected();
+	if (sm.hasSelection()){
+		Ext.Msg.show({
+			title: 'Remove Risk',
+			buttons: Ext.MessageBox.YESNO,
+			msg: 'Remove <b>'+sel.data.description+'</b>?',
+			closable: false, 
+			fn: function(btn){
+				if (btn == 'yes'){
+						Ext.Ajax.request({
+        url: "/WBS/" + project_number + "/" + wbsId + "/" + "Delete/",
+        method: "POST",
+        params: {"pk": wbsId
+            
+        },
+        failure: function (response) {
+            Ext.Msg.alert('Error', response.responseText);
+        },
+        success: function (response) {
+            Ext.Msg.alert('Success', sel.data.description + " has been removed");
+           Ext.getCmp("gid_wbs").store.load();
+           Ext.getCmp("risk_detail").body.update('Please select a Work Item to see more details');
+           }
+    });
+				}
+			}
+		});
+	};
+}
+
 var st_wbs = new Ext.data.GroupingStore({
 	proxy: new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/" }),
 	reader: new Ext.data.JsonReader({ root: "", fields: [
@@ -465,7 +530,7 @@ var st_wbs = new Ext.data.GroupingStore({
 
 var btn_add_wbs = { iconCls: 'icon-add', text: 'Add Work Item', handler: add_wbs }
 var btn_update_wbs = { iconCls: 'icon-update', text: 'Update Work Item', handler: null }
-var btn_delete_wbs = { iconCls: 'icon-complete', text: 'Delete Work Item', handler: null }
+var btn_delete_wbs = { iconCls: 'icon-complete', text: 'Delete Work Item', handler: delete_wbs }
 var btn_add_project_stage = { iconCls: 'icon-add', text: 'Add Project Stage', handler: null }
 var btn_add_engineering_day = { iconCls: 'icon-add', text: 'Add Engineering Day', handler: null }
 
@@ -605,6 +670,42 @@ var edit_issue = function(b,e){
 
 }
 
+
+// Delete Issue
+function delete_issue() {
+	var issueId = grid_issues.getSelectionModel().getSelected().get("pk");
+	var sm = grid_issues.getSelectionModel();
+	var sel = sm.getSelected();
+	if (sm.hasSelection()){
+		Ext.Msg.show({
+			title: 'Remove Issue',
+			buttons: Ext.MessageBox.YESNO,
+			msg: 'Remove <b>'+sel.data.description+'</b>?',
+			closable: false, 
+			fn: function(btn){
+				if (btn == 'yes'){
+						Ext.Ajax.request({
+        url: "/Issues/" + project_number + "/" + issueId + "/" + "Delete/",
+        method: "POST",
+        params: {"pk": issueId
+            
+        },
+        failure: function (response) {
+            Ext.Msg.alert('Error', response.responseText);
+        },
+        success: function (response) {
+            Ext.Msg.alert('Success', sel.data.description + " has been removed");
+           Ext.getCmp("grid_issues").store.load();
+           Ext.getCmp("issue_detail").body.update('Please select a issue to see more details');
+           }
+    });
+				}
+			}
+		});
+	};
+}
+
+
 var st_issues = new Ext.data.GroupingStore({
 	proxy: new Ext.data.HttpProxy({ url: "/Issues/" + project_number + "/" }),
 	reader: new Ext.data.JsonReader({ root: "", fields: [
@@ -625,7 +726,7 @@ var st_issues = new Ext.data.GroupingStore({
 });
 
 var btn_update_issues = { iconCls: 'icon-update', text: 'Update Issue', handler: edit_issue }
-var btn_delete_issues = { iconCls: 'icon-complete', text: 'Delete Issue', handler: edit_issue }
+var btn_delete_issues = { iconCls: 'icon-complete', text: 'Delete Issue', handler: delete_issue }
 
 var grid_issues = new Ext.grid.GridPanel({
 	store: st_issues,
@@ -750,6 +851,41 @@ var edit_lessons = function(b,e){
 }
 
 
+// Delete Lessons
+function delete_lesson() {
+	var lessonId = grid_lessons.getSelectionModel().getSelected().get("pk");
+	var sm = grid_lessons.getSelectionModel();
+	var sel = sm.getSelected();
+	if (sm.hasSelection()){
+		Ext.Msg.show({
+			title: 'Remove Lesson',
+			buttons: Ext.MessageBox.YESNO,
+			msg: 'Remove <b>'+sel.data.description+'</b>?',
+			closable: false, 
+			fn: function(btn){
+				if (btn == 'yes'){
+						Ext.Ajax.request({
+        url: "/Lessons/" + project_number + "/" + lessonId + "/Delete/",
+        method: "POST",
+        params: {"pk": lessonId
+            
+        },
+        failure: function (response) {
+            Ext.Msg.alert('Error', response.responseText);
+        },
+        success: function (response) {
+            Ext.Msg.alert('Success', sel.data.description + " has been removed");
+           Ext.getCmp("grid_lessons").store.load();
+           Ext.getCmp("lesson_detail").body.update('Please select a lesson to see more details');
+           }
+    });
+				}
+			}
+		});
+	};
+}
+
+
 var st_lessons = new Ext.data.Store({
 	proxy: new Ext.data.HttpProxy({ url: "/Lessons/" + project_number + "/" }),
 	reader: new Ext.data.JsonReader({ root: "", fields: [
@@ -763,7 +899,7 @@ var st_lessons = new Ext.data.Store({
 });
 
 var btn_update_lesson = { iconCls: 'icon-update', text: 'Update Lesson', handler: edit_lessons }
-var btn_delete_lesson = { iconCls: 'icon-complete', text: 'Delete Lesson', handler: edit_lessons }
+var btn_delete_lesson = { iconCls: 'icon-complete', text: 'Delete Lesson', handler: delete_lesson }
 
 var grid_lessons = new Ext.grid.GridPanel({
 	store: st_lessons,
@@ -868,6 +1004,40 @@ var add_report = function(b,e){
 	window_report.show();
 }
 
+// Delete report
+function delete_report() {
+	var reportId = grid_report.getSelectionModel().getSelected().get("pk");
+	var sm = grid_report.getSelectionModel();
+	var sel = sm.getSelected();
+	if (sm.hasSelection()){
+		Ext.Msg.show({
+			title: 'Remove Report',
+			buttons: Ext.MessageBox.YESNO,
+			msg: 'Remove <b>'+sel.data.summary +'</b>?',
+			closable: false, 
+			fn: function(btn){
+				if (btn == 'yes'){
+						Ext.Ajax.request({
+        url: "/Reoorts/" + project_number + "/" + reportId + "/Delete/",
+        method: "POST",
+        params: {"pk": reportId
+            
+        },
+        failure: function (response) {
+            Ext.Msg.alert('Error', response.responseText);
+        },
+        success: function (response) {
+            Ext.Msg.alert('Success', sel.data.description + " has been removed");
+           Ext.getCmp("grid_reports").store.load();
+           Ext.getCmp("report_detail").body.update('Please select a report to see more details');
+           }
+    });
+				}
+			}
+		});
+	};
+}
+
 
 var st_report = new Ext.data.Store({
 	proxy: new Ext.data.HttpProxy({ url: "/Projects/" + project_number + "/Reports/" }),
@@ -882,7 +1052,7 @@ var st_report = new Ext.data.Store({
 });
 
 var btn_update_report = { iconCls: 'icon-update', text: 'Update Report', handler: edit_report }
-var btn_delete_report = { iconCls: 'icon-complete', text: 'Delete Report', handler: edit_report }
+var btn_delete_report = { iconCls: 'icon-complete', text: 'Delete Report', handler: delete_report }
 
 var grid_report = new Ext.grid.GridPanel({
 	store: st_report,
