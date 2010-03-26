@@ -12,7 +12,7 @@ from django.db.models import Q
 from projects.models import *
 from projects.views import updateLog
 from lessons.forms import *
-from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success
+from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success, handle_generic_error
 
 
 @login_required
@@ -52,13 +52,16 @@ def edit_lesson(request, project_number, lesson_id):
 
 
 @login_required
-def deleteLessonLearnt(request, projectNumber, lessonSlug):
+def delete_lesson(request, project_number, lesson_id):
 
-	project = Project.objects.get(projectNumber=projectNumber)
-	lesson = LessonLearnt.objects.get(slug=lessonSlug)
-	project.lessonsLearnt.remove(lesson)
-	request.user.message_set.create(message='''Lesson %s Deleted''' % lesson.slug )
-	return HttpResponseRedirect('/Projects/%s/LessonsLearnt' % project.projectNumber)
+	project = Project.objects.get(project_number=project_number)
+	try:
+		lesson = LessonLearnt.objects.get(id=lesson_id)
+	except Lesson.DoesNotExist:
+		return HttpResponse( handle_generic_error("Lesson does not exist"))
+	project.lessons_learnt.remove(lesson)
+	project.save()
+	return HttpResponse( return_json_success() )
 	
 			
 
