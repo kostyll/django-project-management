@@ -252,19 +252,18 @@ var add_risk = function(b,e){
                        		params: { probability: Ext.getCmp("probability").getValue(), impact: Ext.getCmp("impact").getValue()  },
 									
 			success: function(f,a){
-			Ext.Msg.alert('Success', 'Risks Updated', 
+						Ext.Msg.alert('Success', 'Risks Updated', 
                            function() { 
                               	window_risks.destroy(); 
                               	Ext.getCmp("grid_risks").store.load();
                                	Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
-                                            	});
+                           	});
 									    },  
-                                            failure: function(f,a){
-                                            	window_risks.destroy();
-                                           Ext.Msg.alert('Warning', a.result.errormsg);
-                                            }
-                                        });
-                                        }},
+           failure: function(f,a){
+                Ext.Msg.alert('Warning', a.result.errormsg);
+           }
+                             });
+            }},
 							
 											 { text: 'Close', handler: function(){ window_risks.destroy(); } }],
 											 listeners: { 
