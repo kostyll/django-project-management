@@ -337,9 +337,7 @@ function delete_risk() {
 						Ext.Ajax.request({
         url: "/Risks/" + project_number + "/" + riskId + "/" + "Delete/",
         method: "POST",
-        params: {"pk": riskId
-            
-        },
+        params: {"pk": riskId },
         failure: function (response) {
             Ext.Msg.alert('Error', response.responseText);
         },
@@ -507,6 +505,7 @@ function delete_wbs() {
 var st_wbs = new Ext.data.GroupingStore({
 	proxy: new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/" }),
 	reader: new Ext.data.JsonReader({ root: "", fields: [
+		{ name: "pk", mapping: "pk" },
 		{ name: "created_date", mapping: "fields.created_date" },
 		{ name: "modified_date", mapping: "fields.modified_date" },
 		{ name: "skill_set", mapping: "fields.skill_set.fields.skill" },
@@ -613,8 +612,7 @@ var issue_fields = [
 	{ xtype: "combo", fieldLabel: "Status", hiddenName: "status", name: "status", lazyInit: false, store: st_issue_status, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" },
 	{ xtype: "combo", fieldLabel: "Priority", hiddenName: "priority", name: "priority", lazyInit: false, store: st_issue_priority, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" }, 
 	{ xtype: "textfield", fieldLabel: "Related RFC", name: "related_rfc" },
-	{ xtype: "textfield", fieldLabel: "Related Helpdesk", name: "related_helpdesk" },
-	{ xtype: "hidden", fieldLabel: "Author", name: "author" }
+	{ xtype: "textfield", fieldLabel: "Related Helpdesk", name: "related_helpdesk" }
 	]
 
 var add_issue = function(b,e){
