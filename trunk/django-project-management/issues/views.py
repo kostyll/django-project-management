@@ -10,7 +10,7 @@ from django.db.models import Q
 from django.template.defaultfilters import slugify
 from projects.models import *
 from projects.views import updateLog
-from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success
+from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success, handle_generic_error
 from issues.forms import *
 import time
 
@@ -51,15 +51,18 @@ def edit_issue(request, project_number, issue_id):
 			return HttpResponse( handle_form_errors(form.errors))
 
 @login_required
-def deleteIssue(request, projectNumber, issueSlug):
+def delete_issue(request, project_number, issue_id):
 
-	project = Project.objects.get(projectNumber=projectNumber)
-	issue = Issue.objects.get(slug=issueSlug)
-	project.issues.remove(issue)
-	request.user.message_set.create(message='''Issue %s Deleted''' % issue.slug)
-	updateLog(request, projectNumber, '''Issue %s Deleted''' % issue.slug)
-	return HttpResponseRedirect('/Projects/%s/Issues' % project.projectNumber)
+	project = Project.objects.get(project_number=project_number)
+	check_project_read_acl(project, request.user)	# Will return Http404 if user isn't allowed to view project
 	
+	try:
+		issue = Issue.objects.get(id=issue_id)
+	except:
+		return HttpResponse( handle_generic_error("Issue does not exist"))
+	project.issues.remove(issue)
+	project.save()
+	return HttpResponse( return_json_success() )
 			
 	
 @login_required
