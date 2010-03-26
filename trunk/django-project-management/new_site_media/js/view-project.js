@@ -417,8 +417,24 @@ var wbs_fields = [
 		{ xtype: "textarea", fieldLabel: "History", name: "history", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH }
 ]
 var add_wbs = function(b,e){
-	var form_wbs_add = new Ext.form.FormPanel({ url: "/WBS/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: wbs_fields});
-
+	var form_add_wbs = new Ext.form.FormPanel({ url: "/WBS/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: wbs_fields});
+	var window_wbs = new Ext.Window({autoHeight: true, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Work Item", items: [ form_add_wbs ],
+							buttons: [	{ 	text:'Submit', 
+											handler: function(){
+												form_add_wbs.getForm().submit({
+													success: function(f,a){
+                                            		Ext.Msg.alert('Success', 'Work Item Added');
+                                            		window_wbs.hide(); 
+                                            		Ext.getCmp("grid_wbs").store.load();
+                                            		Ext.getCmp("wbs_detail").body.update('Please select a Work Item to see more details');
+                                            		},  
+                                            		failure: function(f,a){
+                                            		Ext.Msg.alert('Warning', a.result.errormsg);
+													}
+												});
+										}}
+										, { text: 'Close', handler: function(){ window_wbs.hide(); } }] });
+	window_wbs.show();
 
 }
 
@@ -447,13 +463,15 @@ var st_wbs = new Ext.data.GroupingStore({
 });
 
 
-var btn_add_wbs = { iconCls: 'icon-add', text: 'Add Work Item', handler: null }
+var btn_add_wbs = { iconCls: 'icon-add', text: 'Add Work Item', handler: add_wbs }
 var btn_update_wbs = { iconCls: 'icon-update', text: 'Update Work Item', handler: null }
 var btn_delete_wbs = { iconCls: 'icon-complete', text: 'Delete Work Item', handler: null }
+var btn_add_project_stage = { iconCls: 'icon-add', text: 'Add Project Stage', handler: null }
 var btn_add_engineering_day = { iconCls: 'icon-add', text: 'Add Engineering Day', handler: null }
 
 var grid_wbs = new Ext.grid.GridPanel({
         store: st_wbs,
+		id: "grid_wbs",
         columns: [
             {header: "WBS Number", dataIndex: 'wbs_number'},
             {header: "Created Date", dataIndex: 'created_date', hidden: true, sortable: true },
@@ -470,7 +488,7 @@ var grid_wbs = new Ext.grid.GridPanel({
             {header: "Finish Date", dataIndex: 'finish_date', hidden: true, sortable: true },
             {header: "Cost", dataIndex: 'cost'}
 		],
-        tbar: [ btn_add_wbs, btn_update_wbs, btn_delete_wbs, btn_add_engineering_day ],
+        tbar: [ btn_add_project_stage, btn_add_wbs, btn_update_wbs, btn_delete_wbs, btn_add_engineering_day ],
 		sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
 		view: new Ext.grid.GroupingView({
             forceFit:true,
@@ -956,7 +974,7 @@ var edit_project_initiation = function(b,e){
 		{ xtype: "textarea", fieldLabel: "Exclusions", name: "exclusions", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
 		{ xtype: "textarea", fieldLabel: "Assumptions", name: "assumptions", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH } ]
 	var project_initiation_form = new Ext.form.FormPanel({url: "/Projects/" + project_number + "/Edit/EditPID/", bodyStyle: "padding: 15px;", autoScroll: true, items: project_initiation_fields });
-	project_initiation_form.getForm().load({ url: "/xhr/" + project_number + "/edit_pid", method: "GET" });
+	project_initiation_form.getForm().load({ url: "/xhr/" + project_number + "/edit_pid/", method: "GET" });
 	var pid_win = new Ext.Window({width: 620, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Edit Project Initiation", items: [ project_initiation_form ],
 							buttons: [ { text: 'Save',
                                          handler: function(){
