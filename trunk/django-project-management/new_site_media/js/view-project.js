@@ -1185,7 +1185,9 @@ var edit_project_initiation = function(b,e){
 		{ xtype: "textarea", fieldLabel: "Business Benefits", name: "business_benefits", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
 		{ xtype: "textarea", fieldLabel: "Project Scope", name: "project_scope", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
 		{ xtype: "textarea", fieldLabel: "Exclusions", name: "exclusions", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "textarea", fieldLabel: "Assumptions", name: "assumptions", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH } ]
+		{ xtype: "textarea", fieldLabel: "Assumptions", name: "assumptions", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
+		{ xtype: "textarea", fieldLabel: "Communications Plan", name: "communications_plan", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
+		{ xtype: "textarea", fieldLabel: "Quality Plan", name: "quality_plan", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH }]
 	var project_initiation_form = new Ext.form.FormPanel({url: "/Projects/" + project_number + "/Edit/EditPID/", bodyStyle: "padding: 15px;", autoScroll: true, items: project_initiation_fields });
 	project_initiation_form.getForm().load({ url: "/xhr/" + project_number + "/edit_pid/", method: "GET" });
 	var pid_win = new Ext.Window({width: 620, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Edit Project Initiation", items: [ project_initiation_form ],

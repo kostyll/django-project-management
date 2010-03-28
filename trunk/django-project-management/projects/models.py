@@ -89,6 +89,8 @@ class Project(models.Model):
 	project_scope = models.TextField(max_length=10240, blank=True)
 	exclusions = models.TextField(max_length=10240, blank=True)
 	assumptions = models.TextField(max_length=10240, blank=True)
+	quality_plan = models.TextField(max_length=10240, blank=True)
+	communications_plan = models.TextField(max_length=10240, blank=True)
 	active = models.BooleanField(default=True)
 	created_date = models.DateTimeField(auto_now_add=True)
 	modified_date = models.DateTimeField(auto_now=True)

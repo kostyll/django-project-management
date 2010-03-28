@@ -12,7 +12,8 @@ class EditPID(ModelForm):
 	class Meta:
 		model = Project
 		fields = ('project_name', 'project_number', 'project_status', 'company', 'project_manager', 'team_managers', 'project_sponsor', 'project_description',
-					'business_case', 'business_benefits', 'project_scope', 'exclusions', 'assumptions')
+					'business_case', 'business_benefits', 'project_scope', 'exclusions', 'assumptions',
+					'communications_plan', 'quality_plan')
 
 
 class DialogEditCompany(ModelForm):
