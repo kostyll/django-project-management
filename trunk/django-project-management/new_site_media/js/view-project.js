@@ -1149,7 +1149,7 @@ var edit_project_initiation = function(b,e){
 		autoLoad: true
 	});
 
-	var st_project_status = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[0,"Proposed"],[1,"Draft"],[2,"Active"],[3,"On Hold"],[4,"Completed"],[5,"Archived"]]});
+	var st_project_status = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[0,"Proposed"],[1,"Draft"],[2,"Active"],[3,"On Hold"],[4,"Completed"],[5,"Archived"],[6,"Informational"]]});
 
 	var project_initiation_fields = [
 		{ xtype: "textfield", fieldLabel: "Project Name", name: "project_name" },
@@ -1210,7 +1210,7 @@ var edit_project_initiation = function(b,e){
                                          	params: { paramsWithArrayJson: jsondata  },
                                             success: function(f,a){
                                             		
-                                            Ext.Msg.alert('Success', 'Project Initiation Update', function() { pid_win.hide(); window.location.reload();});
+                                            Ext.Msg.alert('Success', 'Project Initiation Updated', function() { pid_win.hide(); window.location.reload();});
 					    },  
                                             failure: function(f,a){
                                             Ext.Msg.alert('Warning', 'An Error occured');

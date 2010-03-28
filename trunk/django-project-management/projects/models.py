@@ -71,6 +71,7 @@ class Project(models.Model):
 					(3, 'On hold'),
 					(4, 'Completed'),
 					(5, 'Archived'),
+					(6, 'Informational'),
 	)
 
 	''' Django object to describe a Project and relationships to all it's other data '''
