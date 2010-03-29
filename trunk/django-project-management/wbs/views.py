@@ -95,6 +95,15 @@ def add_work_item(request, project_number):
 		else:
 			return HttpResponse( handle_form_errors(form.errors))
 	
+@login_required
+def delete_work_item(request, project_number, wbs_id):
+	project = get_object_or_404(Project, project_number=project_number)
+	check_project_write_acl(project, request.user)	# Will return Http404 if user isn't allowed to view project
+	work_item = WorkItem.objects.get(id=wbs_id)
+
+	project.work_items.remove(work_item)
+	project.save()
+	return HttpResponse( return_json_success() )
 
 @login_required
 def edit_work_item(request, project_number, wbs_id):

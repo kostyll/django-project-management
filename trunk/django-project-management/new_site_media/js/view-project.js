@@ -510,20 +510,20 @@ var add_wbs = function(b,e){
 }
 
 // Delete Work Item
-function delete_wbs() {
+var delete_wbs = function(b,e){
 	var wbsId = grid_wbs.getSelectionModel().getSelected().get("pk");
 	var sm = grid_wbs.getSelectionModel();
 	var sel = sm.getSelected();
 	if (sm.hasSelection()){
 		Ext.Msg.show({
-			title: 'Remove Risk',
+			title: 'Remove Work Item',
 			buttons: Ext.MessageBox.YESNO,
 			msg: 'Remove <b>'+sel.data.description+'</b>?',
 			closable: false, 
 			fn: function(btn){
 				if (btn == 'yes'){
 						Ext.Ajax.request({
-        url: "/WBS/" + project_number + "/" + wbsId + "/" + "Delete/",
+        url: "/WBS/" + project_number + "/" + wbsId + "/Delete/",
         method: "POST",
         params: {"pk": wbsId
             
