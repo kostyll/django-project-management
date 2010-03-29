@@ -1,6 +1,7 @@
 # Create your views here.
 import datetime
 import time
+import simplejson as json
 
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
@@ -130,16 +131,11 @@ def edit_work_item(request, project_number, wbs_id):
 					update_name = request.user.get_full_name()
 				t.history = '''\n\n------Updated by %s on %s------\n\n%s\n\n%s''' % ( update_name, time.strftime("%Y-%m-%d %H:%M"), form.cleaned_data.get('update'), work_item.history )
 
-
-
 			t.save()
-			return HttpResponseRedirect('''/WBS/%s/Edit/''' % project.project_number)
+			return HttpResponse( return_json_success() )
 		else:
-			print form.errors
+			return HttpResponse( handle_form_errors(form.errors))
 
-	else:
-		form = eval(form_type)(project, instance=work_item)
-		return render_to_response('wbs/edit_work_item.html', {'project': project, 'work_item': work_item, 'form': form, 'action': '''/WBS/%s/%s/Edit/''' % ( project.project_number, work_item.id ) }, context_instance=RequestContext(request))
 			
 			
 @login_required
@@ -223,4 +219,14 @@ def view_wbs(request, project_number):
 	
 @login_required
 def view_work_item(request, project_number, wbs_id):
+	project = get_object_or_404(Project, project_number=project_number)
+	check_project_read_acl(project, request.user)	# Will return Http404 if user isn't allowed to view project
+	work_item = WorkItem.objects.get(id=wbs_id)
+	JSONSerializer = serializers.get_serializer('json')
+	j = JSONSerializer()
+	if work_item.start_date != None: work_item.start_date = work_item.start_date.strftime("%m/%d/%Y")
+	if work_item.finish_date != None: work_item.finish_date = work_item.finish_date.strftime("%m/%d/%Y")
+	j.serialize([work_item], fields=('skill_set', 'project_stage', 'title', 'description', 'depends', 'number_days', 'owner', 'percent_complete', 'start_date', 'finish_date', 'wbs_number', 'cost', 'history', 'engineering_days'))
+	return HttpResponse( '''{ success: true, data: %s }''' % json.dumps(j.objects[0]['fields']))
+
 	return HttpResponse( serializers.serialize('json', WorkItem.objects.filter(id=wbs_id), relations=('author', 'owner')))	
