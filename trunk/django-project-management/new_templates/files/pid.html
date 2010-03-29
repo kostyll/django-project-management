@@ -54,6 +54,8 @@
 {{ project.project_scope|linebreaks }}
 <br>
 
+				
+
 <h3>Deliverables</h3>
 {% for d in project.deliverables.all %}
 <br>
@@ -89,10 +91,31 @@
 <h3>Assumptions</h3>
 {{ project.assumptions|linebreaks }}
 <br>
-<h3>Communications Plan</h3>
+<h3>Stage Plan</h3>
+
+<div class="definition">
+Stages are partitions of the project with decision points.A stage is a
+collection of activities and
+products whose delivery is managed as a unit. As such it is a subset of the
+project and in
+PRINCE2 terms it is the element of work that the Project Manager is
+managing on behalf of
+the Project Board at any one time.</div>
+
+{% if project.stage_plan.all %}
+	{% for stage in project.stage_plan.all %}
+		<h4>{{ stage.stage }}</h4>
+		<br>
+		{{ stage.description|linebreaks }}
+		<br>
+	{% endfor %}
+{% else %}
+	No Stage plan defined 
+{% endif %}
+<h2>Communications Plan</h2>
 {{ project.communications_plan|linebreaks }}
 <br>
-<h3>Quality Plan</h3>
+<h2>Quality Plan</h2>
 {{ project.quality_plan|linebreaks }}
 <br>
 <h2>Risk Overview</h2>
