@@ -2,6 +2,8 @@ from django.conf.urls.defaults import *
 from django.contrib.auth.views import *
 
 urlpatterns = patterns('wbs.views',
+	(r'(?P<project_number>[-\w\./\s]+)/StagePlan/Add/$', 'add_project_stage'),
+	(r'(?P<project_number>[-\w\./\s]+)/StagePlan/$', 'view_stage_plan'),
 	(r'(?P<project_number>[-\w\./\s]+)/(?P<wbs_id>[-\w\./\s]+)/Edit/$', 'edit_work_item'),
 	(r'(?P<project_number>[-\w\./\s]+)/Edit/$', 'edit_wbs'),
 	(r'(?P<project_number>[-\w\./\s]+)/Add/$', 'add_work_item'),

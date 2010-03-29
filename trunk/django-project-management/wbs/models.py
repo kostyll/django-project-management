@@ -12,12 +12,17 @@ class SkillSet(models.Model):
 	def __str__(self):
 		return self.skill
 
-class ProjectPhase(models.Model):
+class ProjectStage(models.Model):
 
-	phase = models.CharField('Project Phase', max_length=255)
+	stage = models.CharField('Project Stage', max_length=255)
+	description = models.TextField()
+	stage_number = models.IntegerField()
 	
 	def __str__(self):
-		return self.phase
+		return self.stage
+
+	class Meta:
+		ordering = ['stage_number']
 
 class EngineeringDay(models.Model):
 
@@ -63,7 +68,7 @@ class WorkItem(models.Model):
 	created_date = models.DateTimeField(auto_now_add=True)
 	modified_date = models.DateTimeField(auto_now=True)
 	skill_set = models.ForeignKey(SkillSet, verbose_name='Skill set required')
-	project_phase = models.ForeignKey(ProjectPhase, verbose_name='Project Phase', related_name='work_items')
+	project_stage = models.ForeignKey(ProjectStage, verbose_name='Project Stage', related_name='work_items', blank=True, null=True)
 	author = models.ForeignKey(User, related_name='authored_tasks')
 	title = models.CharField('Title', max_length=255)
 	description = models.TextField('Description')

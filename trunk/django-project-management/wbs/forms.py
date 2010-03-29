@@ -10,6 +10,12 @@ class WBSUpdateField(CharField):
 	def clean(self, value):
 		return '''%s''' % value
 
+class WBSProjectStage(ModelForm):
+
+	class Meta:
+		model = ProjectStage
+		
+
 class WBSReorderForm(ModelForm):
 
 	class Meta:

@@ -456,17 +456,20 @@ var st_skillset = new Ext.data.Store({
 	autoLoad: true
 });
 
-var st_project_phase = new Ext.data.Store({
-	proxy: new Ext.data.HttpProxy({ url: "/Projects/" + project_number + "/Phases/" }),
-	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk",mapping:"pk"},{name:"phase",mapping:"fields.project_phase.fields.phase"}]}),
-	autoLoad: true
-});
 
+// Stage Plan
+var st_stage_plan = new Ext.data.Store({
+	proxy: new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/StagePlan/" }),
+	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk",mapping:"pk"},{name:"stage",mapping:"fields.stage"},{name:"description",mapping:"fields.description"},{name:"stage_number",mapping:"fields.stage_number"}]}),
+	autoLoad: true,
+	id: "st_stage_plan"
+});
 
 
 var wbs_fields = [ 
 		{ xtype: "combo", fieldLabel: "Skill Set", name: "skill_set", hiddenName: "skill_set", lazyInit: false, store: st_skillset, mode: "local", displayField: "skill", valueField: "pk", triggerAction: "all" },
 		{ xtype: "textfield", fieldLabel: "Title", name: "title" },
+		{ xtype: "combo", fieldLabel: "Project Stage", hiddenName: "project_stage", lazyInit: false, store: st_stage_plan, mode: "local", displayField: "stage", valueField: "pk", triggerAction: "all" },
 		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
 		{ xtype: "textfield", fieldLabel: "Number of Days", name: "number_of_days" },
 		{ xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
@@ -478,6 +481,12 @@ var wbs_fields = [
 		{ xtype: "textarea", fieldLabel: "History", name: "history", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
 		{ xtype: "textfield", fieldLabel: "Status", name: "get_work_item_status"}
 ]
+
+var stage_plan_fields = [
+		{ xtype: "textfield", fieldLabel: "Stage Number", name: "stage_number" },
+		{ xtype: "textfield", fieldLabel: "Stage", name: "stage" },
+		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH }]
+
 var add_wbs = function(b,e){
 	var form_add_wbs = new Ext.form.FormPanel({ url: "/WBS/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: wbs_fields});
 	var window_wbs = new Ext.Window({autoHeight: true, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Work Item", items: [ form_add_wbs ],
@@ -534,6 +543,31 @@ function delete_wbs() {
 	};
 }
 
+
+var add_project_stage = function(b,e){
+	var form_add_project_stage = new Ext.form.FormPanel({ url: "/WBS/" + project_number + "/StagePlan/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: stage_plan_fields });
+
+	var window_stage_plan = new Ext.Window({autoHeight: true,  autoWidth: true, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Project Stage", items: [ form_add_project_stage ],
+							buttons: [	{ 	text:'Submit', 
+											handler: function(){
+												form_add_project_stage.getForm().submit({
+													success: function(f,a){
+                                            		Ext.Msg.alert('Success', 'Project Stage Added');
+                                            		window_stage_plan.hide(); 
+                                            		st_stage_plan.load();
+                                            		},  
+                                            		failure: function(f,a){
+                                            		Ext.Msg.alert('Warning', a.result.errormsg);
+													}
+												});
+										}}
+										, { text: 'Close', handler: function(){ window_stage_plan.hide(); } }] });
+	window_stage_plan.show();
+
+}
+
+
+
 var st_wbs = new Ext.data.GroupingStore({
 	proxy: new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/" }),
 	reader: new Ext.data.JsonReader({ root: "", fields: [
@@ -541,7 +575,7 @@ var st_wbs = new Ext.data.GroupingStore({
 		{ name: "created_date", mapping: "fields.created_date" },
 		{ name: "modified_date", mapping: "fields.modified_date" },
 		{ name: "skill_set", mapping: "fields.skill_set.fields.skill" },
-		{ name: "project_phase", mapping: "fields.project_phase.fields.phase" },
+		{ name: "project_stage", mapping: "fields.project_stage.fields.stage" },
 		{ name: "author", mapping: "fields.author.fields.username" },
 		{ name: "title", mapping: "fields.title" },
 		{ name: "description", mapping: "fields.description" },
@@ -563,10 +597,11 @@ var st_wbs = new Ext.data.GroupingStore({
 });
 
 
+
 var btn_add_wbs = { iconCls: 'icon-add', text: 'Add Work Item', handler: add_wbs }
 var btn_update_wbs = { iconCls: 'icon-update', text: 'Update Work Item', handler: null }
 var btn_delete_wbs = { iconCls: 'icon-complete', text: 'Delete Work Item', handler: delete_wbs }
-var btn_add_project_stage = { iconCls: 'icon-add', text: 'Add Project Stage', handler: null }
+var btn_add_project_stage = { iconCls: 'icon-add', text: 'Add Project Stage', handler: add_project_stage }
 var btn_add_engineering_day = { iconCls: 'icon-add', text: 'Add Engineering Day', handler: null }
 
 var grid_wbs = new Ext.grid.GridPanel({

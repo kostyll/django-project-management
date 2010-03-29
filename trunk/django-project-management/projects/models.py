@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User, Group
 from lessons.models import LessonLearnt
 from risks.models import Risk
-from wbs.models import WorkItem, SkillSet
+from wbs.models import WorkItem, SkillSet, ProjectStage
 from issues.models import Issue
 from deliverables.models import Deliverable
 from change_management.models import RequestForChange
@@ -106,6 +106,8 @@ class Project(models.Model):
 	files = models.ManyToManyField(ProjectFile, null=True, blank=True, related_name='project_files')
 	work_item_order = models.CharField('Order of Work Items', max_length=1024, blank=True)
 	executive_summary = models.ManyToManyField(ExecutiveSummary, blank=True, null=True, related_name='project')
+	stage_plan = models.ManyToManyField(ProjectStage, blank=True, null=True, related_name='project')
+
 
 	def __str__(self):
 		return self.project_name

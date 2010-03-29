@@ -14,7 +14,7 @@ from projects.models import *
 from wbs.models import *
 from wbs.forms import *
 from rota.models import RotaItem
-from projects.misc import check_project_read_acl, check_project_write_acl
+from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success, handle_generic_error
 
 @login_required
 def edit_wbs(request, project_number):
@@ -31,6 +31,31 @@ def edit_wbs(request, project_number):
 
 	else:
 		return render_to_response('wbs/edit_wbs.html', {'project': project, 'forms': forms}, context_instance=RequestContext(request))
+
+@login_required
+def add_project_stage(request, project_number):
+
+	project = get_object_or_404(Project, project_number=project_number)
+	check_project_write_acl(project, request.user)	# Will return Http404 if user isn't allowed to view project
+	
+	if request.method == 'POST':
+		form = WBSProjectStage(request.POST)
+		if form.is_valid():
+			t = form.save()
+			project.stage_plan.add(t)
+			project.save()
+			return HttpResponse( return_json_success() )
+		else:
+			return HttpResponse( handle_form_errors(form.errors))
+
+@login_required
+def view_stage_plan(request, project_number):
+
+	project = get_object_or_404(Project, project_number=project_number)
+	check_project_write_acl(project, request.user)	# Will return Http404 if user isn't allowed to view project
+	return HttpResponse( serializers.serialize('json', project.stage_plan.all()))
+			
+	
 
 @login_required
 def reorder_wbs(request, project_number):
@@ -66,14 +91,10 @@ def add_work_item(request, project_number):
 			t.save()
 			project.work_items.add(t)
 			project.save()
-			return HttpResponseRedirect('''/WBS/%s/Edit/''' % project.project_number)
+			return HttpResponse( return_json_success() )
 		else:
-			pass
+			return HttpResponse( handle_form_errors(form.errors))
 	
-	else:
-		form = WBSForm(project)
-		return render_to_response('wbs/edit_work_item.html', {'project': project, 'form': form, 'action': '''/WBS/%s/Add/''' % project.project_number }, context_instance=RequestContext(request))
-		pass
 
 @login_required
 def edit_work_item(request, project_number, wbs_id):
@@ -189,7 +210,7 @@ def view_wbs(request, project_number):
 	project = get_object_or_404(Project, project_number=project_number)
 	check_project_read_acl(project, request.user)	# Will return Http404 if user isn't allowed to view project
 	
-	return HttpResponse( serializers.serialize('json', project.work_items.all(), relations=('skill_set','project_phase','author','owner'), extras=('get_work_item_status',)))
+	return HttpResponse( serializers.serialize('json', project.work_items.all(), relations=('skill_set','project_stage','author','owner'), extras=('get_work_item_status',)))
 	
 @login_required
 def view_work_item(request, project_number, wbs_id):

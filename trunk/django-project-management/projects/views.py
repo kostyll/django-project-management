@@ -21,7 +21,7 @@ from backends.authlib import *
 from backends.pdfexport import render_to_pdf
 from rota.views import calculate_week
 from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success, handle_generic_error
-from wbs.models import ProjectPhase
+from wbs.models import ProjectStage
 
 @login_required
 def home_page(request):
