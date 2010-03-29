@@ -475,7 +475,8 @@ var wbs_fields = [
 		{ xtype: "datefield", fieldLable: "Finish Date", name: "finish_date" },
 		{ xtype: "textfield", fieldLabel: "WBS Number", name: "wbs_number" },
 		{ xtype: "textfield", fieldLabel: "Cost", name: "cost" },
-		{ xtype: "textarea", fieldLabel: "History", name: "history", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH }
+		{ xtype: "textarea", fieldLabel: "History", name: "history", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
+		{ xtype: "textfield", fieldLabel: "Status", name: "get_work_item_status"}
 ]
 var add_wbs = function(b,e){
 	var form_add_wbs = new Ext.form.FormPanel({ url: "/WBS/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: wbs_fields});
@@ -552,7 +553,10 @@ var st_wbs = new Ext.data.GroupingStore({
 		{ name: "wbs_number", mapping: "fields.wbs_number" },
 		{ name: "cost", mapping: "fields.cost" },
 		{ name: "history", mapping: "fields.history" },
-		{ name: "engineering_days", mapping: "fields.engineering_days" } ]}),
+		{ name: "engineering_days", mapping: "fields.engineering_days" },
+		{ name: "get_work_item_status", mapping: "fields.get_work_item_status" }
+		
+		 ]}),
 	autoLoad: true,
 	groupField: 'project_phase',
 	sortInfo:{field: 'wbs_number', direction: "ASC"}
@@ -567,7 +571,7 @@ var btn_add_engineering_day = { iconCls: 'icon-add', text: 'Add Engineering Day'
 
 var grid_wbs = new Ext.grid.GridPanel({
         store: st_wbs,
-		id: "grid_wbs",
+        id: "grid_wbs",
         columns: [
             {header: "WBS Number", dataIndex: 'wbs_number'},
             {header: "Created Date", dataIndex: 'created_date', hidden: true, sortable: true },
@@ -582,12 +586,38 @@ var grid_wbs = new Ext.grid.GridPanel({
             {header: "Percent Complete", dataIndex: 'percent_complete', sortable: true },
             {header: "Start Date", dataIndex: 'start_date', hidden: true, sortable: true },
             {header: "Finish Date", dataIndex: 'finish_date', hidden: true, sortable: true },
+            {header: "Work Status", dataIndex: 'get_work_item_status', hidden: true, sortable: true },
             {header: "Cost", dataIndex: 'cost'}
 		],
+//        viewConfig: {
+//   				getRowClass: function(rec, rowIdx, params, store) {
+//      		return rec.get('get_work_item_status').value;
+//    			}
+//				},
         tbar: [ btn_add_project_stage, btn_add_wbs, btn_update_wbs, btn_delete_wbs, btn_add_engineering_day ],
 		sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
 		view: new Ext.grid.GroupingView({
             forceFit:true,
+            getRowClass: function(record, rowIndex, rp, ds){
+								return record.json.extras.get_work_item_status
+								console.debug(grid_wbs.grid.getView().getRow(rowIndex).getRowClass());
+    },
+    onRowSelect: function(row){
+this.addRowClass(row, this.getRowClass(this.grid.getStore().getAt(row)) + '-selected');
+},
+onRowDeselect: function(row){
+this.removeRowClass(row, this.getRowClass(this.grid.getStore().getAt(row)) + '-selected');
+},
+//mouseout : function(e)
+//{
+//	console.debug(e);
+//},
+//mouseover : function(e)
+//{
+//	console.debug(e);
+//},
+
+
             groupTextTpl: '{text} ({[values.rs.length]} {[values.rs.length > 1 ? "Items" : "Item"]})'
         }),
 
@@ -597,6 +627,26 @@ var grid_wbs = new Ext.grid.GridPanel({
 		split: true,
 		region: 'west'
 });
+
+
+//Ext.onReady(function(){
+//    Ext.override(Ext.grid.GridView, {
+//        onRowOver : function(e, t){
+//            var row;
+//            if((row = this.findRowIndex(t)) !== false){
+//                this.addRowClass(row, this.getRowClass(this.grid.getStore().getAt(row)) + '-rollover');
+//            }
+//				},
+//				onRowOut : function(e, t){
+//            var row;
+//            if((row = this.findRowIndex(t)) !== false){
+//                this.removeRowClass(row, this.getRowClass(this.grid.getStore().getAt(row)) + '-rollover');
+//            }
+//        }
+//    });
+//});
+
+
 
 var markup_wbs = [
 	'<table class="project_table">',
