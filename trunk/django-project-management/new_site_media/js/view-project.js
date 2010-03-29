@@ -668,11 +668,11 @@ var grid_wbs = new Ext.grid.GridPanel({
             forceFit:true,
             getRowClass: function(record, rowIndex, rp, ds){
 								return record.json.extras.get_work_item_status
-								console.debug(grid_wbs.grid.getView().getRow(rowIndex).getRowClass());
+								//console.debug(grid_wbs.grid.getView().getRow(rowIndex).getRowClass());
     },
     onRowSelect: function(row){
 this.addRowClass(row, this.getRowClass(this.grid.getStore().getAt(row)) + '-selected');
-console.debug(row);
+//console.debug(row);
 
 },
 onRowDeselect: function(row){
