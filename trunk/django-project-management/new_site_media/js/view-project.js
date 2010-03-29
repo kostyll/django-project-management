@@ -592,7 +592,7 @@ var st_wbs = new Ext.data.GroupingStore({
 		
 		 ]}),
 	autoLoad: true,
-	groupField: 'project_phase',
+	groupField: 'project_stage',
 	sortInfo:{field: 'wbs_number', direction: "ASC"}
 });
 
@@ -612,7 +612,7 @@ var grid_wbs = new Ext.grid.GridPanel({
             {header: "Created Date", dataIndex: 'created_date', hidden: true, sortable: true },
             {header: "Modified Date", dataIndex: 'modified_date', hidden: true, sortable: true },
             {header: "Skill Set", dataIndex: 'skill_set', hidden: true, sortable: true },
-            {header: "Phase", dataIndex: 'project_phase'},
+            {header: "Stage", dataIndex: 'project_stage'},
             {header: "Author", dataIndex: 'author', hidden: true, sortable: true },
             {header: "Title", dataIndex: 'title', sortable: true },
             {header: "Description", dataIndex: 'description', hidden: true },
@@ -687,7 +687,7 @@ var markup_wbs = [
 	'<table class="project_table">',
 	'<tr><th>WBS Number</th> <td>{wbs_number}</td></tr>',
 	'<tr><th>Skillset</th> <td>{skill_set}</td></tr>',
-	'<tr><th>Phase</th> <td>{phase}</td></tr>',
+	'<tr><th>Stage</th> <td>{stage}</td></tr>',
 	'<tr><th>Title</th> <td>{title}</td></tr>',
 	'<tr><th>Description</th> <td>{description}</td></tr>',
 	'<tr><th>Author</th> <td>{author}</td></tr>',
