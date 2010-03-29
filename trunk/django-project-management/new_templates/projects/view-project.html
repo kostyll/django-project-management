@@ -38,6 +38,18 @@
 					<tr> <th>Project Scope</th><td>{{ project.project_scope|linebreaks }}</td> </tr>
 					<tr> <th>Exclusions</th><td>{{ project.exclusions|linebreaks }}</td> </tr>
 					<tr> <th>Assumptions</th><td>{{ project.assumptions|linebreaks }}</td> </tr>
+					<tr> <th>Stage Plan</th><td>{% if project.stage_plan.all %}
+												{% for stage in project.stage_plan.all %}
+												<b>{{ stage.stage }}</b>
+												<br>
+												{{ stage.description|linebreaks }}
+												<br>
+
+												{% endfor %}
+												{% else %}
+													No Stage plan defined 
+												{% endif %}</td></tr>
+				
 					<tr> <th>Communications Plan</th><td>{{ project.communications_plan|linebreaks }}</td> </tr>
 					<tr> <th>Quality Plan</th><td>{{ project.quality_plan|linebreaks }}</td> </tr>
 				</table>
