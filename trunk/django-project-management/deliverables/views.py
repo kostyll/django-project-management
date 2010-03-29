@@ -12,7 +12,7 @@ from django.db.models import Q
 from projects.models import *
 from projects.views import updateLog
 from deliverables.forms import *
-from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success
+from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success, handle_generic_error, user_has_write_access
 
 @login_required
 def add_deliverable(request, project_number):
@@ -53,12 +53,17 @@ def edit_deliverable(request, project_number, deliverable_id):
 @login_required
 def delete_deliverable(request, project_number, deliverable_id):
 
-	project = Project.objects.get(project_number=project_number)
-	deliverable = Deliverable.objects.get(id=deliverable_id)
-	project.deliverables.remove(deliverable)
-	project.save()
-	ret = {"success": True}
-	return HttpResponse(json.dumps(ret))
+	# Some security - only allow users to view objects they are allowed to via read_acl
+	project = get_object_or_404(Project, project_number=project_number)
+	check_project_read_acl(project, request.user)	# Will return Http404 if user isn't allowed to view project
+	
+	if user_has_write_access(project, request.user):
+		deliverable = Deliverable.objects.get(id=deliverable_id)
+		project.deliverables.remove(deliverable)
+		project.save()
+		return HttpResponse( return_json_success() )
+	else:
+		return HttpResponse( handle_generic_error("Sorry - you don't have sufficient access to update the project"))
 	
 @login_required
 def view_deliverables(request, project_number):
