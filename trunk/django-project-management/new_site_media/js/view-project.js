@@ -640,22 +640,31 @@ var grid_wbs = new Ext.grid.GridPanel({
     },
     onRowSelect: function(row){
 this.addRowClass(row, this.getRowClass(this.grid.getStore().getAt(row)) + '-selected');
+console.debug(row);
+
 },
 onRowDeselect: function(row){
 this.removeRowClass(row, this.getRowClass(this.grid.getStore().getAt(row)) + '-selected');
 },
-//mouseout : function(e)
-//{
-//	console.debug(e);
-//},
-//mouseover : function(e)
-//{
-//	console.debug(e);
-//},
 
+onRowOver: function(e, t){
+var row;
+if((row = this.findRowIndex(t)) !== false){
+	this.addRowClass(this.findRowIndex(t), this.getRowClass(this.grid.getStore().getAt(this.findRowIndex(t))) + '-hover');
+this.grid.fireEvent('rowmouseover', this.grid, row);
+}
+},
 
+onRowOut: function(e,t){
+var row;
+if((row = this.findRowIndex(t)) !== false && !e.within(this.getRow(row), true)){
+	this.removeRowClass(this.findRowIndex(t), this.getRowClass(this.grid.getStore().getAt(this.findRowIndex(t))) + '-hover');
+this.grid.fireEvent('rowmouseout', this.grid, row);
+}
+},
             groupTextTpl: '{text} ({[values.rs.length]} {[values.rs.length > 1 ? "Items" : "Item"]})'
         }),
+        
 
         height: GRID_HEIGHT,
 		width: GRID_WIDTH,
