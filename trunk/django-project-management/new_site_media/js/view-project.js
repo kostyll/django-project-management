@@ -474,8 +474,8 @@ var wbs_fields = [
 		{ xtype: "textfield", fieldLabel: "Number of Days", name: "number_of_days" },
 		{ xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
 		{ xtype: "textfield", fieldLabel: "Percent Complete", name: "percent_complete" },
-		{ xtype: "datefield", fieldLable: "Start Date", name: "start_date" },
-		{ xtype: "datefield", fieldLable: "Finish Date", name: "finish_date" },
+		{ xtype: "datefield", fieldLabel: "Start Date", name: "start_date" },
+		{ xtype: "datefield", fieldLabel: "Finish Date", name: "finish_date" },
 		{ xtype: "textfield", fieldLabel: "WBS Number", name: "wbs_number" },
 		{ xtype: "textfield", fieldLabel: "Cost", name: "cost" },
 		{ xtype: "textarea", fieldLabel: "History", name: "history", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
@@ -533,7 +533,7 @@ function delete_wbs() {
         },
         success: function (response) {
             Ext.Msg.alert('Success', sel.data.description + " has been removed");
-           Ext.getCmp("gid_wbs").store.load();
+           Ext.getCmp("grid_wbs").store.load();
            Ext.getCmp("risk_detail").body.update('Please select a Work Item to see more details');
            }
     });
@@ -554,7 +554,8 @@ var add_project_stage = function(b,e){
 													success: function(f,a){
                                             		Ext.Msg.alert('Success', 'Project Stage Added');
                                             		window_stage_plan.hide(); 
-                                            		st_stage_plan.load();
+													st_stage_plan.load();
+                                            		Ext.getCmp("grid_wbs").store.load();
                                             		},  
                                             		failure: function(f,a){
                                             		Ext.Msg.alert('Warning', a.result.errormsg);
@@ -657,7 +658,6 @@ this.removeRowClass(row, this.getRowClass(this.grid.getStore().getAt(row)) + '-s
         }),
 
         height: GRID_HEIGHT,
-        id:'wbs_grid',
 		width: GRID_WIDTH,
 		split: true,
 		region: 'west'
