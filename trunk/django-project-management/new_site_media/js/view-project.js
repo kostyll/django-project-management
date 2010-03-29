@@ -478,6 +478,7 @@ var wbs_fields = [
 		{ xtype: "datefield", fieldLabel: "Finish Date", name: "finish_date" },
 		{ xtype: "textfield", fieldLabel: "WBS Number", name: "wbs_number" },
 		{ xtype: "textfield", fieldLabel: "Cost", name: "cost" },
+		{ xtype: "textarea", fieldLabel: "Update", name: "update", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
 		{ xtype: "textarea", fieldLabel: "History", name: "history", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
 		{ xtype: "textfield", fieldLabel: "Status", name: "get_work_item_status"}
 ]
@@ -544,6 +545,37 @@ var delete_wbs = function(b,e){
 }
 
 
+var edit_wbs = function(b,e){
+	var	wbs_id = grid_wbs.getSelectionModel().getSelected().get("pk");
+	var form_wbs_edit = new Ext.form.FormPanel({ 
+		url: "/WBS/" + project_number + "/" + wbs_id + "/Edit/", bodyStyle: "padding: 15px;", id: "form_wbs_edit", autoScroll: true, items: wbs_fields });
+	form_wbs_edit.getForm().load({ url: "/WBS/" + project_number + "/" + wbs_id + "/", method: "GET" });
+	var window_wbs = new Ext.Window({width: 620, autoHeight: true, closeAction: "close", autoScroll: true, modal: true, title: "Edit Work Item", items: [ form_wbs_edit ],
+		buttons: [ { text: 'Save',
+                    handler: function(){
+                                         form_wbs_edit.getForm().submit({
+                                           success: function(f,a){
+                                            Ext.Msg.alert('Success', 'Work Item Updated', 
+                           						function() { 
+                              						window_wbs.destroy(); 
+                              						Ext.getCmp("grid_wbs").store.load();
+                               						Ext.getCmp("wbs_detail").body.update('Please select a Work Item to see more details');
+                                           	});
+									    }});
+					}}]
+});
+	window_wbs.show();
+}
+									    
+									    
+									    
+									    
+									    
+									    
+									    
+
+
+
 var add_project_stage = function(b,e){
 	var form_add_project_stage = new Ext.form.FormPanel({ url: "/WBS/" + project_number + "/StagePlan/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: stage_plan_fields });
 
@@ -600,7 +632,7 @@ var st_wbs = new Ext.data.GroupingStore({
 
 
 var btn_add_wbs = { iconCls: 'icon-add', text: 'Add Work Item', handler: add_wbs }
-var btn_update_wbs = { iconCls: 'icon-update', text: 'Update Work Item', handler: null }
+var btn_update_wbs = { iconCls: 'icon-update', text: 'Update Work Item', handler: edit_wbs }
 var btn_delete_wbs = { iconCls: 'icon-complete', text: 'Delete Work Item', handler: delete_wbs }
 var btn_add_project_stage = { iconCls: 'icon-add', text: 'Add Project Stage', handler: add_project_stage }
 var btn_add_engineering_day = { iconCls: 'icon-add', text: 'Add Engineering Day', handler: null }
