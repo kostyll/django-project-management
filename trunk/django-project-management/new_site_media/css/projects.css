@@ -22,6 +22,23 @@
 .rag_status_white { background-color:white; color: black; padding:5px; }
 .rag_status_white a { color:white; }
 
+
+
+.rag_status_red-selected { background-color:red; color:white; padding:5px; }
+.rag_status_amber-selected { background-color:#FF9900; color:white; padding:5px; }
+.rag_status_green-selected { background-color:green; color:white; padding:5px; }
+.rag_status_blue-selected { background-color:blue; color:white; padding:5px; }
+.rag_status_grey-selected { background-color:gray; color:white; padding:5px; }
+.rag_status_white-selected { background-color:white; color: black; padding:5px; }
+
+.rag_status_red-rollover { background-color:pink; color:white; padding:5px; }
+.rag_status_amber-rollover { background-color:pink; color:white; padding:5px; }
+.rag_status_green-rollover { background-color:pink; color:white; padding:5px; }
+.rag_status_blue-rollover { background-color:pink; color:white; padding:5px; }
+.rag_status_grey-rollover { background-color:pink; color:white; padding:5px; }
+.rag_status_white-rollover { background-color:pink; color: black; padding:5px; }
+
+
 .icon-add { background-image:url(/site_media/js/extjs/examples/shared/icons/fam/add.png) !important; } 
 .icon-update { background-image:url(/site_media/js/extjs/examples/shared/icons/fam/cog_edit.png) !important; } 
 .icon-complete { background-image:url(/site_media/js/extjs/examples/shared/icons/fam/delete.gif) !important; } 
