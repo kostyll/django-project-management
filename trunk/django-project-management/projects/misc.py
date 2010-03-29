@@ -89,3 +89,9 @@ def handle_generic_error(error_msg):
 	ret = { "success": False, "errormsg": error_msg }
 	return json.dumps(ret)
 	
+def user_has_write_access(project, user):
+	for g in user.groups.all():
+		if g in project.write_acl.all():
+			return True
+	return False
+	
