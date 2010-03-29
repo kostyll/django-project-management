@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -82,6 +84,23 @@ class WorkItem(models.Model):
 
 	def get_absolute_url(self):
 		return '''/WBS/%s/Edit/#%s''' % ( self.project.all()[0].project_number, self.id )
+
+	def get_work_item_status(self):
+		now = datetime.datetime.now()										# now = datetime.datetime(2009, 9, 14, 17, 21, 29, 220270)
+		today = datetime.date( now.year, now.month, now.day )
+		status = ''
+
+		if self.percent_complete < 100:
+			if self.finish_date:
+				# Is the task more than 5 days late?
+				diff = now - self.finish_date
+				if diff.days > 5:
+					return 'rag_status_red'
+				elif diff.days > 4 and diff.days > 0:
+					return 'rag_status_amber'
+			return 'rag_status_white'
+		else:
+			return 'rag_status_white'
 
 	class Meta:
 		ordering = ['wbs_number']

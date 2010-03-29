@@ -189,7 +189,7 @@ def view_wbs(request, project_number):
 	project = get_object_or_404(Project, project_number=project_number)
 	check_project_read_acl(project, request.user)	# Will return Http404 if user isn't allowed to view project
 	
-	return HttpResponse( serializers.serialize('json', project.work_items.all(), relations=('skill_set','project_phase','author','owner')))
+	return HttpResponse( serializers.serialize('json', project.work_items.all(), relations=('skill_set','project_phase','author','owner'), extras=('get_work_item_status',)))
 	
 @login_required
 def view_work_item(request, project_number, wbs_id):
