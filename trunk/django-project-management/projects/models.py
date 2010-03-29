@@ -113,7 +113,7 @@ class Project(models.Model):
 		return self.project_name
 
 	def get_absolute_url(self):
-		return '''/Projects/%s''' % self.project_number
+		return '''/Projects/%s/''' % self.project_number
 
 	class Meta:
 		permissions = (
