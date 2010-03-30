@@ -74,7 +74,7 @@ var add_deliverable = function(b,e){
 // Edit Deliverable
 var edit_deliverable = function(b,e){
 
-	var	deliverable_id = grid_deliverables.getSelectionModel().getSelected().get("pk");
+	var deliverable_id = grid_deliverables.getSelectionModel().getSelected().get("pk");
 	var form_deliverable_edit = new Ext.form.FormPanel({url: "/Deliverables/" + project_number + "/" + deliverable_id + "/Edit/", bodyStyle: "padding: 15px;", autoScroll: true, items: deliverable_fields });
 	form_deliverable_edit.getForm().load({ url: "/Deliverables/" + project_number + "/" + deliverable_id + "/", method: "GET" });
 	
