@@ -106,9 +106,9 @@ var get_resources_from_day_type = function(){
 }
 
 var engineering_day_fields = [
-	{ xtype: "datefield", fieldLabel: "Date", format: "d/m/Y", name: "work_date", listeners: { select: get_resources_from_date }, id: "eday_date" },
+	{ xtype: "datefield", fieldLabel: "Date", format: 'd-m-Y', name: "work_date", listeners: { select: get_resources_from_date }, id: "eday_date" },
 	{ xtype: "combo", fieldLabel: "Day Type", hiddenName: "day_type", lazyInit: false, store: st_engineering_day_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all", id: "eday_day_type", listeners: { select: get_resources_from_day_type}, data: '1' },
-	{ xtype: "combo", fieldLabel: "Resource", hiddenName: "resource", lazyInit: false, store: st_engineering_day_resource, mode: "local", displayField: "resource", valueField: "pk", triggerAction: "all", height: '200px' }
+	{ xtype: "combo", fieldLabel: "Resource", hiddenName: "resource", lazyInit: false, store: st_engineering_day_resource, mode: "local", displayField: "resource", valueField: "pk", triggerAction: "all", height: '200px', listeners: {beforerender: function(combo){ console.debug(combo); }, beforeselect: function(combo, record, index){ console.debug(record); }}}
 ]
 /*
  * Define the form that is used to add/edit WIP items
@@ -127,7 +127,7 @@ var edit_wip_item = function(b,e){
 	var form_wip_edit = new Ext.form.FormPanel({ url: "/WIP/" + wip_report + "/" + wip_id + "/Update/", bodyStyle: "padding: 15px;", autoScroll: true, items: wip_edit_fields });	
 
 	form_wip_edit.getForm().load({ url: "/WIP/" + wip_report + "/" + wip_id + "/", method: "GET" });	
-	var window_edit_wip = new Ext.Window({ width: 620, height: 540, closeAction: "hide", autoScroll: true, modal: true, title: "Edit WIP Item", items: [ form_wip_edit ],
+	var window_edit_wip = new Ext.Window({ width: 620, height: 540, closeAction: "close", autoScroll: true, modal: true, title: "Edit WIP Item", items: [ form_wip_edit ],
 		buttons: [ { text: 'Save',
                         handler: function(){
                             form_wip_edit.getForm().submit({
@@ -225,14 +225,14 @@ var add_engineering_day = function(){
 	
 	var wip_id = grid_wip_items.getSelectionModel().getSelected().get("pk");
 	var form_add_engineering_day = new Ext.form.FormPanel({ url: "/WIP/" + wip_report + "/" + wip_id + "/AddEngineeringDay/", bodyStyle: "padding: 15px;", autoScroll: true, items: engineering_day_fields });	
-	var window_engineering_day = new Ext.Window({ width: 620, autoHeight: true, closeAction: "hide", autoScroll: true, modal: true, title: "Add Engineering Day", items: [ form_add_engineering_day ],
+	var window_engineering_day = new Ext.Window({ width: 620, autoHeight: true, closeAction: "close", autoScroll: true, modal: true, title: "Add Engineering Day", items: [ form_add_engineering_day ],
 			buttons: [ { text: "Save",
 				handler: function(){ 
 					form_add_engineering_day.getForm().submit({
 						success: function(f,a){
 							Ext.Msg.alert('Success', 'Engineering Day Booked',
 								function(){
-									window_engineering_day.hide();
+									window_engineering_day.close();
 									Ext.getCmp("grid_wip_items").store.load();
                                             				Ext.getCmp("work_item_detail").body.update('Please select a Work Item to see more details');
 
@@ -241,7 +241,7 @@ var add_engineering_day = function(){
 							Ext.Msg.alert('Warning', a.result.errormsg);
 							}
 						});
-				}},{ text: "Close", handler: function(){ window_engineering_day.hide(); }} ]
+				}},{ text: "Close", handler: function(){ window_engineering_day.close(); }} ]
 
 	});
 	window_engineering_day.show();

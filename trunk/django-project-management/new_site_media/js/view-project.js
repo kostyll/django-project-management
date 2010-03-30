@@ -466,6 +466,10 @@ var st_stage_plan = new Ext.data.Store({
 });
 
 
+var percentage_tip = new Ext.ux.SliderTip({ getText: function(slider){ return slider.value } }); 
+
+
+
 var wbs_fields = [ 
 		{ xtype: "combo", fieldLabel: "Skill Set", name: "skill_set", hiddenName: "skill_set", lazyInit: false, store: st_skillset, mode: "local", displayField: "skill", valueField: "pk", triggerAction: "all" },
 		{ xtype: "textfield", fieldLabel: "Title", name: "title" },
@@ -473,14 +477,14 @@ var wbs_fields = [
 		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
 		{ xtype: "textfield", fieldLabel: "Number of Days", name: "number_of_days" },
 		{ xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
-		{ xtype: "textfield", fieldLabel: "Percent Complete", name: "percent_complete" },
-		{ xtype: "datefield", fieldLabel: "Start Date", name: "start_date" },
-		{ xtype: "datefield", fieldLabel: "Finish Date", name: "finish_date" },
+		{ xtype: "textfield", fieldLabel: "Percent Complete", name: "percent_complete", id: "percent_complete" },
+		{ xtype: "datefield", fieldLabel: "Start Date", name: "start_date", format: "d/m/Y" },
+		{ xtype: "datefield", fieldLabel: "Finish Date", name: "finish_date", format: "d/m/Y" },
 		{ xtype: "textfield", fieldLabel: "WBS Number", name: "wbs_number" },
 		{ xtype: "textfield", fieldLabel: "Cost", name: "cost" },
 		{ xtype: "textarea", fieldLabel: "Update", name: "update", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
 		{ xtype: "textarea", fieldLabel: "History", name: "history", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "textfield", fieldLabel: "Status", name: "get_work_item_status"}
+		{ xtype: "textfield", fieldLabel: "Status", name: "get_work_item_status"},
 ]
 
 var stage_plan_fields = [
@@ -535,7 +539,7 @@ var delete_wbs = function(b,e){
         success: function (response) {
             Ext.Msg.alert('Success', sel.data.description + " has been removed");
            Ext.getCmp("grid_wbs").store.load();
-           Ext.getCmp("risk_detail").body.update('Please select a Work Item to see more details');
+           Ext.getCmp("wbs_detail").body.update('Please select a Work Item to see more details');
            }
     });
 				}
