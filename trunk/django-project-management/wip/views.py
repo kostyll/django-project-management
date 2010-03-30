@@ -220,7 +220,7 @@ def _add_wip_to_archive(wip_report):
 			
 def get_resources_for_engineering_day(request, wip_report, year, month, day, day_type):
 	
-	wip_report = work_item.heading.all()[0].report.all()[0]
+	wip_report = WIPReport.objects.get(name=wip_report)
 	requested_date = datetime.date(int(year), int(month), int(day))
 
 	
@@ -231,7 +231,7 @@ def get_resources_for_engineering_day(request, wip_report, year, month, day, day
 			if group in wip_report.read_acl.all():
 				if user not in resources:
 					resources.append(user)
-	print resources
+	ret = []
 	for res in resources:
 		# Get the resources name
 		if res.get_full_name() != '':
@@ -239,38 +239,43 @@ def get_resources_for_engineering_day(request, wip_report, year, month, day, day
 		else:
 			res_full_name = res.username
 
-		print res_full_name
-
 		res_activity = EngineeringDay.objects.filter(work_date=requested_date, resource=res)
 		
-		ret = []
 
-		print '''activity for %s''' % res_full_name, res_activity
+		r = {"pk": res.id }
+
 		if len(res_activity) == 0: # Resource isn't booked at all
-			str = '''<option value="%s">%s - Available all day</option>''' % ( res.id, res_full_name )
+			r['resource'] = '''%s - Available all day''' % res_full_name
+			r['available'] = True
+			
 		
 		elif len(res_activity) >= 2: # User already has 2 bookings for this day
-			str = '''<option value="%s" disabled>%s - Booked out all day</option>''' % ( res.id, res_full_name )
+			r['resource'] = '''%s - Booked out all day''' % res_full_name
+			r['available'] = False
 		else:
 			for day in res_activity:
 				if day.day_type == 0:
-					str = '''<option value="%s">%s - Available PM only</option>''' % ( res.id, res_full_name )
+					r['resource'] = '''%s - Available PM only''' % res_full_name
+					r['available'] = True
 				elif day.day_type == 1:
-					str = '''<option value="%s">%s - Available AM only</option>''' % ( res.id, res_full_name )
+					r['resource'] = '''%s - Available AM only''' % res_full_name
+					r['available'] = True
 				elif day.day_type == 2:
-					str = '''<option value="%s" disabled>%s - Not available</option>''' % ( res.id, res_full_name )
+					r['resource'] = '''%s - Not Available''' % res_full_name
+					r['available'] = False
 
 
 		try:
 			r = RotaItem.objects.get(person=res, date=requested_date)
 			if r.activity.unavailable_for_projects:
-				str = '''<option value="%s" disabled>%s - Not available</option>''' % ( res.id, res_full_name )
+				r['resource'] = '''%s - Not Available''' % res_full_name
+				r['available'] = False
 		except RotaItem.DoesNotExist:
 			pass
 				
 		
-		ret.append(str)
-	return HttpResponse(ret)
+		ret.append(r)
+	return HttpResponse(json.dumps(ret))
 
 def add_wip_engineering_day(request, work_item_id):
 

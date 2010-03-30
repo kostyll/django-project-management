@@ -53,7 +53,7 @@ var st_heading = new Ext.data.Store({
 });
 
 var st_engineering_day_resource =  new Ext.data.Store({
-	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"username", mapping:"username"},{name:"day_type", mapping:"day_type"}]})
+	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk",mapping:"pk"},{name:"resource", mapping:"resource"},{name:"available", mapping:"available"}]})
 });
 
 var st_engineering_day_type = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[0,"Half-day AM"],[1,"Half-day PM"],[2,"Full Day"]]});
@@ -108,7 +108,7 @@ var get_resources_from_day_type = function(){
 var engineering_day_fields = [
 	{ xtype: "datefield", fieldLabel: "Date", format: "d/m/Y", name: "work_date", listeners: { select: get_resources_from_date }, id: "eday_date" },
 	{ xtype: "combo", fieldLabel: "Day Type", hiddenName: "day_type", lazyInit: false, store: st_engineering_day_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all", id: "eday_day_type", listeners: { select: get_resources_from_day_type}, data: '1' },
-	{ xtype: "combo", fieldLabel: "Resource", hiddenName: "resource", lazyInit: false, store: st_engineering_day_resource, mode: "local", displayField: "username", valueField: "id", triggerAction: "all" }
+	{ xtype: "combo", fieldLabel: "Resource", hiddenName: "resource", lazyInit: false, store: st_engineering_day_resource, mode: "local", displayField: "resource", valueField: "pk", triggerAction: "all", height: '200px' }
 ]
 /*
  * Define the form that is used to add/edit WIP items
