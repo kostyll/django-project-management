@@ -31,6 +31,10 @@ class WIPItem(models.Model):
 	def get_ajax_form(self):
 		return '''/WIP/AjaxLoadForm/%s/''' % self.id
 
+	def get_heading(self):
+		if self.heading.all() != '':
+			return '''%s - %s''' % ( self.heading.all()[0].company.company_name, self.heading.all()[0].heading )
+
 	def __str__(self):
 		return self.description[:50]
 

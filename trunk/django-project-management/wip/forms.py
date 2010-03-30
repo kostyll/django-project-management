@@ -47,5 +47,10 @@ class WIPHeadingForm(ModelForm):
 	def __init__(self, *args, **kwargs):
 		super(WIPHeadingForm, self).__init__(*args, **kwargs)
 		self.fields['company'].choices = all_company_options()
-	
+
+class CompleteWIPItemForm(ModelForm):
+
+	class Meta:
+		model = WIPItem
+		fields = ('complete',)	
 

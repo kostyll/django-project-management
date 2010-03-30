@@ -16,10 +16,10 @@ from django.db.models import Q
 from django.utils.html import urlize
 
 from wip.models import *
-from wip.forms import WIPItemEditorForm, WIPItemUserForm, WIPHeadingForm
+from wip.forms import WIPItemEditorForm, WIPItemUserForm, WIPHeadingForm, CompleteWIPItemForm
 from backends.pdfexport import render_to_pdf, html_to_pdf
 from projects.models import UserProfile
-from projects.misc import get_wip_assignee_list
+from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success, handle_generic_error
 from rota.models import RotaItem
 from wbs.forms import EngineeringDayForm
 import settings
@@ -66,7 +66,7 @@ def view_wip_report(request, wip_report):
 	headings = Heading.objects.filter(report=wip_report)
 	objectives = WIPItem.objects.filter(heading__report=wip_report, complete=False, objective=True)
 	if xhr:
-		return HttpResponse( serializers.serialize('json', WIPItem.objects.filter(heading__report=wip_report, complete=False), display=['status'], relations=('assignee','heading')))
+		return HttpResponse( serializers.serialize('json', WIPItem.objects.filter(heading__report=wip_report, complete=False), display=['status'], relations=('assignee','heading'), extras=['get_heading',]))
 	else:
 		return render_to_response('wip/wip.html', {'wip_report': wip_report, 'headings': headings, 'objectives': objectives }, context_instance=RequestContext(request))
 
@@ -92,9 +92,9 @@ def get_ajax_form(request, work_item_id):
 	
 
 @login_required
-def add_heading(request, wip_report_id):
+def add_heading(request, wip_report):
 	
-	wip_report = get_object_or_404(WIPReport, id=wip_report_id)
+	wip_report = get_object_or_404(WIPReport, name=wip_report)
 	
 	# Some security	
 	allow_access = False		 
@@ -103,50 +103,53 @@ def add_heading(request, wip_report_id):
 			allow_access = True
 	
 	if allow_access:
-		if request.method == 'POST':
-			form = WIPHeadingForm(request.POST)
-			if form.is_valid():
-				t = form.save()
-				wip_report.headings.add(t)
-				wip_report.save()
-				_add_wip_to_archive(wip_report)
-				return HttpResponseRedirect(t.get_absolute_url())
-
+		form = WIPHeadingForm(request.POST)
+		if form.is_valid():
+			t = form.save()
+			wip_report.headings.add(t)
+			wip_report.save()
+			_add_wip_to_archive(wip_report)
+			return HttpResponse( return_json_success() )
+		else:
+			return HttpResponse( handle_form_errors(form.errors))
 	else:
 		raise Http404	
 
 @login_required
-def add_work_item(request, heading_id):
-	heading = get_object_or_404(Heading, id=heading_id)
+def add_work_item(request, wip_report):
+	report = get_object_or_404(WIPReport, name=wip_report)
 
 	# Some security
 	allow_access = False
 	for group in request.user.groups.all():
-		if group in heading.report.all()[0].write_acl.all():
+		if group in report.write_acl.all():
 			allow_access = True
 		
 	if allow_access:
 		if request.method == 'POST':
-			form = WIPItemEditorForm(heading.report.all()[0], request.POST)
+			form = WIPItemEditorForm(report, request.POST)
 			if form.is_valid():
 				t = form.save()
+				heading = Heading.objects.get(id=request.POST['heading'])
 				heading.wip_items.add(t)
 				heading.save()
-				_add_wip_to_archive(heading.report.all()[0])
-				return HttpResponseRedirect(t.get_absolute_url())
+				_add_wip_to_archive(report)
+				return HttpResponse( return_json_success() )
 			else:
-				print form.errors
+				return HttpResponse( handle_form_errors(form.errors))
+		else:
+			return HttpResponse( handle_form_errors(form.errors))
 
 	else:
-		raise Http404	
+		return HttpResponse( handle_form_errors(form.errors))
 		
 @login_required
-def update_work_item(request, work_item_id):
+def update_work_item(request, wip_report, work_item_id):
+	wip_report = WIPReport.objects.get(name=wip_report)
 	work_item = get_object_or_404(WIPItem, id=work_item_id)
 
 	# Some security
 	allow_access = False
-	wip_report = work_item.heading.all()[0].report.all()[0]
 	for group in request.user.groups.all():
 		if group in wip_report.read_acl.all():
 			allow_access = True
@@ -165,19 +168,38 @@ def update_work_item(request, work_item_id):
 				else:
 					update_name = request.user.get_full_name()
 				t.history = '''\n\n------Updated by %s on %s------\n\n%s\n\n%s''' % ( update_name, time.strftime("%Y-%m-%d %H:%M"), form.cleaned_data.get('update'), work_item.history )
+			t.save()
+			_add_wip_to_archive(work_item.heading.all()[0].report.all()[0])
 
-			# To make the WIP report run a little smoother.. if we are closing a WIP item we'll keep it in the database but unlink it from it's heading
-			if 'complete' in form.changed_data:
-				heading = work_item.heading.all()[0]
-				heading.wip_items.remove(work_item)
-				heading.save()
-				t.save()
-				_add_wip_to_archive(heading.report.all()[0])
-				return HttpResponseRedirect(heading.get_absolute_url())
-			else:
-				t.save()
-				_add_wip_to_archive(work_item.heading.all()[0].report.all()[0])
-				return HttpResponseRedirect(t.get_absolute_url())
+			return HttpResponse( return_json_success() )
+		else:
+			return HttpResponse( handle_form_errors(form.errors))
+
+@login_required
+def complete_work_item(request, wip_report, work_item_id):
+	wip_report = WIPReport.objects.get(name=wip_report)
+	work_item = get_object_or_404(WIPItem, id=work_item_id)
+
+	# Some security
+	allow_access = False
+	for group in request.user.groups.all():
+		if group in wip_report.read_acl.all():
+			allow_access = True
+		if group in wip_report.write_acl.all():
+			allow_access = True
+
+		
+	if allow_access:
+		form = CompleteWIPItemForm(request.POST)
+		if form.is_valid():
+			work_item.complete = True
+			work_item.save()
+			_add_wip_to_archive(work_item.heading.all()[0].report.all()[0])
+
+			return HttpResponse( return_json_success() )
+		else:
+			return HttpResponse( handle_form_errors(form.errors))
+
 
 def _add_wip_to_archive(wip_report):
 	
@@ -196,9 +218,8 @@ def _add_wip_to_archive(wip_report):
 	archive.save()
 			
 			
-def get_resources_for_engineering_day(request, work_item_id, year, month, day, day_type):
+def get_resources_for_engineering_day(request, wip_report, year, month, day, day_type):
 	
-	work_item = get_object_or_404(WIPItem, id=work_item_id)
 	wip_report = work_item.heading.all()[0].report.all()[0]
 	requested_date = datetime.date(int(year), int(month), int(day))
 
@@ -221,6 +242,8 @@ def get_resources_for_engineering_day(request, work_item_id, year, month, day, d
 		print res_full_name
 
 		res_activity = EngineeringDay.objects.filter(work_date=requested_date, resource=res)
+		
+		ret = []
 
 		print '''activity for %s''' % res_full_name, res_activity
 		if len(res_activity) == 0: # Resource isn't booked at all
@@ -284,3 +307,20 @@ def xhr_get_assignees(request, wip_report):
 	
 	wip_report = WIPReport.objects.get(name=wip_report)
 	return HttpResponse( serializers.serialize('json', User.objects.filter( groups__in=wip_report.read_acl.all()).distinct(), excludes=('is_active', 'is_superuser', 'is_staff', 'last_login', 'groups', 'user_permissions', 'password', 'email', 'date_joined') ))
+
+@login_required
+def view_headings(request, wip_report):
+	wip_report = WIPReport.objects.get(name=wip_report)
+	return HttpResponse( serializers.serialize('json', wip_report.headings.all(), relations=('company',) ))
+
+@login_required
+def view_work_item(request, wip_report, work_item_id):
+	wip_report = WIPReport.objects.get(name=wip_report)
+	work_item = WIPItem.objects.get(id=work_item_id)
+		
+	JSONSerializer = serializers.get_serializer('json')
+	j = JSONSerializer()
+	j.serialize([work_item], fields=('description', 'assignee', 'history', 'objective', 'deadline', 'status', 'complete', 'engineering_days'))
+	
+	return HttpResponse( '''{ success: true, data: %s }''' % json.dumps(j.objects[0]['fields']))
+

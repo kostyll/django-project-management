@@ -1,0 +1,149 @@
+{% extends 'base.html' %}	
+{% load wbs_tags %}
+{% load wip_tags %}
+{% load project_tags %}
+
+
+
+{% block additional_jquery %}
+
+// Add a new Heading
+$("#add_heading").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 600,
+	width: 600,
+	modal: true,
+});
+
+
+$("a#link_add_heading").click(function(){
+	$("#add_heading").dialog('open');
+});
+
+// Edit a work item
+$("#edit_work_item").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 600,
+	width: 600,
+	modal: true,
+});
+
+{% for h in headings %}
+	{% for i in h.wip_items.all %}
+$("a#link_edit_work_item_{{ i.id }}").click(function(){
+	$("#work_item_placeholder").load("{{ i.get_ajax_form }}");
+	$("#work_item_placeholder_table").attr("action", "/WIP/UpdateWorkItem/{{ i.id }}/");
+	$("#edit_work_item").dialog('open');
+});
+	{% endfor %}
+
+$("a#link_add_work_item_to_heading_{{ h.id }}").click(function(){
+	$("#add_work_item_to_heading_{{ h.id }}").dialog('open');
+});
+
+// Add a new Work Item
+$("#add_work_item_to_heading_{{ h.id }}").dialog({
+	bgiframe: true,
+	autoOpen: false,
+	height: 600,
+	width: 600,
+	modal: true,
+});
+
+
+{% endfor %}
+
+{% endblock %}
+
+
+{% block main_content %}
+		<div class="toggler">
+			<div id="effect" class="ui-widget-content ui-corner-all">
+				<h3 class="ui-widget-header ui-corner-all"><a id="toggle_effect_button" href="#">Your WIP Items</a></h3>
+				<div id="toggle_effect">
+				<p>
+				
+				<h3>Work Items</h3>			
+						
+				<table border="0">	
+				{% for h in headings %}
+					{% ifchanged h.company %}
+					<tr>
+						<td colspan="2"><p class="wip_header_company">{{ h.company }}</p></td>
+					</tr>
+					{% endifchanged %}
+				
+					{% ifchanged h %}
+					<tr style="border-style: none none dotted none ; border-color: silver; background-color: silver;">
+						<td>
+						<a name="heading_{{ h.id }}"></a>
+						<p class="wip_header_heading">{{ h }}</p>
+						</td>
+						<td align="right">		
+						<a href="#" class="wip_permissions" id="link_add_work_item_to_heading_{{ h.id }}"><br><button class="ui-button ui-state-default ui-corner-all">Add Work Item</button></a>
+						</td>
+					</tr>
+					{% endifchanged %}
+	
+					{% for i in h.wip_items.all %}
+				
+					<tr><td colspan="2"><a name="work_item_{{ i.id }}"></a>	
+					<a href="#" id="link_edit_work_item_{{ i.id }}">{{ i.description|linebreaks }}</a></td></tr>
+					<tr><td colspan="2"><b>Assigned To:</b> {% if i.assignee.get_full_name %}{{ i.assignee.get_full_name }}{% else %} {{ i.assignee }} {% endif %} | 
+							<b>Objective: </b> {{ i.objective|yesno:"Yes,No" }} |
+							<b>Created: </b> {{ i.created_date|timesince }} ago
+							
+					</td></tr>
+
+					<tr style="border-style: none none dashed none ; border-color: silver;"><td>{% if i.deadline %}<b>Deadline: </b> {{ i.deadline }} | {% endif %}
+							<b>Updated: </b> {{ i.modified_date|timesince }} ago  
+							{% if i.engineering_days.all %}| <b>Engineering Days:</b> 
+									{% for d in i.engineering_days.all %}{{ d.work_date|date:"jS M y" }} ({% get_initials_for_user d.resource %}) {%endfor%}
+							{% endif %}
+
+						</td>
+						<td align="right"><button id="link_add_engineering_day_{{ i.id }}" class="wip_permissions ui-button ui-state-default ui-corner-all">Add Engineering Day</button></td>
+					</tr>
+					{% endfor %}	
+						
+				{% endfor %}	
+				</table>
+				</p>
+				</div> <!-- end: toggle_effect -->
+		</div>
+	</div>
+	<br>
+
+
+
+<div id="edit_work_item" title="Edit Work Item">
+	<form action="" method="POST" id="work_item_placeholder_table">
+		<table id="work_item_placeholder">
+		</table>
+		<div align="center"><input type="submit" name="submit" value="Submit"></div>
+	</form>
+</div>
+
+<div id="add_heading" title="Add Heading">
+	<form action="/WIP/AddHeading/{{ wip_report.id }}/"  method="POST">
+		<table>
+		{% get_heading_form %}	
+		</table>
+		<div align="center"><input type="submit" name="submit" value="Submit"></div>
+	</form>
+</div>
+
+{% for h in headings %}
+<div id="add_work_item_to_heading_{{ h.id }}" title="Add Work Item">
+	<form action="/WIP/AddWorkItem/{{ h.id }}/"  method="POST">
+		<table>
+		{% get_work_item_form h.report.all.0 %}	
+		</table>
+		<div align="center"><input type="submit" name="submit" value="Submit"></div>
+	</form>
+</div>
+{% endfor %}
+
+{% endblock %}
