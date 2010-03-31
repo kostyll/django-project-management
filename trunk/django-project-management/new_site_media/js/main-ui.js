@@ -51,11 +51,11 @@ var tree_data = [
 					{ text: 'Projects', id: 'projectsNode', leaf: false,
 						children: [{ text: 'View Dashboard', href: "/", leaf: true }]},
   					{ text: 'Work In Progress', id: 'wipNode', leaf: false,
-    					children: [{ text: "All WIP Reports", href: "/WIP", leaf: true}] },
+    					children: [{ text: "All WIP Reports", href: "/WIP/", leaf: true}] },
   					{ text: 'Rota', id: 'rotaNode', leaf: false,
-    					children: [{ text: "All Rotas", href: "/AllWIPReports", leaf: true} ]},
+    					children: [{ text: "All Rotas", href: "/Rota/All/", leaf: true} ]},
   					{ text: 'Skillsets', id: 'skillsNode', leaf: false,
-    					children: [{ text: "View Matrix", href: "/YourWIP", leaf: true}] }
+    					children: [{ text: "View Matrix", href: "/Matrix/", leaf: true}] }
 				]
 
 var rootNode = new Ext.tree.AsyncTreeNode({ text: 'Root', children: tree_data });
