@@ -75,6 +75,6 @@ def view_files(request, project_number):
 	files.append({'author': '-', 'type': '-', 'filename': 'Work Breakdown Structure', 'url': '/Files/%s/WBS/' % project.project_number })
 	files.append({'author': '-', 'type': '-', 'filename': 'Issue Log', 'url': '/Files/%s/IssueLog/' % project.project_number })
 	for f in project.files.all():
-		files.append({ 'author': f.author.get_full_name(), 'type': f.get_type_display(), 'url': f.filename.url })
+		files.append({ 'author': f.author.get_full_name(), 'type': f.get_type_display(), 'url': f.filename.url, 'filename': f.filename })
 	return HttpResponse( json.dumps(files))
 	
