@@ -1,7 +1,9 @@
 # Create your views here.
 import calendar
 import datetime
+import simplejson as json
 
+from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -10,38 +12,52 @@ from django.template.loader import get_template
 from django.shortcuts import render_to_response
 from django.db.models import Q
 from rota.models import RotaActivity, RotaItem, Team 
+from wbs.models import EngineeringDay
 from backends.pdfexport import render_to_pdf
 import settings
 
 @login_required
-def view_rota(request, year, month, day, template, pdf=None):
+def view_rota(request, year=False, month=False, day=False, template=False, pdf=None, scope=None):
 	
 	# No additional security required here apart from a valid login. We allow all users to view 
 	# their own rota plus the team and department rotas, and if they know the Edit Rota URL (hidden by default) they 
 	# can load that page but not actually do anything in rota.views.edit_rota()
 
 	cal = calendar.Calendar()
-	if request.method == 'POST':
-		pass
-	else:
-		now = datetime.datetime.now()										# now = datetime.datetime(2009, 9, 14, 17, 21, 29, 220270)
-		today = datetime.date( now.year, now.month, now.day )
+	now = datetime.datetime.now()										# now = datetime.datetime(2009, 9, 14, 17, 21, 29, 220270)
+	today = datetime.date( now.year, now.month, now.day )
 
-		if year and month and day:
-			# User has asked for a specific week to be shown
-			requested = datetime.date(int(year), int(month), int(day))	
-		else:
-			# Work out the days for this week
-			requested = today
+	if year and month and day:
+		# User has asked for a specific week to be shown
+		requested = datetime.date(int(year), int(month), int(day))	
+	else:
+		# Work out the days for this week
+		requested = today
 		
-		this_week = calculate_week(requested)
+	this_week = calculate_week(requested)
 
-	teams = Team.objects.all()
+	# [ { 'user': 'smorris', 'pk': '1', 'monday_rota': 'Infrastructure Mid', 'monday_eday': 'Free', 'tuesday_rota'
+	ret = []
 	
-	if pdf: 
-		return render_to_pdf(template, {'this_week': this_week, 'today': today, 'teams': teams, 'title': 'Rota', 'paper_orientation': 'landscape', 'paper_size': 'a3', 'files': settings.STATIC_DOC_ROOT }, filename="ROTA.pdf")
-	else:
-		return render_to_response(template, {'this_week': this_week, 'today': today, 'teams': teams }, context_instance=RequestContext(request))
+	if scope == 'all':
+		print 'Hello'
+		for u in User.objects.filter(is_active=True):
+			print u
+			x = {'user': u.username, 'pk': u.id }
+			days = ['', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+			for day in this_week:
+				try:
+					rota_item = RotaItem.objects.get(person=u, date=day)
+				except RotaItem.DoesNotExist:
+					rota_item = None
+				print rota_item
+				x['''%s_rota''' % days[day.isoweekday()]] = rota_item
+				x['''%s_eday''' % days[day.isoweekday()]] = EngineeringDay.objects.filter(work_date=day, resource=u)
+				ret.append(x)
+
+			
+	
+	return HttpResponse(json.dumps(ret))
 
 @login_required
 def edit_rota(request, year, month, day, shift, username):
