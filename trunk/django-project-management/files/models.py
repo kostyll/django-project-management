@@ -15,7 +15,7 @@ FILE_TYPE = (
 class ProjectFile(models.Model):
 
 	author = models.ForeignKey(User, related_name='file_author')
-	type = models.IntegerField(choices=FILE_TYPE)
+	file_type = models.IntegerField(choices=FILE_TYPE)
 	description = models.TextField(max_length=1024)
 	created_date = models.DateTimeField(auto_now_add=True)
 	filename = models.FileField(upload_to="uploaded_files/%Y/%m/%d")
