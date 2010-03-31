@@ -12,6 +12,7 @@ from risks.models import *
 from files.forms import *
 from backends.pdfexport import render_to_pdf
 import settings
+from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success, handle_generic_error
 
 
 @login_required
@@ -59,8 +60,6 @@ def add_file(request, project_number):
 			t = form.save()
 			project.files.add(t)
 			project.save()
-			return HttpResponseRedirect('''%s''' % project.get_absolute_url())
-		
+			return HttpResponse( return_json_success() )
 		else:
-			print form.errors
-			pass	
+			return HttpResponse( handle_form_errors(form.errors))
