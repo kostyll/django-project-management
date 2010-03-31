@@ -477,14 +477,24 @@ var wbs_fields = [
 		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
 		{ xtype: "textfield", fieldLabel: "Number of Days", name: "number_of_days" },
 		{ xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
-		{ xtype: "textfield", fieldLabel: "Percent Complete", name: "percent_complete", id: "percent_complete" },
+		{ xtype: "slider", 
+			minValue: 0, 
+			maxValue: 100, 
+			increment: 10, 
+			plugins: percentage_tip, 
+			fieldLabel: "Percentage Complete", 
+			name: "percentageSlider", 
+			id: "percentageSlider",
+			listeners: { setValue: function(slider) { slider.getValue(); } }  
+		},
+    //{ xtype: "textfield", fieldLabel: "Percent Complete", name: "percent_complete", id: "percent_complete", listeners: { beforerender: function(slider) { Ext.getCmp("percentageSlider").value = slider.value;}} },
 		{ xtype: "datefield", fieldLabel: "Start Date", name: "start_date", format: "d/m/Y" },
 		{ xtype: "datefield", fieldLabel: "Finish Date", name: "finish_date", format: "d/m/Y" },
 		{ xtype: "textfield", fieldLabel: "WBS Number", name: "wbs_number" },
 		{ xtype: "textfield", fieldLabel: "Cost", name: "cost" },
 		{ xtype: "textarea", fieldLabel: "Update", name: "update", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
 		{ xtype: "textarea", fieldLabel: "History", name: "history", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "textfield", fieldLabel: "Status", name: "get_work_item_status"},
+		{ xtype: "textfield", fieldLabel: "Status", name: "get_work_item_status"}
 ]
 
 var stage_plan_fields = [
@@ -498,6 +508,7 @@ var add_wbs = function(b,e){
 							buttons: [	{ 	text:'Submit', 
 											handler: function(){
 												form_add_wbs.getForm().submit({
+													params: { percent_complete: Ext.getCmp("percentageSlider").value },
 													success: function(f,a){
                                             		Ext.Msg.alert('Success', 'Work Item Added');
                                             		window_wbs.hide(); 
@@ -558,7 +569,8 @@ var edit_wbs = function(b,e){
 		buttons: [ { text: 'Save',
                     handler: function(){
                                          form_wbs_edit.getForm().submit({
-                                           success: function(f,a){
+                                         	params: { percent_complete: Ext.getCmp("percentageSlider").value },
+																					success: function(f,a){
                                             Ext.Msg.alert('Success', 'Work Item Updated', 
                            						function() { 
                               						window_wbs.destroy(); 
@@ -1081,7 +1093,7 @@ var grid_lessons = new Ext.grid.GridPanel({
             {header: "Author", dataIndex: 'Author', hidden: true, sortable: true },
             {header: "Created Date", dataIndex: 'created_date', hidden: true, sortable: true },
             {header: "Modified Date", dataIndex: 'modified_date', hidden: true, sortable: true },
-            {header: "Publish To Client", dataIndex: 'publish_to_client', sortable: true }
+            {xtype: "booleancolumn", header: "Publish To Client", dataIndex: 'publish_to_client', sortable: true }
 	],
     tbar: [ btn_update_lesson, btn_delete_lesson ],
 	sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
