@@ -1,5 +1,7 @@
 # Create your views here.
 import os
+import simplejson as json
+from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Context, Template, RequestContext
@@ -63,3 +65,14 @@ def add_file(request, project_number):
 			return HttpResponse( return_json_success() )
 		else:
 			return HttpResponse( handle_form_errors(form.errors))
+
+@login_required
+def view_files(request, project_number):
+	project = Project.objects.get(project_number=project_number)
+	files = []
+	files.append({'author': '-', 'type': '-', 'filename': 'Project Initiation Document', 'url': '/Files/%s/PID/' % project.project_number })
+	files.append({'author': '-', 'type': '-', 'filename': 'Risk Register', 'url': '/Files/%s/RiskRegister/' % project.project_number })
+	for f in project.files.all():
+		files.append({ 'author': f.author.get_full_name(), 'type': f.get_type_display(), 'url': f.filename.url })
+	return HttpResponse( json.dumps(files))
+	
