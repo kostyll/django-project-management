@@ -70,11 +70,11 @@ def add_file(request, project_number):
 def view_files(request, project_number):
 	project = Project.objects.get(project_number=project_number)
 	files = []
-	files.append({'author': '-', 'file_type': '-', 'filename': 'Project Initiation Document', 'url': '/Files/%s/PID/' % project.project_number })
-	files.append({'author': '-', 'file_type': '-', 'filename': 'Risk Register', 'url': '/Files/%s/RiskRegister/' % project.project_number })
-	files.append({'author': '-', 'file_type': '-', 'filename': 'Work Breakdown Structure', 'url': '/Files/%s/WBS/' % project.project_number })
-	files.append({'author': '-', 'file_type': '-', 'filename': 'Issue Log', 'url': '/Files/%s/IssueLog/' % project.project_number })
+	files.append({'author': '-', 'file_type': '-', 'description': 'Project Initiation Document', 'url': '/Files/%s/PID/' % project.project_number })
+	files.append({'author': '-', 'file_type': '-', 'description': 'Risk Register', 'url': '/Files/%s/RiskRegister/' % project.project_number })
+	files.append({'author': '-', 'file_type': '-', 'description': 'Work Breakdown Structure', 'url': '/Files/%s/WBS/' % project.project_number })
+	files.append({'author': '-', 'file_type': '-', 'description': 'Issue Log', 'url': '/Files/%s/IssueLog/' % project.project_number })
 	for f in project.files.all():
-		files.append({ 'author': f.author.get_full_name(), 'file_type': f.get_file_type_display(), 'url': f.filename.url, 'filename': f.filename })
+		files.append({ 'author': f.author.get_full_name(), 'file_type': f.get_file_type_display(), 'url': f.filename.url, 'description': f.description })
 	return HttpResponse( json.dumps(files))
 	
