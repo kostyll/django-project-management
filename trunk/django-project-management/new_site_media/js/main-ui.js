@@ -49,12 +49,11 @@ Ext.extend(Ext.ux.tree.State, Ext.util.Observable, {
 
 var tree_data = [
 					{ text: 'Projects', id: 'projectsNode', leaf: false,
-						children: [{ text: 'View Dashboard', href: "/", leaf: true }, { text: "All Projects", href: "/AllProjects", leaf: true }]},
+						children: [{ text: 'View Dashboard', href: "/", leaf: true }]},
   					{ text: 'Work In Progress', id: 'wipNode', leaf: false,
-    					children: [{ text: "All WIP Reports", href: "/WIP", leaf: true}, { text: "Your WIP Items", href: "/YourWIP", leaf: true}] },
+    					children: [{ text: "All WIP Reports", href: "/WIP", leaf: true}] },
   					{ text: 'Rota', id: 'rotaNode', leaf: false,
-    					children: [{ text: "All Rotas", href: "/AllWIPReports", leaf: true}, { text: "Your Rota", href: "/YourWIP", leaf: true},
-    					{ text: "Your Teams Rota", href: "/AllWIPReports", leaf: true} ]},
+    					children: [{ text: "All Rotas", href: "/AllWIPReports", leaf: true} ]},
   					{ text: 'Skillsets', id: 'skillsNode', leaf: false,
     					children: [{ text: "View Matrix", href: "/YourWIP", leaf: true}] }
 				]

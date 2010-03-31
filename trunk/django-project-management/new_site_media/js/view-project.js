@@ -1381,8 +1381,7 @@ var project_menu =  new Ext.menu.Menu({	items: [{ text: "Add Deliverable", handl
 											{ text: "Add Lesson Learnt", handler: add_lesson },
 											{ text: "Add Report", handler: add_report },
 											{ text: "Add File", href: "/WIP/NEW" },
-											{ text: "Edit Project Initiation", handler: edit_project_initiation },
-											{ text: "Edit Work Breakdown Structure", handler: edit_project_initiation } ]});
+											{ text: "Edit Project Initiation", handler: edit_project_initiation } ]});
 var project_menu_button = { xtype: "tbbutton", text: "Manage Project", menu: project_menu }
 toolbar.add(project_menu_button); 
 
