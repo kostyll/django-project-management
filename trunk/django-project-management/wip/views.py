@@ -325,6 +325,7 @@ def view_work_item(request, wip_report, work_item_id):
 		
 	JSONSerializer = serializers.get_serializer('json')
 	j = JSONSerializer()
+	if work_item.deadline != None: work_item.deadline = work_item.deadline.strftime("%m/%d/%Y")	
 	j.serialize([work_item], fields=('description', 'assignee', 'history', 'objective', 'deadline', 'status', 'complete', 'engineering_days'))
 	
 	return HttpResponse( '''{ success: true, data: %s }''' % json.dumps(j.objects[0]['fields']))
