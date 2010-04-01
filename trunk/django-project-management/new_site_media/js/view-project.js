@@ -575,7 +575,7 @@ var edit_wbs = function(b,e){
 			
                     handler: function(){
                                          form_wbs_edit.getForm().submit({
-                                         	params: { percent_complete: Ext.getCmp("percentageSlider").value },
+                                         	params: { percent_complete: Ext.getCmp("percent_complete").value },
 																					success: function(f,a){
                                             Ext.Msg.alert('Success', 'Work Item Updated', 
                            						function() { 
