@@ -233,7 +233,6 @@ function getRating()
 }
 
 
-
 var add_risk = function(b,e){
 
 	var form_risk_add = new Ext.form.FormPanel({ url: "/Risks/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: risk_fields});
@@ -477,14 +476,14 @@ var wbs_fields = [
 		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
 		{ xtype: "textfield", fieldLabel: "Number of Days", name: "number_of_days" },
 		{ xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
-		{ xtype: "slider", 
-			minValue: 0, 
-			maxValue: 100, 
-			increment: 10, 
+		{ xtype: "slider",
+			minValue: 0,
+			maxValue: 100,
+			increment: 10,
 			plugins: percentage_tip, 
 			fieldLabel: "Percentage Complete", 
-			name: "percentageSlider", 
-			id: "percentageSlider",
+			name: "percent_complete", 
+			id: "percent_complete",
 			listeners: { setValue: function(slider) { slider.getValue(); } }  
 		},
     //{ xtype: "textfield", fieldLabel: "Percent Complete", name: "percent_complete", id: "percent_complete", listeners: { beforerender: function(slider) { Ext.getCmp("percentageSlider").value = slider.value;}} },
@@ -566,7 +565,14 @@ var edit_wbs = function(b,e){
 		url: "/WBS/" + project_number + "/" + wbs_id + "/Edit/", bodyStyle: "padding: 15px;", id: "form_wbs_edit", autoScroll: true, items: wbs_fields });
 	form_wbs_edit.getForm().load({ url: "/WBS/" + project_number + "/" + wbs_id + "/", method: "GET" });
 	var window_wbs = new Ext.Window({width: 620, autoHeight: true, closeAction: "close", autoScroll: true, modal: true, title: "Edit Work Item", items: [ form_wbs_edit ],
+		listeners: {
+			activate: function(){
+				var percentCompleteVal = grid_wbs.getSelectionModel().getSelected().get("percent_complete"); 
+				Ext.getCmp("percent_complete").setValue( percentCompleteVal, false);
+			}
+		},
 		buttons: [ { text: 'Save',
+			
                     handler: function(){
                                          form_wbs_edit.getForm().submit({
                                          	params: { percent_complete: Ext.getCmp("percentageSlider").value },
@@ -579,6 +585,7 @@ var edit_wbs = function(b,e){
                                            	});
 									    }});
 					}}]
+					
 });
 	window_wbs.show();
 }
@@ -1125,6 +1132,129 @@ grid_lessons.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
 });
 
 
+
+/*
+ * Add/Edit/Delete Files
+*/
+var st_file_type = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"Project Plan"],[2,"Other File"]]});
+
+
+var file_fields = [
+	{ xtype: "textarea", fieldLabel: "Description", name: "description" },
+	{ xtype: "combo", fieldLabel: "Type", name: "file_type", displayField: "d", valueField: "id", store: st_file_type, mode: "local", triggerAction: "all" },
+	{ xtype: "combo", fieldLabel: "Author", name: "author",  lazyInit: false,  store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
+	{ xtype: 'fileuploadfield',
+            id: 'form-file',
+            emptyText: 'Select an image',
+            fieldLabel: 'Photo',
+            name: 'photo-path',
+            buttonText: 'Browse',
+ }
+	]
+
+
+
+var add_file = function(b,e){
+	var form_add_file = new Ext.form.FormPanel({ url: "/Files/" + project_number + "/AddFile/", bodyStyle: "padding: 15px;", autoScroll: true, items: file_fields });
+	var window_file = new Ext.Window({autoHeight: true, autoWidth: true, closeAction: "close", autoScroll: true, modal: true, title: "Add a File", items: [ form_add_file ],
+				buttons: [ {	text: "Submit",
+								handler: function(){
+									form_add_file.getForm().submit({
+										success: function(f,a){
+											Ext.Msg.alert("Success", "File Added");
+											window_file.hide();
+											Ext.getCmp("grid_files").store.load();
+											Ext.getCmp("file_detail").body.update("Please select a File to see more details");
+										},
+										failure: function(f,a){
+											Ext.Msg.alert("Warning", a.result.errormsg);	
+										}
+									});
+								}},
+							{ text: "Close", handler: function(){ window_file.hide(); }}]
+	});
+	window_file.show();
+}
+
+
+function delete_file() {
+	var fileId = grid_file.getSelectionModel().getSelected().get("pk");
+	var sm = grid_file.getSelectionModel();
+	var sel = sm.getSelected();
+	if (sm.hasSelection()){
+		Ext.Msg.show({
+			title: 'Remove File',
+			buttons: Ext.MessageBox.YESNO,
+			msg: 'Remove <b>'+sel.data.summary +'</b>?',
+			closable: false, 
+			fn: function(btn){
+				if (btn == 'yes'){
+						Ext.Ajax.request({
+        url: "",
+        method: "POST",
+        params: {"pk": fileId
+            
+        },
+        failure: function (response) {
+            Ext.Msg.alert('Error', response.responseText);
+        },
+        success: function (response) {
+            Ext.Msg.alert('Success', sel.data.summary + " has been removed");
+           Ext.getCmp("grid_files").store.load();
+           Ext.getCmp("report_file").body.update('Please select a file to see more details');
+           }
+    });
+				}
+			}
+		});
+	};
+}
+
+
+var st_file = new Ext.data.Store({
+	proxy: new Ext.data.HttpProxy({ url: "/Files/" + project_number + "/" }),
+	reader: new Ext.data.JsonReader({ root: "", fields: [
+		{ name: "pk", mapping: "pk" },
+		{ name: "description", mapping: "description" },
+		{ name: "file_type", mapping: "file_type" },
+		{ name: "author", mapping: "author" }
+		]}),
+	autoLoad: true
+});
+
+var btn_add_file = { iconCls: 'icon-add', text: 'Add File', handler: add_file }
+var btn_delete_file = { iconCls: 'icon-complete', text: 'Delete File', handler: delete_file }
+
+var grid_file = new Ext.grid.GridPanel({
+	store: st_file,
+	columns: [
+            {header: "Description", dataIndex: 'description'},
+            {header: "File Type", dataIndex: 'file_type', sortable: true},
+            {header: "Author", dataIndex: 'author', sortable: true }
+	],
+    tbar: [ btn_add_file, btn_delete_file ],
+	sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
+	viewConfig: { forceFit: true },
+	id:'grid_files',
+    height: GRID_HEIGHT,
+	width: GRID_WIDTH,
+	split: true,
+	region: 'west'
+});
+
+var panel_files = new Ext.Panel({
+	layout: 'border', height: 400,
+	items: [ grid_file, { id: 'file_detail', bodyStyle: { background: '#ffffff', padding: '7px' }, region: 'center', html: 'Please select an File to see more details'} ]
+});
+
+
+
+
+
+
+
+
+
 /*
  *
  * Create the Project Report Grid
@@ -1279,6 +1409,9 @@ grid_report.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
 
 
 
+
+
+
 /* 
  *
  * Edit the Project Initation data 
@@ -1398,7 +1531,7 @@ tab_items = [
 	{ xtype: "panel", title: "Issues", items: [ panel_issues ] },
 	{ xtype: "panel", title: "Lessons Learnt", items: [ panel_lessons ] },
 	{ xtype: "panel", title: "Reports", items: [ panel_report ] },
-	{ xtype: "panel", contentEl: "project_files", title: "Files" } ]
+	{ xtype: "panel", title: "Files", items: [ panel_files ] } ]
 
 var tabpanel = new Ext.TabPanel({ items: tab_items, bodyStyle: "padding: 15px;", activeTab: 0});	
 center_panel.items = [ toolbar, tabpanel ]
