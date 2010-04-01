@@ -20,6 +20,7 @@ urlpatterns = patterns('rota.views',
 #	(r'AllRotas/$', 'view_rota', { 'year': False, 'month': False, 'day': False, 'template': 'rota/allrota.html', 'pdf': False, 'scope': 'all' }),
 	(r'^All/$', 'rota_homepage'),
 	(r'^RotaItems/$', 'view_rota_items'),
+	(r'^Users/$', 'view_users'),
 
 )
 

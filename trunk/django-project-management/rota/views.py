@@ -17,6 +17,10 @@ from backends.pdfexport import render_to_pdf
 import settings
 
 @login_required
+def view_users(request):
+	return HttpResponse( serializers.serialize('json', User.objects.filter(is_active=True), fields=('id', 'username')))
+
+@login_required
 def rota_homepage(request):
 	return render_to_response('rota/rota.html', context_instance=RequestContext(request))
 	
