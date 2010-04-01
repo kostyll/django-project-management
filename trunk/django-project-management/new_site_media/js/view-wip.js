@@ -84,9 +84,9 @@ var get_resources_from_date = function(picker,date_string){
 	var day_type = Ext.getCmp("eday_day_type").getValue();
 	var chosen_date = new Date(date_string);
 	var year = chosen_date.getFullYear();
-	var month = chosen_date.getMonth();
-	var day = chosen_date.getDay();
-	Ext.Msg.alert("Hmmmm", "date_string =>" + date_string + ", Year =>" + year + ", Month =>" + month + ", Day =>" + day);
+	var month = chosen_date.getMonth() + 1;
+	var day = chosen_date.getDate();
+	//Ext.Msg.alert("Hmmmm", "date_string =>" + date_string + ", Year =>" + year + ", Month =>" + month + ", Day =>" + day);
 	
 	st_engineering_day_resource.proxy = new Ext.data.HttpProxy({ url: "/WIP/" + wip_report + "/EngineeringDayResources/" + year + "-" + month + "-" + day + "/" + day_type + "/"}),
 	st_engineering_day_resource.load();
@@ -98,8 +98,8 @@ var get_resources_from_day_type = function(){
 	var date_string = Ext.getCmp("eday_date").getValue();
 	var chosen_date = new Date(date_string);
 	var year = chosen_date.getFullYear();
-	var month = chosen_date.getMonth();
-	var day = chosen_date.getDay();
+	var month = chosen_date.getMonth() + 1;
+	var day = chosen_date.getDate();
 	
 	st_engineering_day_resource.proxy = new Ext.data.HttpProxy({ url: "/WIP/" + wip_report + "/EngineeringDayResources/" + year + "-" + month + "-" + day + "/" + day_type + "/"}),
 	st_engineering_day_resource.load();
