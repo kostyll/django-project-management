@@ -275,10 +275,10 @@ def get_resources_for_engineering_day(request, wip_report, year, month, day, day
 
 
 		try:
-			r = RotaItem.objects.get(person=res, date=requested_date)
-			if r.activity.unavailable_for_projects:
+			rota = RotaItem.objects.get(person=res, date=requested_date)
+			if rota.activity.unavailable_for_projects:
 				r['resource'] = '''%s - Not Available''' % res_full_name
-				logging.debug('''%s has no availability. Rota'd on %s.''' % ( res, r ))
+				logging.debug('''%s has no availability. Rota'd on %s.''' % ( res, rota ))
 				r['available'] = False
 		except RotaItem.DoesNotExist:
 			pass
@@ -296,6 +296,11 @@ def add_wip_engineering_day(request, wip_report, work_item_id):
 		form = EngineeringDayForm(request.POST)
 		if form.is_valid():
 			t = form.save(commit=False)	
+
+			# Confirm that the resource is actually free and we aren't getting duff information from request.POST
+			# Get engineering days for this resource
+			e_days = EngineeringDay.objects.filter(resource=t.resource, work_date=t.work_date)
+
 			t.save()
 			work_item.engineering_days.add(t)
 			work_item.save()
