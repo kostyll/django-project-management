@@ -80,7 +80,7 @@ var grid_rota = new Ext.grid.GridPanel({
            		var month = chosen_date.getMonth() + 1;
            		var day = chosen_date.getDate();
            		
-           		st_rota_items.proxy = new Ext.data.HttpProxy({ url: "/Rota/RotaItems/" + year + "-" + month + "-" + day + "/" }),
+           		st_rota_items.proxy = new Ext.data.HttpProxy({ url: "/Rota/RotaItems/" + year + "/" + month + "/" + day + "/" }),
            		st_rota_items.load()
            		}
           }
