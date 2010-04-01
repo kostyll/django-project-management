@@ -17,7 +17,8 @@ urlpatterns = patterns('rota.views',
 	(r'AllRotas/Edit/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})$', 'view_rota', { 'template': 'rota/edit_rota.html', 'pdf': False}),
 	(r'AllRotas/Edit/$', 'view_rota', { 'year': False, 'month': False, 'day': False, 'template': 'rota/edit_rota.html', 'pdf': False }),
 	(r'AllRotas/Print/$', 'view_rota', { 'year': False, 'month': False, 'day': False, 'template': 'rota/rota-pdf.html', 'pdf': True }),
-	(r'AllRotas/$', 'view_rota', { 'year': False, 'month': False, 'day': False, 'template': 'rota/allrota.html', 'pdf': False, 'scope': 'all' }),
+#	(r'AllRotas/$', 'view_rota', { 'year': False, 'month': False, 'day': False, 'template': 'rota/allrota.html', 'pdf': False, 'scope': 'all' }),
+	(r'^All/$', 'rota_homepage'),
 
 )
 

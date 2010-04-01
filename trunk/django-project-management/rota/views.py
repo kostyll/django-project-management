@@ -17,6 +17,11 @@ from backends.pdfexport import render_to_pdf
 import settings
 
 @login_required
+def rota_homepage(request):
+	return render_to_response('rota/rota.html', context_instance=RequestContext(request))
+	
+
+@login_required
 def view_rota(request, year=False, month=False, day=False, template=False, pdf=None, scope=None):
 	
 	# No additional security required here apart from a valid login. We allow all users to view 
