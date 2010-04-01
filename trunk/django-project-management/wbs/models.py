@@ -74,7 +74,7 @@ class WorkItem(models.Model):
 	description = models.TextField('Description')
 	depends = models.ForeignKey('self', verbose_name='Depends', null=True, blank=True)
 	number_days = models.IntegerField('Number of days required', null=True, blank=True)
-	owner = models.ForeignKey(User, verbose_name='Owner', related_name='assigned_tasks', null=True, blank=True)
+	owner = models.ForeignKey(User, verbose_name='Owner', related_name='assigned_tasks')
 	percent_complete = models.IntegerField('Percent complete', null=True, blank=True)
 	active = models.BooleanField(default=True) 
 	start_date = models.DateTimeField('Start Date', null=True, blank=True)
