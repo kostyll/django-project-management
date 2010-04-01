@@ -20,6 +20,10 @@ import settings
 def rota_homepage(request):
 	return render_to_response('rota/rota.html', context_instance=RequestContext(request))
 	
+@login_required
+def view_rota_items(request):
+
+	return HttpResponse( serializers.serialize('json', RotaActivity.objects.all()))	
 
 @login_required
 def view_rota(request, year=False, month=False, day=False, template=False, pdf=None, scope=None):
