@@ -55,7 +55,7 @@ def view_rota(request, year=False, month=False, day=False, template=False, pdf=N
 	scope = 'all'
 	
 	if scope == 'all':
-		for u in User.objects.filter(is_active=True):
+		for u in User.objects.filter(is_active=True).distinct():
 			#logging.debug('''Getting rota for %s''' % u)
 			x = {'user': u.username, 'pk': u.id }
 			days = ['', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
@@ -68,7 +68,7 @@ def view_rota(request, year=False, month=False, day=False, template=False, pdf=N
 					rota_item = ''
 				x['''%s_r''' % day.isoweekday()] = str(rota_item)
 				
-				ret.append(x)
+			ret.append(x)
 
 			
 	return HttpResponse(json.dumps(ret))
