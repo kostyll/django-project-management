@@ -2,6 +2,7 @@
 import time
 import datetime
 import simplejson as json
+import logging
 
 from django.core import serializers
 from django.contrib.auth.decorators import login_required, permission_required
@@ -222,6 +223,7 @@ def get_resources_for_engineering_day(request, wip_report, year, month, day, day
 	
 	wip_report = WIPReport.objects.get(name=wip_report)
 	requested_date = datetime.date(int(year), int(month), int(day))
+	logging.debug('''Engineering resource requested by %s for %s.''' % ( request.user.username, requested_date ))
 
 	
 	ret = [ ]
@@ -231,6 +233,8 @@ def get_resources_for_engineering_day(request, wip_report, year, month, day, day
 			if group in wip_report.read_acl.all():
 				if user not in resources:
 					resources.append(user)
+
+	logging.debug('''Potential resources: %s.''' % resources)
 	ret = []
 	for res in resources:
 		# Get the resources name
@@ -239,36 +243,42 @@ def get_resources_for_engineering_day(request, wip_report, year, month, day, day
 		else:
 			res_full_name = res.username
 
+		logging.debug('''Searching for Engineering days: work_date=%s, resource=%s''' % ( requested_date, res ))
 		res_activity = EngineeringDay.objects.filter(work_date=requested_date, resource=res)
-		
 
 		r = {"pk": res.id }
 
 		if len(res_activity) == 0: # Resource isn't booked at all
 			r['resource'] = '''%s - Available all day''' % res_full_name
 			r['available'] = True
+			logging.debug('''%s has no Engineering Days booked.''' % res)
 			
 		
 		elif len(res_activity) >= 2: # User already has 2 bookings for this day
 			r['resource'] = '''%s - Booked out all day''' % res_full_name
 			r['available'] = False
+			logging.debug('''%s has 2 Engineering Days booked: %s.''' % ( res, res_activity ))
 		else:
 			for day in res_activity:
 				if day.day_type == 0:
 					r['resource'] = '''%s - Available PM only''' % res_full_name
 					r['available'] = True
+					logging.debug('''%s is available in PM. Booked on %s in AM.''' % ( res, day ))
 				elif day.day_type == 1:
 					r['resource'] = '''%s - Available AM only''' % res_full_name
 					r['available'] = True
+					logging.debug('''%s is available in AM. Booked on %s in PM.''' % ( res, day ))
 				elif day.day_type == 2:
-					r['resource'] = '''%s - Not Available''' % res_full_name
+					r['resource'] = '''%s - Booked out all day''' % res_full_name
 					r['available'] = False
+					logging.debug('''%s has no availability. Booked on %s.''' % ( res, day ))
 
 
 		try:
 			r = RotaItem.objects.get(person=res, date=requested_date)
 			if r.activity.unavailable_for_projects:
 				r['resource'] = '''%s - Not Available''' % res_full_name
+				logging.debug('''%s has no availability. Rota'd on %s.''' % ( res, r ))
 				r['available'] = False
 		except RotaItem.DoesNotExist:
 			pass
@@ -277,10 +287,10 @@ def get_resources_for_engineering_day(request, wip_report, year, month, day, day
 		ret.append(r)
 	return HttpResponse(json.dumps(ret))
 
-def add_wip_engineering_day(request, work_item_id):
+def add_wip_engineering_day(request, wip_report, work_item_id):
 
 	work_item = get_object_or_404(WIPItem, id=work_item_id)
-	wip_report = work_item.heading.all()[0].report.all()[0]
+	wip_report = WIPReport.objects.get(name=wip_report)
 
 	if request.method == 'POST':
 		form = EngineeringDayForm(request.POST)
@@ -289,10 +299,10 @@ def add_wip_engineering_day(request, work_item_id):
 			t.save()
 			work_item.engineering_days.add(t)
 			work_item.save()
-			return HttpResponseRedirect(work_item.get_absolute_url())
+			logging.debug('''Booked engineering day for %s on %s''' % ( t.resource, t.work_date ))
+			return HttpResponse( return_json_success() )
 		else:
-			print form.errors
-			print request.POST['work_date']
+			return HttpResponse( handle_form_errors(form.errors))
 	
 	
 def close_heading(request, heading_id):

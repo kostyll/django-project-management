@@ -49,10 +49,16 @@ def view_rota(request, year=False, month=False, day=False, template=False, pdf=N
 				try:
 					rota_item = RotaItem.objects.get(person=u, date=day)
 				except RotaItem.DoesNotExist:
-					rota_item = None
+					rota_item = ''
 				print rota_item
 				x['''%s_rota''' % days[day.isoweekday()]] = rota_item
-				x['''%s_eday''' % days[day.isoweekday()]] = EngineeringDay.objects.filter(work_date=day, resource=u)
+				
+				e_day = EngineeringDay.objects.filter(work_date=day, resource=u)
+				if e_day.count() == 0:
+					x['''%s_eday''' % days[day.isoweekday()]] = ''
+				else:
+					x['''%s_eday''' % days[day.isoweekday()]] = e_day
+					
 				ret.append(x)
 
 			

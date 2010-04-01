@@ -20,7 +20,7 @@ class WIPItem(models.Model):
 	assignee = models.ForeignKey(User, verbose_name='Assignee')
 	history = models.TextField('History', blank=True)
 	objective = models.BooleanField('Objective')
-	deadline = models.DateTimeField('Deadline', blank=True, null=True)
+	deadline = models.DateField('Deadline', blank=True, null=True)
 	status = models.IntegerField('Status', choices=WIP_STATUS, default=1)
 	complete = models.BooleanField('Completed')
 	engineering_days = models.ManyToManyField(EngineeringDay, verbose_name="Engineering Days", related_name="wip_item", blank=True, null=True)

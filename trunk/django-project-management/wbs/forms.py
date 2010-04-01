@@ -40,6 +40,8 @@ class WBSForm(ModelForm):
 		self.fields['update'] = WBSUpdateField()
 		self.fields['update'].widget = Textarea()
 		self.fields['update'].label = 'Update'
+		self.fields['start_date'].input_formats = ['%d/%m/%Y']
+		self.fields['finish_date'].input_formats = ['%d/%m/%Y']
 
 
 class WBSUserForm(ModelForm):
@@ -73,4 +75,5 @@ class EngineeringDayForm(ModelForm):
 	def __init__(self, *args, **kwargs):
 		super(EngineeringDayForm, self).__init__(*args, **kwargs)
 		self.fields['resource'].choices = (('', ''),)
+		self.fields['work_date'].input_formats = ['%d/%m/%Y']
 	

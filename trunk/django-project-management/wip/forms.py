@@ -19,6 +19,7 @@ class WIPItemEditorForm(ModelForm):
 		self.fields['update'] = WIPUpdateField()
 		self.fields['update'].widget = Textarea()
 		self.fields['update'].label = 'Update'
+		self.fields['deadline'].input_formats = ['%d/%m/%Y']
 		self.fields['assignee'].choices = get_wip_assignee_list(wip_report)
 
 
