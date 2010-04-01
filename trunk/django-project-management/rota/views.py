@@ -2,6 +2,7 @@
 import calendar
 import datetime
 import simplejson as json
+import logging
 
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
@@ -25,8 +26,7 @@ def rota_homepage(request):
 	return render_to_response('rota/rota.html', context_instance=RequestContext(request))
 	
 @login_required
-def view_rota_items(request):
-
+def view_rota_activities(request):
 	return HttpResponse( serializers.serialize('json', RotaActivity.objects.all()))	
 
 @login_required
@@ -51,31 +51,26 @@ def view_rota(request, year=False, month=False, day=False, template=False, pdf=N
 
 	# [ { 'user': 'smorris', 'pk': '1', 'monday_rota': 'Infrastructure Mid', 'monday_eday': 'Free', 'tuesday_rota'
 	ret = []
+
+	scope = 'all'
 	
 	if scope == 'all':
-		print 'Hello'
 		for u in User.objects.filter(is_active=True):
-			print u
+			#logging.debug('''Getting rota for %s''' % u)
 			x = {'user': u.username, 'pk': u.id }
 			days = ['', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
 			for day in this_week:
 				try:
-					rota_item = RotaItem.objects.get(person=u, date=day)
+					_rota_item = RotaItem.objects.get(person=u, date=day)
+					rota_item = _rota_item.activity
+					logging.debug('''Found existing rota item for %s: %s''' % ( u, rota_item ))
 				except RotaItem.DoesNotExist:
 					rota_item = ''
-				print rota_item
-				x['''%s_rota''' % days[day.isoweekday()]] = rota_item
+				x['''%s_r''' % day.isoweekday()] = str(rota_item)
 				
-				e_day = EngineeringDay.objects.filter(work_date=day, resource=u)
-				if e_day.count() == 0:
-					x['''%s_eday''' % days[day.isoweekday()]] = ''
-				else:
-					x['''%s_eday''' % days[day.isoweekday()]] = e_day
-					
 				ret.append(x)
 
 			
-	
 	return HttpResponse(json.dumps(ret))
 
 @login_required
