@@ -1225,10 +1225,15 @@ var st_file = new Ext.data.Store({
 var btn_add_file = { iconCls: 'icon-add', text: 'Add File', handler: add_file }
 var btn_delete_file = { iconCls: 'icon-complete', text: 'Delete File', handler: delete_file }
 
+var renderer_file = function(val, x, data){
+	return "<a href='" + data.json.url + "'>" + val + "</a>"
+
+} 
+
 var grid_file = new Ext.grid.GridPanel({
 	store: st_file,
 	columns: [
-            {header: "Description", dataIndex: 'description'},
+            {header: "Description", dataIndex: 'description', renderer: renderer_file },
             {header: "File Type", dataIndex: 'file_type', sortable: true},
             {header: "Author", dataIndex: 'author', sortable: true }
 	],
