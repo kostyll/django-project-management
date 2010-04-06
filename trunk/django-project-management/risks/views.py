@@ -79,7 +79,7 @@ def _calculate_risk(probability, impact):
 @login_required
 def view_risks(request, project_number):
 	project = Project.objects.get(project_number=project_number)
-	return HttpResponse( serializers.serialize('json', project.risks.all(), relations=('owner',), display=['status', 'counter_measure']))
+	return HttpResponse( serializers.serialize('json', project.risks.all(), relations={'owner': {'fields': ('username',), 'extras': ('get_full_name',)}}, display=['status', 'counter_measure']))
 
 @login_required
 def view_risk(request, project_number, risk_id):

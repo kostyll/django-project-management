@@ -70,7 +70,7 @@ def view_issues(request, project_number):
 	project = Project.objects.get(project_number=project_number)
 	check_project_read_acl(project, request.user)	# Will return Http404 if user isn't allowed to view project
 
-	return HttpResponse( serializers.serialize('json', project.issues.all(), relations=('owner', 'author'), display=['type', 'status', 'priority']))
+	return HttpResponse( serializers.serialize('json', project.issues.all(), relations={'owner': {'fields': ('username',), 'extras': ('get_full_name',)}, 'author': {'fields': ('username',), 'extras': ('get_full_name',)}    }, display=['type', 'status', 'priority']))
 
 @login_required
 def view_issue(request, project_number, issue_id):

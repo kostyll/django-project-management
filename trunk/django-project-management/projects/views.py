@@ -168,7 +168,7 @@ def view_checkpoint_reports(request, project_number):
 	# Some security - only allow users to view objects they are allowed to via write_acl
 	project = get_object_or_404(Project, project_number=project_number)
 	check_project_write_acl(project, request.user)	# Will return Http404 if user isn't allowed to write to project
-	return HttpResponse( serializers.serialize('json', project.executive_summary.all(), relations=('author',), display=['type']))
+	return HttpResponse( serializers.serialize('json', project.executive_summary.all(), relations={'author': {'fields': ('username',), 'extras': ('get_full_name',)}}, display=['type']))
 
 @login_required
 def view_checkpoint_report(request, project_number, report_id):	
