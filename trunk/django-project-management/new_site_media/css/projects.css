@@ -1,5 +1,5 @@
 .project_table tr td { padding: 5px; font-family:arial,tahoma,helvetica,sans-serif; font-size:11px; font-size-adjust:none; font-style:normal; font-variant:normal; font-weight:normal; }
-.project_table tr th { padding: 5px; font-family:arial,tahoma,helvetica,sans-serif; font-size:11px; font-size-adjust:none; font-style:normal; font-variant:normal; font-weight:bold; }
+.project_table tr th { vertical-align: top; padding: 5px; font-family:arial,tahoma,helvetica,sans-serif; font-size:11px; font-size-adjust:none; font-style:normal; font-variant:normal; font-weight:bold; }
 
 .documentation_status_red { background-color:red; color:white; padding:5px; }
 .documentation_status_red a { color:white; }
