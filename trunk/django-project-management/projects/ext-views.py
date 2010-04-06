@@ -26,7 +26,7 @@ def edit_pid(request, project_number):
 
 	JSONSerializer = serializers.get_serializer('json')
 	j = JSONSerializer()
-	j.serialize([project], fields=('project_name', 'project_number', 'project_status', 'company', 'project_manager', 'team_managers', 'project_sponsor', 'project_description', 'business_case', 'business_benefits', 'project_scope', 'exclusions', 'assumptions'))
+	j.serialize([project], fields=('project_name', 'project_number', 'project_status', 'company', 'project_manager', 'team_managers', 'project_sponsor', 'project_description', 'business_case', 'business_benefits', 'project_scope', 'exclusions', 'assumptions', 'communications_plan', 'quality_plan'))
 	return HttpResponse( '''{ success: true, data: %s }''' % json.dumps(j.objects[0]['fields']))
 	
 def get_skillset(request, project_number):
