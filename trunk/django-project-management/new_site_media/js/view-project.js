@@ -14,19 +14,19 @@ var TEXTAREA_HEIGHT = 80
 
 var st_users = new Ext.data.Store({
 	proxy: new Ext.data.HttpProxy({ url: "/xhr/" + project_number + "/get_users/" }),
-	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"username", mapping: "fields.username"}]}),
+	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"username", mapping: "extras.get_full_name"}]}),
 	autoLoad: true
 });
 
 var st_managers = new Ext.data.Store({
 	proxy: new Ext.data.HttpProxy({ url: "/xhr/" + project_number + "/get_team_managers/" }),
-	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"username", mapping: "fields.username"}]}),
+	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"username", mapping: "extras.get_full_name"}]}),
 	autoLoad: true
 })
 
 var st_non_managers = new Ext.data.Store({
 	proxy: new Ext.data.HttpProxy({ url: "/xhr/" + project_number + "/get_non_team_managers/" }),
-	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"username", mapping: "fields.username"}]}),
+	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"username", mapping: "extras.get_full_name"}]}),
 	autoLoad: true
 })
 
