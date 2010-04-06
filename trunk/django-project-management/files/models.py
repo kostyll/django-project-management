@@ -7,8 +7,8 @@ import time
 # Create your models here.
 
 FILE_TYPE = (
-				('1', 'Project Plan'),
-				('2', 'Other File'),
+				(1, 'Project Plan'),
+				(2, 'Other File'),
 )
 
 
