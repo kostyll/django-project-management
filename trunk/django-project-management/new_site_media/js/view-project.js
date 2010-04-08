@@ -5,7 +5,7 @@ var GRID_HEIGHT = 210
 var GRID_WIDTH = 500
 var TEXTAREA_WIDTH = 400
 var TEXTAREA_HEIGHT = 80 
-var JSON_DATE = "Y-m-d h:m:s"
+var JSON_DATE = "Y-m-d h:i:s"
 var DATE_RENDERER = Ext.util.Format.dateRenderer("d/m/Y")
 
 /* 
@@ -1145,29 +1145,23 @@ var st_file_type = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"Proj
 
 
 var file_fields = [
-	{ xtype: "textarea", fieldLabel: "Description", name: "description" },
-	{ xtype: "combo", fieldLabel: "Type", name: "file_type", displayField: "d", valueField: "id", store: st_file_type, mode: "local", triggerAction: "all" },
-	{ xtype: "combo", fieldLabel: "Author", name: "author",  lazyInit: false,  store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
-	{ xtype: 'fileuploadfield',
-            id: 'form-file',
-            emptyText: 'Select an image',
-            fieldLabel: 'Photo',
-            name: 'photo-path',
-            buttonText: 'Browse',
- }
-	]
+	{ xtype: "textarea", fieldLabel: "Description", name: "description", width: TEXTAREA_WIDTH, height: TEXTAREA_HEIGHT },
+	{ xtype: "combo", fieldLabel: "File Type", hiddenName: "file_type", displayField: "d", valueField: "id", store: st_file_type, mode: "local", triggerAction: "all" },
+	{ xtype: "combo", fieldLabel: "Author", hiddenName: "author",  lazyInit: false,  store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
+	{ xtype: 'fileuploadfield', id: 'form-file', emptyText: 'Select an file', fieldLabel: 'File', name: 'filename',  buttonText: '', buttonCfg: { iconCls: 'upload-icon' }}
+]
 
 
 
 var add_file = function(b,e){
-	var form_add_file = new Ext.form.FormPanel({ url: "/Files/" + project_number + "/AddFile/", bodyStyle: "padding: 15px;", autoScroll: true, items: file_fields });
-	var window_file = new Ext.Window({autoHeight: true, autoWidth: true, closeAction: "close", autoScroll: true, modal: true, title: "Add a File", items: [ form_add_file ],
+	var form_add_file = new Ext.form.FormPanel({ url: "/Files/" + project_number + "/AddFile/", bodyStyle: "padding: 15px;", autoScroll: true, items: file_fields, fileUpload: true });
+	var window_file = new Ext.Window({autoHeight: true, width: 650 , closeAction: "close", autoScroll: true, modal: true, title: "Add a File", items: [ form_add_file ],
 				buttons: [ {	text: "Submit",
 								handler: function(){
 									form_add_file.getForm().submit({
 										success: function(f,a){
 											Ext.Msg.alert("Success", "File Added");
-											window_file.hide();
+											window_file.destroy();
 											Ext.getCmp("grid_files").store.load();
 											Ext.getCmp("file_detail").body.update("Please select a File to see more details");
 										},
@@ -1176,7 +1170,7 @@ var add_file = function(b,e){
 										}
 									});
 								}},
-							{ text: "Close", handler: function(){ window_file.hide(); }}]
+							{ text: "Close", handler: function(){ window_file.destroy(); }}]
 	});
 	window_file.show();
 }
@@ -1222,6 +1216,7 @@ var st_file = new Ext.data.Store({
 		{ name: "pk", mapping: "pk" },
 		{ name: "description", mapping: "description" },
 		{ name: "file_type", mapping: "file_type" },
+		{ name:"created_date", type: "date", dateFormat: JSON_DATE, mapping: "created_date"},
 		{ name: "author", mapping: "author" }
 		]}),
 	autoLoad: true
@@ -1240,7 +1235,8 @@ var grid_file = new Ext.grid.GridPanel({
 	columns: [
             {header: "Description", dataIndex: 'description', renderer: renderer_file },
             {header: "File Type", dataIndex: 'file_type', sortable: true},
-            {header: "Author", dataIndex: 'author', sortable: true }
+            {header: "Author", dataIndex: 'author', sortable: true },
+            {header: "Created Date", dataIndex: 'created_date', sortable: true, hidden: true, renderer: DATE_RENDERER },
 	],
     tbar: [ btn_add_file, btn_delete_file ],
 	sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
@@ -1252,11 +1248,23 @@ var grid_file = new Ext.grid.GridPanel({
 	region: 'west'
 });
 
+var markup_files = [
+	'<table class="project_table">',
+	'<tr><th>Description</th> <td>{description}</td></tr>',
+	'<tr><th>File Type</th> <td>{file_type}</td></tr>',
+	'<tr><th>Created Date</th> <td>{created_date}</td></tr>',
+	'</table>' ]
+var template_files = new Ext.Template(markup_files);
+
 var panel_files = new Ext.Panel({
 	layout: 'border', height: 400,
 	items: [ grid_file, { id: 'file_detail', bodyStyle: { background: '#ffffff', padding: '7px' }, region: 'center', html: 'Please select an File to see more details'} ]
 });
 
+grid_file.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
+		var detailPanel = Ext.getCmp('file_detail');
+		template_files.overwrite(detailPanel.body, r.data);
+});
 
 
 
@@ -1523,7 +1531,7 @@ var project_menu =  new Ext.menu.Menu({	items: [{ text: "Add Deliverable", handl
 											{ text: "Add Issue", handler: add_issue },
 											{ text: "Add Lesson Learnt", handler: add_lesson },
 											{ text: "Add Report", handler: add_report },
-											{ text: "Add File", href: "/WIP/NEW" },
+											{ text: "Add File", handler: add_file },
 											{ text: "Edit Project Initiation", handler: edit_project_initiation } ]});
 var project_menu_button = { xtype: "tbbutton", text: "Manage Project", menu: project_menu }
 toolbar.add(project_menu_button); 
