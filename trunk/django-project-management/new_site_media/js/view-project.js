@@ -5,6 +5,8 @@ var GRID_HEIGHT = 210
 var GRID_WIDTH = 500
 var TEXTAREA_WIDTH = 400
 var TEXTAREA_HEIGHT = 80 
+var JSON_DATE = "Y-m-d h:m:s"
+var DATE_RENDERER = Ext.util.Format.dateRenderer("d/m/Y")
 
 /* 
  * Some reusable functions
@@ -30,6 +32,7 @@ var st_non_managers = new Ext.data.Store({
 	autoLoad: true
 })
 
+var date_renderer = Ext.util.Format.dateRenderer('d/m/Y');
 
 /* 
  *
@@ -144,8 +147,8 @@ var st_deliverable = new Ext.data.Store({
 															{name:"expected_result", mapping: "fields.expected_result"},
 															{name:"rpo", mapping: "fields.rpo"},
 															{name:"rto", mapping: "fields.rto"},
-															{name:"created_date", mapping: "fields.created_date"},
-															{name:"modified_date", mapping: "fields.modified_date"} ]}),
+															{name:"created_date", type: "date", dateFormat: JSON_DATE, mapping: "fields.created_date"},
+															{name:"modified_date", type: "date", dateFormat: JSON_DATE, mapping: "fields.modified_date"} ]}),
 	autoLoad: true
 });
 
@@ -162,8 +165,8 @@ var grid_deliverables = new Ext.grid.GridPanel({
             {header: "Expected Result", dataIndex: 'expected_result', sortable: true, hidden: true},
             {header: "RTO", dataIndex: 'rto', sortable: true, hidden: true },
             {header: "RPO", dataIndex: 'rpo', sortable: true, hidden: true },
-            {header: "Created Date", dataIndex: 'created_date', sortable: true, hidden: true },
-            {header: "Modified Date", dataIndex: 'modified_date', sortable: true, hidden: true } ],
+            {header: "Created Date", dataIndex: 'created_date', sortable: true, hidden: true, renderer: DATE_RENDERER },
+            {header: "Modified Date", dataIndex: 'modified_date', sortable: true, hidden: true, renderer: DATE_RENDERER } ],
         tbar: [ btn_update_deliverable, btn_delete_deliverable ],
 		sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
 		viewConfig: { forceFit: true },
@@ -389,8 +392,8 @@ var st_risks = new Ext.data.Store({
 	reader: new Ext.data.JsonReader({ root: "", fields: [   
 		{name:"pk", mapping: "pk"},
 		{ name: "risk_number", mapping: "fields.risk_number" },
-		{ name: "created_date", mapping: "fields.created_date" },	
-		{ name: "modified_date", mapping: "fields.modified_date" },	
+		{ name: "created_date", mapping: "fields.created_date", type: "date", dateFormat: JSON_DATE },	
+		{ name: "modified_date", mapping: "fields.modified_date", type: "date", dateFormat: JSON_DATE },	
 		{ name: "description", mapping: "fields.description" },	
 		{ name: "owner", mapping: "fields.owner.extras.get_full_name" },	
 		{ name: "probability", mapping: "fields.probability" },	
@@ -411,6 +414,8 @@ var grid_risks = new Ext.grid.GridPanel({
             {header: "Description", dataIndex: 'description'},
             {header: "Probability", dataIndex: 'probability'},
             {header: "Impact", dataIndex: 'impact'},
+            {header: "Created Date", dataIndex: 'created_date', sortable: true, hidden: true, renderer: DATE_RENDERER },
+            {header: "Modified Date", dataIndex: 'modified_date', sortable: true, hidden: true, renderer: DATE_RENDERER },
 	    {header: "Rating", dataIndex: 'rating'} ],
 		sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
 		viewConfig: { forceFit: true },
@@ -628,8 +633,8 @@ var st_wbs = new Ext.data.GroupingStore({
 	proxy: new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/" }),
 	reader: new Ext.data.JsonReader({ root: "", fields: [
 		{ name: "pk", mapping: "pk" },
-		{ name: "created_date", mapping: "fields.created_date" },
-		{ name: "modified_date", mapping: "fields.modified_date" },
+		{ name: "created_date", mapping: "fields.created_date", type: "date", dateFormat: JSON_DATE },
+		{ name: "modified_date", mapping: "fields.modified_date", type: "date", dateFormat: JSON_DATE },
 		{ name: "skill_set", mapping: "fields.skill_set.fields.skill" },
 		{ name: "project_stage", mapping: "fields.project_stage.fields.stage" },
 		{ name: "author", mapping: "fields.author.extras.get_full_name" },
@@ -638,8 +643,8 @@ var st_wbs = new Ext.data.GroupingStore({
 		{ name: "number_days", mapping: "fields.number_days" },
 		{ name: "owner", mapping: "fields.owner.extras.get_full_name" },
 		{ name: "percent_complete", mapping: "fields.percent_complete" },
-		{ name: "start_date", mapping: "fields.start_date" },
-		{ name: "finish_date", mapping: "fields.finish_date" },
+		{ name: "start_date", mapping: "fields.start_date", type: "date", dateFormat: JSON_DATE },
+		{ name: "finish_date", mapping: "fields.finish_date", type: "date", dateFormat: JSON_DATE },
 		{ name: "wbs_number", mapping: "fields.wbs_number" },
 		{ name: "cost", mapping: "fields.cost" },
 		{ name: "history", mapping: "fields.history" },
@@ -665,8 +670,8 @@ var grid_wbs = new Ext.grid.GridPanel({
         id: "grid_wbs",
         columns: [
             {header: "WBS Number", dataIndex: 'wbs_number'},
-            {header: "Created Date", dataIndex: 'created_date', hidden: true, sortable: true },
-            {header: "Modified Date", dataIndex: 'modified_date', hidden: true, sortable: true },
+            {header: "Created Date", dataIndex: 'created_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
+            {header: "Modified Date", dataIndex: 'modified_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
             {header: "Skill Set", dataIndex: 'skill_set', hidden: true, sortable: true },
             {header: "Stage", dataIndex: 'project_stage'},
             {header: "Author", dataIndex: 'author', hidden: true, sortable: true },
@@ -675,8 +680,8 @@ var grid_wbs = new Ext.grid.GridPanel({
             {header: "Number of Days", dataIndex: 'number_days', hidden: true, sortable: true },
             {header: "Owner", dataIndex: 'owner', hidden: true, sortable: true },
             {header: "Percent Complete", dataIndex: 'percent_complete', sortable: true },
-            {header: "Start Date", dataIndex: 'start_date', hidden: true, sortable: true },
-            {header: "Finish Date", dataIndex: 'finish_date', hidden: true, sortable: true },
+            {header: "Start Date", dataIndex: 'start_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
+            {header: "Finish Date", dataIndex: 'finish_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
             {header: "Work Status", dataIndex: 'get_work_item_status', hidden: true, sortable: true },
             {header: "Cost", dataIndex: 'cost'}
 		],
@@ -902,8 +907,8 @@ var st_issues = new Ext.data.GroupingStore({
 	proxy: new Ext.data.HttpProxy({ url: "/Issues/" + project_number + "/" }),
 	reader: new Ext.data.JsonReader({ root: "", fields: [
 		{name:"pk", mapping: "pk"},
-		{ name: "created_date", mapping: "fields.created_date" },
-		{ name: "modified_date", mapping: "fields.modified_date" },
+		{ name: "created_date", mapping: "fields.created_date", type: "date", dateFormat: JSON_DATE },
+		{ name: "modified_date", mapping: "fields.modified_date", type: "date", dateFormat: JSON_DATE },
 		{ name: "description", mapping: "fields.description" },
 		{ name: "owner", mapping: "fields.owner.extras.get_full_name" },
 		{ name: "author", mapping: "fields.author.extras.get_full_name" },
@@ -925,8 +930,8 @@ var grid_issues = new Ext.grid.GridPanel({
 	columns: [
             {header: "Description", dataIndex: 'description'},
             {header: "Owner", dataIndex: 'owner', sortable: true},
-            {header: "Created Date", dataIndex: 'created_date', hidden: true, sortable: true },
-            {header: "Modified Date", dataIndex: 'modified_date', hidden: true, sortable: true },
+            {header: "Created Date", dataIndex: 'created_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
+            {header: "Modified Date", dataIndex: 'modified_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
             {header: "Author", dataIndex: 'author', hidden: true, sortable: true },
             {header: "Status", dataIndex: 'status', sortable: true },
             {header: "Type", dataIndex: 'type', sortable: true },
@@ -1084,8 +1089,8 @@ var st_lessons = new Ext.data.Store({
 		{name:"pk", mapping: "pk"},
 		{ name: "author", mapping: "fields.author.extras.get_full_name" },
 		{ name: "description", mapping: "fields.description" },
-		{ name: "created_date", mapping: "fields.created_date" },
-		{ name: "modified_date", mapping: "fields.modified_date" },
+		{ name: "created_date", mapping: "fields.created_date", type: "date", dateFormat: JSON_DATE },
+		{ name: "modified_date", mapping: "fields.modified_date", type: "date", dateFormat: JSON_DATE },
 		{ name: "publish_to_client", mapping: "fields.publish_to_client" } ]}),
 	autoLoad: true
 });
@@ -1098,8 +1103,8 @@ var grid_lessons = new Ext.grid.GridPanel({
 	columns: [
             {header: "Description", dataIndex: 'description'},
             {header: "Author", dataIndex: 'Author', hidden: true, sortable: true },
-            {header: "Created Date", dataIndex: 'created_date', hidden: true, sortable: true },
-            {header: "Modified Date", dataIndex: 'modified_date', hidden: true, sortable: true },
+            {header: "Created Date", dataIndex: 'created_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
+            {header: "Modified Date", dataIndex: 'modified_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
             {xtype: "booleancolumn", header: "Publish To Client", dataIndex: 'publish_to_client', sortable: true }
 	],
     tbar: [ btn_update_lesson, btn_delete_lesson ],
@@ -1365,8 +1370,8 @@ var st_report = new Ext.data.Store({
 		{ name: "pk", mapping: "pk" },
 		{ name: "author", mapping: "fields.author.extras.get_full_name" },
 		{ name: "type", mapping: "fields.type" },
-		{ name: "created_date", mapping: "fields.created_date" },
-		{ name: "modified_date", mapping: "fields.modified_date" },
+		{ name: "created_date", mapping: "fields.created_date", type: "date", dateFormat: JSON_DATE },
+		{ name: "modified_date", mapping: "fields.modified_date", type: "date", dateFormat: JSON_DATE },
 		{ name: "summary", mapping: "fields.summary" } ]}),
 	autoLoad: true
 });
@@ -1379,9 +1384,9 @@ var grid_report = new Ext.grid.GridPanel({
 	columns: [
             {header: "Summary", dataIndex: 'summary'},
             {header: "Author", dataIndex: 'author', sortable: true},
-            {header: "Created_date", dataIndex: 'created_date', hidden: true, sortable: true },
+            {header: "Created_date", dataIndex: 'created_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
             {header: "Type", dataIndex: 'type', hidden: true, sortable: true },
-            {header: "Modified Date", dataIndex: 'modified_date', sortable: true, hidden: true}
+            {header: "Modified Date", dataIndex: 'modified_date', sortable: true, hidden: true, renderer: DATE_RENDERER }
 	],
     tbar: [ btn_update_report, btn_delete_report ],
 	sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
