@@ -71,7 +71,7 @@ def view_lessons(request, project_number):
 	project = Project.objects.get(project_number=project_number)
 	check_project_read_acl(project, request.user)	# Will return Http404 if user isn't allowed to view project
 
-	return HttpResponse( serializers.serialize('json', project.lessons_learnt.all(), relations=('author',)))
+	return HttpResponse( serializers.serialize('json', project.lessons_learnt.all(), relations={'author': {'fields': ('username',), 'extras': ('get_full_name',)}}))
 	
 @login_required
 def view_lesson(request, project_number, lesson_id):
