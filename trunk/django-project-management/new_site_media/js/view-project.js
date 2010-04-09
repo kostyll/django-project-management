@@ -596,6 +596,74 @@ var edit_wbs = function(b,e){
 }
 									    
 									    
+// Engineering Days
+
+var st_engineering_day_resource =  new Ext.data.Store({
+	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk",mapping:"pk"},{name:"resource", mapping:"resource"},{name:"available", mapping:"available"}]})
+});
+
+var st_engineering_day_type = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[0,"Half-day AM"],[1,"Half-day PM"],[2,"Full Day"]]});
+
+var get_resources_from_date = function(picker,date_string){
+
+	var wbs_id = grid_wbs.getSelectionModel().getSelected().get("pk");
+	var day_type = Ext.getCmp("eday_day_type").getValue();
+	var chosen_date = new Date(date_string);
+	var year = chosen_date.getFullYear();
+	var month = chosen_date.getMonth() + 1;
+	var day = chosen_date.getDate();
+	//Ext.Msg.alert("Hmmmm", "date_string =>" + date_string + ", Year =>" + year + ", Month =>" + month + ", Day =>" + day);
+	
+	st_engineering_day_resource.proxy = new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/EngineeringDayResources/" + year + "-" + month + "-" + day + "/" + wbs_id + "/" + day_type + "/"}),
+	st_engineering_day_resource.load();
+}
+
+var get_resources_from_day_type = function(){
+	
+	var wbs_id = grid_wbs.getSelectionModel().getSelected().get("pk");
+	var day_type = Ext.getCmp("eday_day_type").getValue();
+	var date_string = Ext.getCmp("eday_date").getValue();
+	var chosen_date = new Date(date_string);
+	var year = chosen_date.getFullYear();
+	var month = chosen_date.getMonth() + 1;
+	var day = chosen_date.getDate();
+	
+	st_engineering_day_resource.proxy = new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/EngineeringDayResources/" + year + "-" + month + "-" + day + "/" + wbs_id + "/" + day_type + "/"}),
+	st_engineering_day_resource.load();
+
+}
+
+var engineering_day_fields = [
+	{ xtype: "datefield", fieldLabel: "Date", format: 'd/m/Y', name: "work_date", listeners: { select: get_resources_from_date }, id: "eday_date" },
+	{ xtype: "combo", fieldLabel: "Day Type", hiddenName: "day_type", lazyInit: false, store: st_engineering_day_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all", id: "eday_day_type", listeners: { select: get_resources_from_day_type}, data: '1' },
+	{ xtype: "combo", fieldLabel: "Resource", hiddenName: "resource", lazyInit: false, store: st_engineering_day_resource, mode: "local", displayField: "resource", valueField: "pk", triggerAction: "all", height: '200px' }
+]
+
+var add_engineering_day = function(){
+
+	var wbs_id = grid_wbs.getSelectionModel().getSelected().get("pk");
+	var form_add_engineering_day = new Ext.form.FormPanel({ url: "/WBS/" + project_number + "/AddEngineeringDay/" + wbs_id + "/", bodyStyle: "padding: 15px;", autoScroll: true, items: engineering_day_fields });	
+	var window_engineering_day = new Ext.Window({ width: 620, autoHeight: true, closeAction: "close", autoScroll: true, modal: true, title: "Add Engineering Day", items: [ form_add_engineering_day ],
+			buttons: [ { text: "Save",
+				handler: function(){ 
+					form_add_engineering_day.getForm().submit({
+						success: function(f,a){
+							Ext.Msg.alert('Success', 'Engineering Day Booked',
+								function(){
+									window_engineering_day.close();
+									Ext.getCmp("grid_wip_items").store.load();
+                                            				Ext.getCmp("wbs_detail").body.update('Please select a Work Item to see more details');
+
+							});	
+						},failure: function(f,a){
+							Ext.Msg.alert('Warning', a.result.errormsg);
+							}
+						});
+				}},{ text: "Close", handler: function(){ window_engineering_day.close(); }} ]
+
+	});
+	window_engineering_day.show();
+}
 									    
 									    
 									    
@@ -663,7 +731,7 @@ var btn_add_wbs = { iconCls: 'icon-add', text: 'Add Work Item', handler: add_wbs
 var btn_update_wbs = { iconCls: 'icon-update', text: 'Update Work Item', handler: edit_wbs }
 var btn_delete_wbs = { iconCls: 'icon-complete', text: 'Delete Work Item', handler: delete_wbs }
 var btn_add_project_stage = { iconCls: 'icon-add', text: 'Add Project Stage', handler: add_project_stage }
-var btn_add_engineering_day = { iconCls: 'icon-add', text: 'Add Engineering Day', handler: null }
+var btn_add_engineering_day = { iconCls: 'icon-add', text: 'Add Engineering Day', handler: add_engineering_day }
 
 var grid_wbs = new Ext.grid.GridPanel({
         store: st_wbs,
@@ -780,6 +848,7 @@ grid_wbs.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
 		var panel_wbs = Ext.getCmp('wbs_detail');
 		tpl_wbs.overwrite(panel_wbs.body, r.data);
 });
+
 
 
 /*

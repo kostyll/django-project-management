@@ -47,6 +47,8 @@ Ext.extend(Ext.ux.tree.State, Ext.util.Observable, {
 
 });
 
+Ext.DatePicker.prototype.startDay = 1;
+
 var tree_data = [
 					{ text: 'Projects', id: 'projectsNode', leaf: false,
 						children: [{ text: 'View Dashboard', href: "/", leaf: true }]},

@@ -29,7 +29,7 @@
 .rag_status_green-selected { background-color:green; color:white; padding:5px; }
 .rag_status_blue-selected { background-color:blue; color:white; padding:5px; }
 .rag_status_grey-selected { background-color:gray; color:white; padding:5px; }
-.rag_status_white-selected { background-color:white; color: black; padding:5px; }
+.rag_status_white-selected { background-color:#DFE8F6; color: black; padding:5px; }
 
 
 .rag_status_red-hover { color:black; padding:5px; background-image:url(/site_media/img/red-stripe-hover.png); }

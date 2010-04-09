@@ -2,6 +2,7 @@
 import datetime
 import time
 import simplejson as json
+import logging
 
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
@@ -139,7 +140,7 @@ def edit_work_item(request, project_number, wbs_id):
 			
 			
 @login_required
-def get_resources_for_engineering_day(request, project_number, wbs_id, year, month, day, day_type):
+def get_resources_for_engineering_day(request, project_number, wbs_id, year, month, day, day_type, as_json=True):
 
 
 	project = get_object_or_404(Project, project_number=project_number)
@@ -150,7 +151,8 @@ def get_resources_for_engineering_day(request, project_number, wbs_id, year, mon
 	
 	ret = [ ]
 	
-	resources = UserProfile.objects.filter(skillset=work_item.skill_set, user__is_active=True)
+	resources = UserProfile.objects.filter(skillset=work_item.skill_set, user__is_active=True).order_by('user__first_name')
+	logging.debug('''Potential resources: %s.''' % resources)
 	for res in resources:
 		# Get the resources name
 		if res.user.get_full_name() != '':
@@ -158,38 +160,54 @@ def get_resources_for_engineering_day(request, project_number, wbs_id, year, mon
 		else:
 			res_full_name = res.user.username
 
+		logging.debug('''Searching for Engineering days: work_date=%s, resource=%s, resource_id=%s''' % ( requested_date, res_full_name, res.user.id ))
+		
 
 		res_activity = EngineeringDay.objects.filter(work_date=requested_date, resource=res.user)
 
+		r = {"pk": res.user.id }
+
 		if len(res_activity) == 0: # Resource isn't booked at all
-			str = '''<option value="%s">%s - Available all day</option>''' % ( res.user.id, res_full_name )
+			r['resource'] = '''%s - Available all day''' % res_full_name
+			r['available'] = True
+			logging.debug('''%s has no Engineering Days booked.''' % res)
 		
 		elif len(res_activity) >= 2: # User already has 2 bookings for this day
-			str = '''<option value="%s" disabled>%s - Booked out all day</option>''' % ( res.user.id, res_full_name )
+			r['resource'] = '''%s - Booked out all day''' % res_full_name
+			r['available'] = False
+			logging.debug('''%s has 2 Engineering Days booked: %s.''' % ( res, res_activity ))
 		else:
 			for day in res_activity:
 				if day.day_type == 0:
-					str = '''<option value="%s">%s - Available PM only</option>''' % ( res.user.id, res_full_name )
+					r['resource'] = '''%s - Available PM only''' % res_full_name
+					r['available'] = True
+					logging.debug('''%s is available in PM. Booked on %s in AM.''' % ( res, day ))
 				elif day.day_type == 1:
-					str = '''<option value="%s">%s - Available AM only</option>''' % ( res.user.id, res_full_name )
+					r['resource'] = '''%s - Available AM only''' % res_full_name
+					r['available'] = True
+					logging.debug('''%s is available in AM. Booked on %s in PM.''' % ( res, day ))
 				elif day.day_type == 2:
-					str = '''<option value="%s" disabled>%s - Not available</option>''' % ( res.user.id, res_full_name )
+					r['resource'] = '''%s - Booked out all day''' % res_full_name
+					r['available'] = False
+					logging.debug('''%s has no availability. Booked on %s.''' % ( res, day ))
 
 
 		try:
-			r = RotaItem.objects.get(person=res.user, date=requested_date)
-			if r.activity.unavailable_for_projects:
-				str = '''<option value="%s" disabled>%s - %s</option>''' % ( res.user.id, res_full_name, r.activity )
+			rota = RotaItem.objects.get(person=res.user, date=requested_date)
+			if rota.activity.unavailable_for_projects:
+				r['resource'] = '''%s - Not Available''' % res_full_name
+				r['available'] = False
+				logging.debug('''%s has no availability. Rota'd on %s.''' % ( res, rota ))
 		except RotaItem.DoesNotExist:
 			pass
 				
 		
-		ret.append(str)
+		ret.append(r)
+	if as_json:
+		return HttpResponse(json.dumps(ret))
+	else:
+		return ret
 				
-		
-		
-	ret.sort()
-	return HttpResponse(ret)
 
 @login_required
 def add_engineering_day(request, project_number, wbs_id):
@@ -202,13 +220,27 @@ def add_engineering_day(request, project_number, wbs_id):
 		form = EngineeringDayForm(request.POST)
 		if form.is_valid():
 			t = form.save(commit=False)	
+			logging.debug('''resource => %s, work_date => %s, day_type => %s''' % ( t.resource, t.work_date, t.day_type ))
+			
+			available_resources = get_resources_for_engineering_day(request, project_number, wbs_id, t.work_date.strftime("%Y"), t.work_date.strftime("%m"), t.work_date.strftime("%d"), t.day_type, as_json=False)
+			logging.debug('''Resource ID is: %s''' % t.resource.id )
+			logging.debug('''Available resources are: %s''' % available_resources )
+			if t.resource.id not in [ r['pk'] for r in available_resources ]:
+				logging.debug('''User has tried to book %s on %s when he hasn't got the correct skillset''' % ( t.resource, t.work_date ))
+				return HttpResponse( handle_generic_error("Sorry - this resource hasn't got the skillset to work on this task"))
+
+			if EngineeringDay.objects.filter(work_date=t.work_date, resource=t.resource, day_type__in=[ t.day_type, 2]).count() > 0:
+				logging.debug('''User has tried to book %s on %s when he has existing engineering days booked''' % ( t.resource, t.work_date ))
+				return HttpResponse( handle_generic_error("Sorry - this resource is already booked at this time."))
+				
+			
+			
 			t.save()
 			work_item.engineering_days.add(t)
 			work_item.save()
-			return HttpResponseRedirect('''/WBS/%s/Edit/''' % project.project_number)
+			return HttpResponse( return_json_success() )
 		else:
-			print form.errors
-			print request.POST['work_date']
+			return HttpResponse( handle_form_errors(form.errors))
 	
 @login_required
 def view_wbs(request, project_number):

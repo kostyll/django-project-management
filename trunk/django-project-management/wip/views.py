@@ -219,7 +219,7 @@ def _add_wip_to_archive(wip_report):
 	archive.save()
 			
 			
-def get_resources_for_engineering_day(request, wip_report, year, month, day, day_type):
+def get_resources_for_engineering_day(request, wip_report, year, month, day, day_type, as_json=True):
 	
 	wip_report = WIPReport.objects.get(name=wip_report)
 	requested_date = datetime.date(int(year), int(month), int(day))
@@ -285,7 +285,10 @@ def get_resources_for_engineering_day(request, wip_report, year, month, day, day
 				
 		
 		ret.append(r)
-	return HttpResponse(json.dumps(ret))
+	if as_json:
+		return HttpResponse(json.dumps(ret))
+	else:
+		return ret
 
 def add_wip_engineering_day(request, wip_report, work_item_id):
 
@@ -297,9 +300,19 @@ def add_wip_engineering_day(request, wip_report, work_item_id):
 		if form.is_valid():
 			t = form.save(commit=False)	
 
-			# Confirm that the resource is actually free and we aren't getting duff information from request.POST
-			# Get engineering days for this resource
-			e_days = EngineeringDay.objects.filter(resource=t.resource, work_date=t.work_date)
+			logging.debug('''resource => %s, work_date => %s, day_type => %s''' % ( t.resource, t.work_date, t.day_type ))
+			
+			available_resources = get_resources_for_engineering_day(request, wip_report, t.work_date.strftime("%Y"), t.work_date.strftime("%m"), t.work_date.strftime("%d"), t.day_type, as_json=False)
+			logging.debug('''Resource ID is: %s''' % t.resource.id )
+			logging.debug('''Available resources are: %s''' % available_resources )
+			if t.resource.id not in [ r['pk'] for r in available_resources ]:
+				logging.debug('''User has tried to book %s on %s when he hasn't got the correct skillset''' % ( t.resource, t.work_date ))
+				return HttpResponse( handle_generic_error("Sorry - this resource hasn't got the skillset to work on this task"))
+
+			if EngineeringDay.objects.filter(work_date=t.work_date, resource=t.resource, day_type__in=[ t.day_type, 2]).count() > 0:
+				logging.debug('''User has tried to book %s on %s when he has existing engineering days booked''' % ( t.resource, t.work_date ))
+				return HttpResponse( handle_generic_error("Sorry - this resource is already booked at this time."))
+				
 
 			t.save()
 			work_item.engineering_days.add(t)
