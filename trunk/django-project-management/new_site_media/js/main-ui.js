@@ -63,8 +63,9 @@ var tree = new Ext.tree.TreePanel({ root: rootNode, border: false, plugins: [new
 	
     	
 var center_html_content = { xtype: "panel", contentEl: "center_panel_html", bodyStyle: "padding: 15px;"}
-var new_menu = { xtype: "tbbutton", text: "New", menu: [{ text: "New Project", href: "/Projects/New"}, { text: "New WIP Report", href: "/WIP/NEW" }]}
-var toolbar = new Ext.Toolbar({ items: [ new_menu ] });
+//var new_menu = { xtype: "tbbutton", text: "New", menu: [{ text: "New Project", href: "/Projects/New"}, { text: "New WIP Report", href: "/WIP/NEW" }]}
+//var toolbar = new Ext.Toolbar({ items: [ new_menu ] });
+var toolbar = new Ext.Toolbar({ items: [ ] });
 
 var center_panel = { xtype: "panel", region: "center", title: "WTMS Traffic", items: [ toolbar, center_html_content ], bodyStyle: "padding: 0px;"}
 var west_panel = { xtype: "panel", title: 'Navigation', region: 'west', margins: '0 0 0 0',
