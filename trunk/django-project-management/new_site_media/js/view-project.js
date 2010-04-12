@@ -512,7 +512,7 @@ var add_wbs = function(b,e){
 							buttons: [	{ 	text:'Submit', 
 											handler: function(){
 												form_add_wbs.getForm().submit({
-													params: { percent_complete: Ext.getCmp("percentageSlider").value },
+													params: { percent_complete: Ext.getCmp("percent_complete").value },
 													success: function(f,a){
                                             		Ext.Msg.alert('Success', 'Work Item Added');
                                             		window_wbs.hide(); 
@@ -825,7 +825,7 @@ var markup_wbs = [
 	'<table class="project_table">',
 //	'<tr><th>WBS Number</th> <td>{wbs_number}</td></tr>',
 	'<tr><th>Skillset</th> <td>{skill_set}</td></tr>',
-	'<tr><th>Stage</th> <td>{stage}</td></tr>',
+	'<tr><th>Stage</th> <td>{project_stage}</td></tr>',
 	'<tr><th>Title</th> <td>{title}</td></tr>',
 	'<tr><th>Description</th> <td>{description}</td></tr>',
 	'<tr><th>Author</th> <td>{author}</td></tr>',
@@ -833,7 +833,7 @@ var markup_wbs = [
 	'<tr><th>Number of Days</th> <td>{number_days}</td></tr>',
 	'<tr><th>Owner</th> <td>{owner}</td></tr>',
 	'<tr><th>Cost</th> <td>{cost}</td></tr>',
-	'<tr><th>Percent Complete</th> <td>{percent_complete}</td></tr>',
+	'<tr><th>Percent Complete</th> <td>{percent_complete}%</td></tr>',
 	'<tr><th>Start Date</th> <td>{start_date}</td></tr>',
 	'<tr><th>Finish Date</th> <td>{finish_date}</td></tr>',
 	'<tr><th>Created Date</th> <td>{created_date}</td></tr>',
