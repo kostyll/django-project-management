@@ -67,7 +67,7 @@ def view_wip_report(request, wip_report):
 	headings = Heading.objects.filter(report=wip_report)
 	objectives = WIPItem.objects.filter(heading__report=wip_report, complete=False, objective=True)
 	if xhr:
-		return HttpResponse( serializers.serialize('json', WIPItem.objects.filter(heading__report=wip_report, complete=False), display=['status'], relations=('assignee','heading'), extras=['get_heading',]))
+		return HttpResponse( serializers.serialize('json', WIPItem.objects.filter(heading__report=wip_report, complete=False), display=['status'], relations=('assignee','heading'), extras=['get_heading','get_engineering_days_as_ul']))
 	else:
 		return render_to_response('wip/wip.html', {'wip_report': wip_report, 'headings': headings, 'objectives': objectives }, context_instance=RequestContext(request))
 

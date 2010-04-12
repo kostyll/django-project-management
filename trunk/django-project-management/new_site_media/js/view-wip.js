@@ -23,7 +23,7 @@ var st_wip_items = new Ext.data.GroupingStore({
 		{ name: "deadline", mapping: "fields.deadline" },
 		{ name: "complete", mapping: "fields.complete", type: 'bool' },
 		{ name: "objective", mapping: "fields.objective", type: 'bool' },
-		{ name: "engineering_days", mapping: "fields.engineering_days" },
+		{ name: "engineering_days", mapping: "extras.get_engineering_days_as_ul" },
 		{ name: "history", mapping: "fields.history" }
 	]}), 
 	sortInfo:{field: 'assignee', direction: "ASC"},
@@ -291,16 +291,17 @@ var grid_wip_items = new Ext.grid.GridPanel({
 });
 
 var wip_item_markup = [
-		'<b>Status</b>: {status}<br>',
-		'<b>Modified Date</b>: {modified_date}<br>',
-		'<b>Created Date</b>: {created_date}<br>',
-		'<b>Description</b>: {description}<br>',
-		'<b>Assignee</b>: {assignee}<br>',
-		'<b>Deadline</b>: {deadline}<br>',
-		'<b>Complete</b>: {complete}<br>',
-		'<b>Objective</b> {objective}<br>',
-		'<b>Engineering Days</b>: {engineering_days}<br>',
-		'<b>History</b>: {history}<br>' ];
+		'<table class="project_table">',
+		'<tr><th>Status</th> <td>{status}</td></tr>',
+		'<tr><th>Modified Date</th> <td>{modified_date}</td></tr>',
+		'<tr><th>Created Date</th> <td>{created_date}</td></tr>',
+		'<tr><th>Description</th> <td>{description}</td></tr>',
+		'<tr><th>Assignee</th> <td>{assignee}</td></tr>',
+		'<tr><th>Deadline</th> <td>{deadline}</td</tr>',
+		'<tr><th>Complete</th> <td>{complete}</td></tr>',
+		'<tr><th>Objective</th> <td>{objective}</td></tr>',
+		'<tr><th>Engineering Days</th> <td>{engineering_days}</td></tr>',
+		'<tr><th>History</th> <td>{history}</td></tr>', '</table>' ];
 var wipItemTpl = new Ext.Template(wip_item_markup);
 
 

@@ -35,6 +35,13 @@ class WIPItem(models.Model):
 		if self.heading.all() != '':
 			return '''%s - %s''' % ( self.heading.all()[0].company.company_name, self.heading.all()[0].heading )
 
+	def get_engineering_days_as_ul(self):
+		str = '''<ul>'''
+		for e in self.engineering_days.all():
+			str += '''<li>%s - %s - %s</li>''' % ( e.work_date.strftime("%d/%m/%Y"), e.get_day_type_display(), e.resource.get_full_name() )	
+		str += '''</ul>'''
+		return str	
+
 	def __str__(self):
 		return self.description[:50]
 
