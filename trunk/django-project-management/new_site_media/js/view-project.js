@@ -682,8 +682,9 @@ var add_project_stage = function(b,e){
 													success: function(f,a){
                                             		Ext.Msg.alert('Success', 'Project Stage Added');
                                             		window_stage_plan.hide(); 
-													st_stage_plan.load();
-                                            		Ext.getCmp("grid_wbs").store.load();
+													window.location.reload(); // At the moment we have to reload at this point - to be resolved.
+													//st_stage_plan.load();
+                                            		//Ext.getCmp("grid_wbs").store.load();
                                             		},  
                                             		failure: function(f,a){
                                             		Ext.Msg.alert('Warning', a.result.errormsg);
