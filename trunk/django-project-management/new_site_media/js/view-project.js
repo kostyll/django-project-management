@@ -738,9 +738,7 @@ var grid_wbs = new Ext.grid.GridPanel({
         store: st_wbs,
         id: "grid_wbs",
         columns: [
-            {header: "WBS Number", dataIndex: 'wbs_number'},
-            {header: "Created Date", dataIndex: 'created_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
-            {header: "Modified Date", dataIndex: 'modified_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
+    //        {header: "WBS Number", dataIndex: 'wbs_number'},
             {header: "Skill Set", dataIndex: 'skill_set', hidden: true, sortable: true },
             {header: "Stage", dataIndex: 'project_stage'},
             {header: "Author", dataIndex: 'author', hidden: true, sortable: true },
@@ -752,7 +750,9 @@ var grid_wbs = new Ext.grid.GridPanel({
             {header: "Start Date", dataIndex: 'start_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
             {header: "Finish Date", dataIndex: 'finish_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
             {header: "Work Status", dataIndex: 'get_work_item_status', hidden: true, sortable: true },
-            {header: "Cost", dataIndex: 'cost'}
+            {header: "Cost", dataIndex: 'cost'},
+            {header: "Created Date", dataIndex: 'created_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
+            {header: "Modified Date", dataIndex: 'modified_date', hidden: true, sortable: true, renderer: DATE_RENDERER }
 		],
 //        viewConfig: {
 //   				getRowClass: function(rec, rowIdx, params, store) {
@@ -823,7 +823,7 @@ this.grid.fireEvent('rowmouseout', this.grid, row);
 
 var markup_wbs = [
 	'<table class="project_table">',
-	'<tr><th>WBS Number</th> <td>{wbs_number}</td></tr>',
+//	'<tr><th>WBS Number</th> <td>{wbs_number}</td></tr>',
 	'<tr><th>Skillset</th> <td>{skill_set}</td></tr>',
 	'<tr><th>Stage</th> <td>{stage}</td></tr>',
 	'<tr><th>Title</th> <td>{title}</td></tr>',
