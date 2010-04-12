@@ -38,12 +38,13 @@ class WIPItem(models.Model):
 	def get_engineering_days_as_ul(self):
 		str = '''<ul>'''
 		for e in self.engineering_days.all():
-			str += '''<li>%s - %s - %s</li>''' % ( e.work_date.strftime("%d/%m/%Y"), e.get_day_type_display(), e.resource.get_full_name() )	
+			str += '''<li>%s - %s - %s</li>''' % ( e.work_date.strftime("%A %e %B %Y"), e.get_day_type_display(), e.resource.get_full_name() )	
 		str += '''</ul>'''
 		return str	
 
 	def __str__(self):
 		return self.description[:50]
+
 
 class Heading(models.Model):
 
