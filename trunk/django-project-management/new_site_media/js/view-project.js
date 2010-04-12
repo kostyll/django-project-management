@@ -472,12 +472,42 @@ var st_stage_plan = new Ext.data.Store({
 
 var percentage_tip = new Ext.ux.SliderTip({ getText: function(slider){ return slider.value } }); 
 
+var st_wbs = new Ext.data.GroupingStore({
+	proxy: new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/" }),
+	reader: new Ext.data.JsonReader({ root: "", fields: [
+		{ name: "pk", mapping: "pk" },
+		{ name: "created_date", mapping: "fields.created_date", type: "date", dateFormat: JSON_DATE },
+		{ name: "modified_date", mapping: "fields.modified_date", type: "date", dateFormat: JSON_DATE },
+		{ name: "skill_set", mapping: "fields.skill_set.fields.skill" },
+		{ name: "project_stage", mapping: "fields.project_stage.fields.stage" },
+		{ name: "author", mapping: "fields.author.extras.get_full_name" },
+		{ name: "title", mapping: "fields.title" },
+		{ name: "depends", mapping: "fields.depends.fields.title" },
+		{ name: "description", mapping: "fields.description" },
+		{ name: "number_days", mapping: "fields.number_days" },
+		{ name: "owner", mapping: "fields.owner.extras.get_full_name" },
+		{ name: "percent_complete", mapping: "fields.percent_complete" },
+		{ name: "start_date", mapping: "fields.start_date", type: "date", dateFormat: JSON_DATE },
+		{ name: "finish_date", mapping: "fields.finish_date", type: "date", dateFormat: JSON_DATE },
+		{ name: "wbs_number", mapping: "fields.wbs_number" },
+		{ name: "cost", mapping: "fields.cost" },
+		{ name: "history", mapping: "fields.history" },
+		{ name: "engineering_days", mapping: "fields.engineering_days" },
+		{ name: "get_work_item_status", mapping: "fields.get_work_item_status" }
+		
+		 ]}),
+	autoLoad: true,
+	groupField: 'project_stage',
+	sortInfo:{field: 'wbs_number', direction: "ASC"}
+});
+
 
 
 var wbs_fields = [ 
 		{ xtype: "combo", fieldLabel: "Skill Set", name: "skill_set", hiddenName: "skill_set", lazyInit: false, store: st_skillset, mode: "local", displayField: "skill", valueField: "pk", triggerAction: "all" },
 		{ xtype: "textfield", fieldLabel: "Title", name: "title" },
 		{ xtype: "combo", fieldLabel: "Project Stage", hiddenName: "project_stage", lazyInit: false, store: st_stage_plan, mode: "local", displayField: "stage", valueField: "pk", triggerAction: "all" },
+		{ xtype: "combo", fieldLabel: "Depends Upon", hiddenName: "depends", lazyInit: false, store: st_wbs, mode: "local", displayField: "title", valueField: "pk", triggerAction: "all" },
 		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
 		{ xtype: "textfield", fieldLabel: "Number of Days", name: "number_of_days" },
 		{ xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
@@ -697,34 +727,6 @@ var add_project_stage = function(b,e){
 }
 
 
-
-var st_wbs = new Ext.data.GroupingStore({
-	proxy: new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/" }),
-	reader: new Ext.data.JsonReader({ root: "", fields: [
-		{ name: "pk", mapping: "pk" },
-		{ name: "created_date", mapping: "fields.created_date", type: "date", dateFormat: JSON_DATE },
-		{ name: "modified_date", mapping: "fields.modified_date", type: "date", dateFormat: JSON_DATE },
-		{ name: "skill_set", mapping: "fields.skill_set.fields.skill" },
-		{ name: "project_stage", mapping: "fields.project_stage.fields.stage" },
-		{ name: "author", mapping: "fields.author.extras.get_full_name" },
-		{ name: "title", mapping: "fields.title" },
-		{ name: "description", mapping: "fields.description" },
-		{ name: "number_days", mapping: "fields.number_days" },
-		{ name: "owner", mapping: "fields.owner.extras.get_full_name" },
-		{ name: "percent_complete", mapping: "fields.percent_complete" },
-		{ name: "start_date", mapping: "fields.start_date", type: "date", dateFormat: JSON_DATE },
-		{ name: "finish_date", mapping: "fields.finish_date", type: "date", dateFormat: JSON_DATE },
-		{ name: "wbs_number", mapping: "fields.wbs_number" },
-		{ name: "cost", mapping: "fields.cost" },
-		{ name: "history", mapping: "fields.history" },
-		{ name: "engineering_days", mapping: "fields.engineering_days" },
-		{ name: "get_work_item_status", mapping: "fields.get_work_item_status" }
-		
-		 ]}),
-	autoLoad: true,
-	groupField: 'project_stage',
-	sortInfo:{field: 'wbs_number', direction: "ASC"}
-});
 
 
 

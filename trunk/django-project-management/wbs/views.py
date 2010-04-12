@@ -246,8 +246,14 @@ def add_engineering_day(request, project_number, wbs_id):
 def view_wbs(request, project_number):
 	project = get_object_or_404(Project, project_number=project_number)
 	check_project_read_acl(project, request.user)	# Will return Http404 if user isn't allowed to view project
+	wbs = project.work_items.all()
+	# Data cleaning, ExtJS grids can't load if some ForiegnKey fields are Null
+	for w in wbs:
+		if not w.depends:
+			w.depends = WorkItem(title='')
 	
-	return HttpResponse( serializers.serialize('json', project.work_items.all(), relations={'skill_set': {'fields': ('skill',)}, 'project_stage': {'fields': ('stage',)},'author': {'fields': ('id', 'username'), 'extras': ('get_full_name',)},'owner': { 'fields': ('id', 'username'), 'extras': ('get_full_name',)}}, extras=('get_work_item_status',)))
+	
+	return HttpResponse( serializers.serialize('json', wbs, relations={'depends': {'fields': ('title',)}, 'skill_set': {'fields': ('skill',)}, 'project_stage': {'fields': ('stage',)},'author': {'fields': ('id', 'username'), 'extras': ('get_full_name',)},'owner': { 'fields': ('id', 'username'), 'extras': ('get_full_name',)}}, extras=('get_work_item_status',)))
 	
 @login_required
 def view_work_item(request, project_number, wbs_id):
