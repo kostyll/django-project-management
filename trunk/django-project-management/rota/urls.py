@@ -17,6 +17,8 @@ urlpatterns = patterns('rota.views',
 	(r'^RotaActivities/$', 'view_rota_activities'),
 	(r'^Rota/$', 'view_rota_items'),
 	(r'^Users/$', 'view_users'),
+	
+	(r'GetRotaFor/(?P<user_id>\d{1,4})/(?P<date>(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01]))/$', 'get_rota_for_user'),
 
 )
 

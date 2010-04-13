@@ -15,14 +15,14 @@ var dateValue = "";
 
 var st_users = new Ext.data.Store({
 	proxy: new Ext.data.HttpProxy({ url: "/Rota/Users/" }),
-	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"username", mapping: "extras.get_full_name"}]}),
+	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"username", mapping: "extras.get_full_name"}]})
 //	autoLoad: true
 });
 
 var st_rota_activities = new Ext.data.Store({
 	proxy: new Ext.data.HttpProxy({ url: "/Rota/RotaActivities/" }),
 	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"activity", mapping: "fields.activity"}]}),
-//	autoLoad: true
+	autoLoad: true
 });
 
 var st_rota_items = new Ext.data.Store({
@@ -30,6 +30,7 @@ var st_rota_items = new Ext.data.Store({
 	reader: new Ext.data.JsonReader({ root: "", fields: [
 		{name:"pk", mapping: "pk"},
 		{name:"user", mapping: "user"},
+		{name:"monday_date", mapping: "monday_date"},
 		{name:"monday", mapping: "1_s"},
 		{name:"monday_rota", mapping: "1_r"},
 		{name:"monday_rota_desc", mapping: "1_r_d"},
@@ -109,7 +110,7 @@ var grid_rota = new Ext.grid.GridPanel({
     id:'grid_rotas',
 	region: "west",
 	width: GRID_WIDTH,
-	split: true,
+	split: true
 });
 
 var markup_rota = [
@@ -131,10 +132,59 @@ var panel_rota = new Ext.Panel({
 	items: [ grid_rota, { id: "rota_detail", bodyStyle: { background: "#ffffff", padding: "7px;"}, region: "center", html: "Please select a person to view more details"} ]
 });
 
+var rota_fields = [
+	{ xtype: "combo", fieldLabel: "Monday", hiddenName: "monday", lazyInit: false, store: st_rota_activities, mode: "local", displayField: "activity", valueField: "pk", triggerAction: "all" },
+	{ xtype: "textfield", fieldLabel: "Description", name: "monday_description" },
+	{ xtype: "combo", fieldLabel: "Tuesday", hiddenName: "tuesday", lazyInit: false, store: st_rota_activities, mode: "local", displayField: "activity", valueField: "pk", triggerAction: "all" },
+	{ xtype: "textfield", fieldLabel: "Description", name: "tuesday_description" },
+	{ xtype: "combo", fieldLabel: "Wednesday", hiddenName: "wednesday", lazyInit: false, store: st_rota_activities, mode: "local", displayField: "activity", valueField: "pk", triggerAction: "all" },
+	{ xtype: "textfield", fieldLabel: "Description", name: "wednesday_description" },
+	{ xtype: "combo", fieldLabel: "Thursday", hiddenName: "thursday", lazyInit: false, store: st_rota_activities, mode: "local", displayField: "activity", valueField: "pk", triggerAction: "all" },
+	{ xtype: "textfield", fieldLabel: "Description", name: "thursday_description" },
+	{ xtype: "combo", fieldLabel: "Friday", hiddenName: "friday", lazyInit: false, store: st_rota_activities, mode: "local", displayField: "activity", valueField: "pk", triggerAction: "all" },
+	{ xtype: "textfield", fieldLabel: "Description", name: "friday_description" },
+	{ xtype: "combo", fieldLabel: "Saturday", hiddenName: "saturday", lazyInit: false, store: st_rota_activities, mode: "local", displayField: "activity", valueField: "pk", triggerAction: "all" },
+	{ xtype: "textfield", fieldLabel: "Description", name: "saturday_description" },
+	{ xtype: "combo", fieldLabel: "Sunday", hiddenName: "sunday", lazyInit: false, store: st_rota_activities, mode: "local", displayField: "activity", valueField: "pk", triggerAction: "all" },
+	{ xtype: "textfield", fieldLabel: "Description", name: "sunday_description" }
+]
+	
+
+grid_rota.on('rowdblclick', function(sm, rowIdx, r) { 
+	var person_id = grid_rota.getSelectionModel().getSelected().get("pk");
+	var monday_date = grid_rota.getSelectionModel().getSelected().get("monday_date");
+	var form_edit_rota = new Ext.form.FormPanel({ url: "/Rota/Edit/", bodyStyle: "padding: 15px;", autoScroll: true, items: rota_fields });
+	form_edit_rota.getForm().load({ url: "/Rota/GetRotaFor/" + person_id + "/" + monday_date + "/", method: "GET" });
+	var window_rota = new Ext.Window({ width: 620, autoHeight: true, closeAction: "close", autoScroll: true, modal: true, title: "Edit Rota", items: [ form_edit_rota ],
+		buttons: [ {	text: 'Save', 
+						handler: function(){
+							form_edit_rota.getForm().submit({
+								success: function(f,a){
+									Ext.Msg.alert('Success', 'Rota Updated',
+										function() {
+											window_rota.destroy();
+											Ext.getCmp('grid_rota').store.load();
+											Ext.getCmp('rota_detail').body.update('Please select a person to see more details');
+										});
+								},
+								failure: function(f,a){ Ext.Msg.alert('Warning', a.result.errormsg); }
+							});
+						}
+				}, { text: 'Close', handler: function(){ window_rota.destroy(); } }]
+				
+	});	
+
+	window_rota.show();
+	window_rota.center();
+	
+
+});
+
 grid_rota.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
 	var detailRota = Ext.getCmp("rota_detail");
 	template_rota.overwrite(detailRota.body, r.data);
 });	
+
 
 tab_items = [
 	{ xtype: "panel", title: "Rota", items: [ panel_rota ] }

@@ -95,6 +95,7 @@ def view_rota(request, year=False, month=False, day=False, template=False, pdf=F
 			x['''%s_eday''' % day.isoweekday()] = str(edays)
 			x['''%s_r''' % day.isoweekday()] = str(rotaitem)
 			x['''%s_r_d''' % day.isoweekday()] = str(rotaitem_description)
+			x['monday_date'] = str(this_week[0])
 				
 		ret.append(x)
 
@@ -137,4 +138,25 @@ def calculate_week(requested_date):
 	for week in cal.monthdatescalendar( requested_date.year, requested_date.month ):
 		if monday_of_this_week in week:
 			return week
+
+def get_rota_for_user(request, user_id, date):
+	user = User.objects.get(id=user_id)
+	requested_week = calculate_week( datetime.datetime.strptime(date, "%Y-%m-%d"))
+
+	rota_items = RotaItem.objects.filter(date__gt=requested_week[0]-datetime.timedelta(days=1), date__lt=requested_week[-1]-datetime.timedelta(days=-1), person=user)
+	
+	ret = {}
+	ret['success'] = True
+	ret['data'] = {}
+	ret['data']['monday'] = rota_items.filter(date=requested_week[0])
+	ret['data']['tuesday'] = rota_items.filter(date=requested_week[1])
+	ret['data']['wednesday'] = rota_items.filter(date=requested_week[2])
+	ret['data']['thursday'] = rota_items.filter(date=requested_week[3])
+	ret['data']['friday'] = rota_items.filter(date=requested_week[4])
+	ret['data']['saturday'] = rota_items.filter(date=requested_week[5])
+	ret['data']['sunday'] = rota_items.filter(date=requested_week[6])
+
+	return HttpResponse( json.dumps(ret))
+		
+	
 
