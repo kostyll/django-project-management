@@ -502,11 +502,10 @@ var wbs_fields = [
     //{ xtype: "textfield", fieldLabel: "Percent Complete", name: "percent_complete", id: "percent_complete", listeners: { beforerender: function(slider) { Ext.getCmp("percentageSlider").value = slider.value;}} },
 		{ xtype: "datefield", fieldLabel: "Start Date", name: "start_date", format: "d/m/Y" },
 		{ xtype: "datefield", fieldLabel: "Finish Date", name: "finish_date", format: "d/m/Y" },
-		{ xtype: "textfield", fieldLabel: "WBS Number", name: "wbs_number" },
+	//	{ xtype: "textfield", fieldLabel: "WBS Number", name: "wbs_number" },
 		{ xtype: "textfield", fieldLabel: "Cost", name: "cost" },
 		{ xtype: "textarea", fieldLabel: "Update", name: "update", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "textarea", fieldLabel: "History", name: "history", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "textfield", fieldLabel: "Status", name: "get_work_item_status"}
+		{ xtype: "textarea", fieldLabel: "History", name: "history", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, readOnly: true }
 ]
 
 var stage_plan_fields = [
@@ -516,14 +515,14 @@ var stage_plan_fields = [
 
 var add_wbs = function(b,e){
 	var form_add_wbs = new Ext.form.FormPanel({ url: "/WBS/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: wbs_fields});
-	var window_wbs = new Ext.Window({autoHeight: true, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Work Item", items: [ form_add_wbs ],
+	var window_wbs = new Ext.Window({autoHeight: true, height:540, closeAction: "close", autoScroll: true, modal: true, title: "Add a Work Item", items: [ form_add_wbs ],
 							buttons: [	{ 	text:'Submit', 
 											handler: function(){
 												form_add_wbs.getForm().submit({
 													params: { percent_complete: Ext.getCmp("percent_complete").value },
 													success: function(f,a){
                                             		Ext.Msg.alert('Success', 'Work Item Added');
-                                            		window_wbs.hide(); 
+                                            		window_wbs.destroy(); 
                                             		Ext.getCmp("grid_wbs").store.load();
                                             		Ext.getCmp("wbs_detail").body.update('Please select a Work Item to see more details');
                                             		},  
@@ -532,7 +531,7 @@ var add_wbs = function(b,e){
 													}
 												});
 										}}
-										, { text: 'Close', handler: function(){ window_wbs.hide(); } }] });
+										, { text: 'Close', handler: function(){ window_wbs.destroy(); } }] });
 	window_wbs.show();
 
 }
