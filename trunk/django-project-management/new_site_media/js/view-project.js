@@ -72,6 +72,7 @@ var add_deliverable = function(b,e){
 										, { text: 'Close', handler: function(){ window_deliverable.hide(); } }] });
 	tabpanel.activate(1);
 	window_deliverable.show();
+	window_deliverable.center();
 }
 
 // Edit Deliverable
@@ -100,6 +101,7 @@ var edit_deliverable = function(b,e){
                                         }}   
 									, { text: 'Close', handler: function(){ window_deliverable.hide(); } }] });
 	window_deliverable.show();
+	window_deliverable.center();
 }
 
 // Delete Deliverable
@@ -273,6 +275,7 @@ var add_risk = function(b,e){
 	project_menu.hide();
 	tabpanel.activate(2);
 	window_risks.show();
+	window_risks.center();
 }
 
 var edit_risk = function(b,e){
@@ -312,6 +315,7 @@ var edit_risk = function(b,e){
                                         }}   
 									, { text: 'Close', handler: function(){ window_risks.destroy(); } }] });
 	window_risks.show();
+	window_risks.center();
 
 }
 
@@ -533,6 +537,7 @@ var add_wbs = function(b,e){
 										}}
 										, { text: 'Close', handler: function(){ window_wbs.destroy(); } }] });
 	window_wbs.show();
+	window_wbs.center();
 
 }
 
@@ -600,6 +605,7 @@ var edit_wbs = function(b,e){
 					
 });
 	window_wbs.show();
+	window_wbs.center();
 }
 									    
 									    
@@ -670,6 +676,7 @@ var add_engineering_day = function(){
 
 	});
 	window_engineering_day.show();
+	window_engineering_day.center();
 }
 									    
 									    
@@ -700,6 +707,7 @@ var add_project_stage = function(b,e){
 										}}
 										, { text: 'Close', handler: function(){ window_stage_plan.hide(); } }] });
 	window_stage_plan.show();
+	window_stage_plan.center();
 
 }
 
@@ -872,6 +880,7 @@ var add_issue = function(b,e){
 	project_menu.hide();
 	tabpanel.activate(4);
 	window_issues.show();
+	window_issues.center();
 }
 
 var edit_issue = function(b,e){
@@ -900,6 +909,7 @@ var edit_issue = function(b,e){
                                         }}   
 									, { text: 'Close', handler: function(){ window_issues.hide(); } }] });
 	window_issues.show();
+	window_issues.center();
 
 }
 
@@ -1062,6 +1072,7 @@ var add_lesson = function(b,e){
 	project_menu.hide();
 	tabpanel.activate(5);
 	window_lesson.show();
+	window_lesson.center();
 }
 
 
@@ -1094,6 +1105,7 @@ var edit_lessons = function(b,e){
 									] 
 	});
 	window_lessons.show();
+	window_lessons.center();
 }
 
 
@@ -1222,6 +1234,7 @@ var add_file = function(b,e){
 							{ text: "Close", handler: function(){ window_file.destroy(); }}]
 	});
 	window_file.show();
+	window_file.center();
 }
 
 
@@ -1358,6 +1371,7 @@ var st_report_type = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"Ch
                                         }}   
 									, { text: 'Close', handler: function(){ window_report.hide(); } }] });
 	window_report.show();
+	window_report.center();
 
 }
 
@@ -1384,6 +1398,7 @@ var add_report = function(b,e){
 	project_menu.hide();
 	tabpanel.activate(6);
 	window_report.show();
+	window_report.center();
 }
 
 // Delete report
@@ -1567,6 +1582,7 @@ var edit_project_initiation = function(b,e){
 	project_menu.hide();
 	tabpanel.activate(0);	
 	pid_win.show();
+	pid_win.center();
 }
 
 
