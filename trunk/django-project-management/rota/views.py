@@ -19,18 +19,18 @@ import settings
 
 @login_required
 def view_users(request):
-	return HttpResponse( serializers.serialize('json', User.objects.filter(is_active=True), fields=('id', 'username')))
+	return HttpResponse( serializers.serialize('json', User.objects.filter(is_active=True), fields=('id', 'username'), extras=('get_full_name')))
 
 @login_required
-def rota_homepage(request):
-	return render_to_response('rota/rota.html', context_instance=RequestContext(request))
+def rota_homepage(request, rota_url):
+	return render_to_response('rota/rota.html', {'rota_url': rota_url }, context_instance=RequestContext(request))
 	
 @login_required
 def view_rota_activities(request):
 	return HttpResponse( serializers.serialize('json', RotaActivity.objects.all()))	
 
 @login_required
-def view_rota(request, year=False, month=False, day=False, template=False, pdf=None, scope=None):
+def view_rota(request, year=False, month=False, day=False, template=False, pdf=False, scope=False):
 	
 	# No additional security required here apart from a valid login. We allow all users to view 
 	# their own rota plus the team and department rotas, and if they know the Edit Rota URL (hidden by default) they 
@@ -52,23 +52,41 @@ def view_rota(request, year=False, month=False, day=False, template=False, pdf=N
 	# [ { 'user': 'smorris', 'pk': '1', 'monday_rota': 'Infrastructure Mid', 'monday_eday': 'Free', 'tuesday_rota'
 	ret = []
 
-	scope = 'all'
-	
+	logging.debug('''Requesting rota with scope => %s''' % ( scope ))
+
 	if scope == 'all':
-		for u in User.objects.filter(is_active=True).distinct():
-			#logging.debug('''Getting rota for %s''' % u)
-			x = {'user': u.username, 'pk': u.id }
-			days = ['', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
-			for day in this_week:
-				try:
-					_rota_item = RotaItem.objects.get(person=u, date=day)
-					rota_item = _rota_item.activity
-					logging.debug('''Found existing rota item for %s: %s''' % ( u, rota_item ))
-				except RotaItem.DoesNotExist:
-					rota_item = ''
-				x['''%s_r''' % day.isoweekday()] = str(rota_item)
+		scope_users = User.objects.filter(is_active=True).order_by('first_name').distinct()
+	elif scope == 'team':
+		scope_users = User.objects.filter(teams__in=request.user.teams.all(), is_active=True).order_by('first_name').distinct()
+	else:
+		scope_users = User.objects.filter(id=request.user.id)
+
+	for u in scope_users:
+		logging.debug('''Getting rota for %s''' % u)
+		x = {'user': u.get_full_name(), 'pk': u.id }
+		for day in this_week:
+			try:
+				_rota_item = RotaItem.objects.get(person=u, date=day)
+				#logging.debug('''%s has %s as a rota item''' % ( u, _rota_item )
+				rota_item = '''%s''' % _rota_item.activity
+			
+				logging.debug('''Found existing rota item for %s: %s''' % ( u, rota_item ))
+			except RotaItem.DoesNotExist:
+				rota_item = ''
+
+			# Include engineering day information in the rota
+			_engineering_days = EngineeringDay.objects.filter(work_date=day, resource=u)
+			for e_day in _engineering_days:
+				if e_day.wip_item.all():
+					rota_item += '''%s<br>(%s) WIP Item''' % ( rota_item, e_day.get_day_type_display() )
+				elif e_day.work_item.all():
+					rota_item += '''%s<br>(%s) Project Work''' % ( rota_item, e_day.get_day_type_display() )
+				else:
+					pass
+		
+			x['''%s_r''' % day.isoweekday()] = str(rota_item)
 				
-			ret.append(x)
+		ret.append(x)
 
 			
 	return HttpResponse(json.dumps(ret))

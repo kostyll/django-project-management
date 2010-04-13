@@ -15,18 +15,18 @@ var dateValue = "";
 
 var st_users = new Ext.data.Store({
 	proxy: new Ext.data.HttpProxy({ url: "/Rota/Users/" }),
-	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"username", mapping: "fields.username"}]}),
-	autoLoad: true
+	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"username", mapping: "extras.get_full_name"}]}),
+//	autoLoad: true
 });
 
 var st_rota_activities = new Ext.data.Store({
 	proxy: new Ext.data.HttpProxy({ url: "/Rota/RotaActivities/" }),
 	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"activity", mapping: "fields.activity"}]}),
-	autoLoad: true
+//	autoLoad: true
 });
 
 var st_rota_items = new Ext.data.Store({
-	proxy: new Ext.data.HttpProxy({ url: "/Rota/RotaItems/" + dateValue }),
+	proxy: new Ext.data.HttpProxy({ url: rota_url + dateValue }),
 	reader: new Ext.data.JsonReader({ root: "", fields: [
 		{name:"pk", mapping: "pk"},
 		{name:"user", mapping: "user"},
@@ -51,18 +51,13 @@ var grid_rota = new Ext.grid.GridPanel({
         columns: [
             {header: "pk", dataIndex: 'pk', sortable: true, hidden: true},
             {header: "User", dataIndex: 'user', sortable: true},
-            {header: "Monday", dataIndex: 'monday', sortable: true, editor: {
-                xtype: 'combo',
-                allowBlank: false,
-                store: st_rota_activities
-            }},
-            {header: "tuesday", dataIndex: 'tuesday', sortable: true},
-            {header: "wednesday", dataIndex: 'wednesday', sortable: true},
-            {header: "thursday", dataIndex: 'thursday', sortable: true},
-            {header: "friday", dataIndex: 'friday', sortable: true},
-            {header: "saturday", dataIndex: 'saturday', sortable: true},
-            {header: "sunday", dataIndex: 'sunday', sortable: true},
-            {header: "description", dataIndex: 'description', sortable: true} ],
+            {header: "Monday", dataIndex: 'monday', sortable: true },
+            {header: "Tuesday", dataIndex: 'tuesday', sortable: true},
+            {header: "Wednesday", dataIndex: 'wednesday', sortable: true},
+            {header: "Thursday", dataIndex: 'thursday', sortable: true},
+            {header: "Friday", dataIndex: 'friday', sortable: true},
+            {header: "Saturday", dataIndex: 'saturday', sortable: true},
+            {header: "Sunday", dataIndex: 'sunday', sortable: true}],
         tbar: [{
         xtype: "fieldset",
         iconCls: "icon-user",
@@ -80,7 +75,7 @@ var grid_rota = new Ext.grid.GridPanel({
            		var month = chosen_date.getMonth() + 1;
            		var day = chosen_date.getDate();
            		
-           		st_rota_items.proxy = new Ext.data.HttpProxy({ url: "/Rota/RotaItems/" + year + "/" + month + "/" + day + "/" }),
+           		st_rota_items.proxy = new Ext.data.HttpProxy({ url: rota_url + year + "/" + month + "/" + day + "/" }),
            		st_rota_items.load()
            		}
           }

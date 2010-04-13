@@ -2,10 +2,19 @@ from django.conf.urls.defaults import *
 from django.contrib.auth.views import *
 
 urlpatterns = patterns('rota.views',
-	(r'RotaItems/(?P<year>\d{4})/(?P<month>\d{1,2})/(?P<day>\d{1,2})/$', 'view_rota', { 'template': 'rota/ajax-allrota.html', 'pdf': False}),
-	(r'^All/$', 'rota_homepage'),
+	(r'^ViewAll/$', 'rota_homepage', { 'rota_url': '/Rota/RotaItems/' }),
+	(r'^ViewMyTeam/$', 'rota_homepage', { 'rota_url': '/Rota/MyTeam/' }),
+	(r'^ViewMyRota/$', 'rota_homepage', { 'rota_url': '/Rota/MyRota/' }),
+	
+	(r'RotaItems/(?P<year>\d{4})/(?P<month>\d{1,2})/(?P<day>\d{1,2})/$', 'view_rota', { 'pdf': False, 'scope': 'all' }),
+	(r'MyTeam/(?P<year>\d{4})/(?P<month>\d{1,2})/(?P<day>\d{1,2})/$', 'view_rota', { 'pdf': False, 'scope': 'team' }),
+	(r'MyRota/(?P<year>\d{4})/(?P<month>\d{1,2})/(?P<day>\d{1,2})/$', 'view_rota', { 'pdf': False, 'scope': 'user' }),
+
+	(r'^RotaItems/$', 'view_rota', {'pdf': False, 'scope': 'all' }),
+	(r'^MyTeam/$', 'view_rota', {'pdf': False, 'scope': 'team' }),
+	(r'^MyRota/$', 'view_rota', {'pdf': False, 'scope': 'user' }),
+
 	(r'^RotaActivities/$', 'view_rota_activities'),
-	(r'^RotaItems/$', 'view_rota'),
 	(r'^Rota/$', 'view_rota_items'),
 	(r'^Users/$', 'view_users'),
 
