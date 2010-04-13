@@ -13,8 +13,10 @@ from django.template.loader import get_template
 from django.shortcuts import render_to_response
 from django.db.models import Q
 from rota.models import RotaActivity, RotaItem, Team 
+from rota.forms import EditRotaForm
 from wbs.models import EngineeringDay
 from backends.pdfexport import render_to_pdf
+from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success, handle_generic_error, user_has_write_access
 import settings
 
 @login_required
@@ -103,27 +105,40 @@ def view_rota(request, year=False, month=False, day=False, template=False, pdf=F
 	return HttpResponse(json.dumps(ret))
 
 @login_required
-def edit_rota(request, year, month, day, shift, username):
+def edit_rota(request):
 
 	# Some security, if the user isn't allowed to edit the rota raise 404
 	if not request.user.has_perm('rota.can_edit'):
 		raise Http404
-	
-	date = datetime.date(int(year), int(month), int(day))	
-	person = User.objects.get(username=username)
-	activity = RotaActivity.objects.get(id=shift)
 
-	try:
-		r = RotaItem.objects.get(date=date, person=person)
-	except RotaItem.DoesNotExist:
-		r = RotaItem()	
-			
-	r.date=date	
-	r.person=person
-	r.activity=activity
-	r.author=request.user
-	r.save()
-	return HttpResponse('Updated to %s' % r.activity )
+	form = EditRotaForm(request.POST)	
+	if form.is_valid():
+		c = form.cleaned_data
+		user = User.objects.get(id=c['person_id'])
+		requested_week = calculate_week(datetime.datetime.strptime(c['monday_date'], "%Y-%m-%d"))
+		
+		#Get the existing Rota objects if they exist and edit or create them
+		days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+		
+		for d in range(0,7):
+			# No point proceeding with this day if there isn't a rota item to create
+			if c[days[d]]:
+				try:
+					r = RotaItem.objects.get(person=user, date=requested_week[d])
+				except RotaItem.DoesNotExist:
+					r = RotaItem()
+				r.person = user
+				r.date = requested_week[d]
+				r.activity = RotaActivity.objects.get(id=c[days[d]])
+				r.description = c['%s_description' % days[d]]
+				r.author = request.user
+				r.save()
+				logging.debug('''Added rota item... user=>%s, date=>%s, activity=>%s''' % ( r.person, r.date, r.activity ))
+
+		return HttpResponse( return_json_success() )
+	else:
+		return HttpResponse( handle_form_errors(form.errors))
+		
 	
 
 def calculate_week(requested_date):
@@ -148,13 +163,15 @@ def get_rota_for_user(request, user_id, date):
 	ret = {}
 	ret['success'] = True
 	ret['data'] = {}
-	ret['data']['monday'] = rota_items.filter(date=requested_week[0])
-	ret['data']['tuesday'] = rota_items.filter(date=requested_week[1])
-	ret['data']['wednesday'] = rota_items.filter(date=requested_week[2])
-	ret['data']['thursday'] = rota_items.filter(date=requested_week[3])
-	ret['data']['friday'] = rota_items.filter(date=requested_week[4])
-	ret['data']['saturday'] = rota_items.filter(date=requested_week[5])
-	ret['data']['sunday'] = rota_items.filter(date=requested_week[6])
+	days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+	for d in range(0,7):
+		x = rota_items.filter(date=requested_week[d])	
+		if x:
+			ret['data'][days[d]] = x[0].activity.id
+			ret['data']['''%s_description''' % days[d]] = x[0].description
+		else:
+			ret['data'][days[d]] = ''
+			ret['data']['''%s_description''' % days[d]] = ''
 
 	return HttpResponse( json.dumps(ret))
 		

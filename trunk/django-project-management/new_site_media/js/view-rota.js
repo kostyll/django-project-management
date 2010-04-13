@@ -107,7 +107,7 @@ var grid_rota = new Ext.grid.GridPanel({
 	sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
 	viewConfig: { forceFit: true },
     height: GRID_HEIGHT,
-    id:'grid_rotas',
+    id:'grid_rota',
 	region: "west",
 	width: GRID_WIDTH,
 	split: true
@@ -159,6 +159,7 @@ grid_rota.on('rowdblclick', function(sm, rowIdx, r) {
 		buttons: [ {	text: 'Save', 
 						handler: function(){
 							form_edit_rota.getForm().submit({
+								params: { monday_date: monday_date, person_id: person_id },
 								success: function(f,a){
 									Ext.Msg.alert('Success', 'Rota Updated',
 										function() {
