@@ -68,23 +68,33 @@ def view_rota(request, year=False, month=False, day=False, template=False, pdf=F
 			try:
 				_rota_item = RotaItem.objects.get(person=u, date=day)
 				#logging.debug('''%s has %s as a rota item''' % ( u, _rota_item )
-				rota_item = '''%s''' % _rota_item.activity
+				summary = '''%s''' % _rota_item.activity
+				rotaitem = '''%s''' % _rota_item.activity
+				rotaitem_description = '''%s''' % _rota_item.description
 			
-				logging.debug('''Found existing rota item for %s: %s''' % ( u, rota_item ))
+				logging.debug('''Found existing rota item for %s: %s''' % ( u, summary ))
 			except RotaItem.DoesNotExist:
-				rota_item = ''
+				summary = ''
+				rotaitem = ''
+				rotaitem_description = ''
 
 			# Include engineering day information in the rota
-			_engineering_days = EngineeringDay.objects.filter(work_date=day, resource=u)
-			for e_day in _engineering_days:
-				if e_day.wip_item.all():
-					rota_item += '''%s<br>(%s) WIP Item''' % ( rota_item, e_day.get_day_type_display() )
-				elif e_day.work_item.all():
-					rota_item += '''%s<br>(%s) Project Work''' % ( rota_item, e_day.get_day_type_display() )
+			_engineering_days = EngineeringDay.objects.filter(work_date=day, resource=u).distinct()
+			edays = ''
+			for d in _engineering_days:
+				if d.wip_item.all():
+					summary += '''<br>(%s) WIP Item''' % ( d.get_day_type_display() )
+					edays += '''<br>(%s) %s''' % ( d.get_day_type_display(), d.wip_item.all()[0].description )	
+				elif d.work_item.all():
+					summary += '''<br>(%s) Project Work''' % ( d.get_day_type_display() )
+					edays += '''<br>(%s) %s''' % ( d.get_day_type_display(), d.work_item.all()[0].title )	
 				else:
 					pass
 		
-			x['''%s_r''' % day.isoweekday()] = str(rota_item)
+			x['''%s_s''' % day.isoweekday()] = str(summary)
+			x['''%s_eday''' % day.isoweekday()] = str(edays)
+			x['''%s_r''' % day.isoweekday()] = str(rotaitem)
+			x['''%s_r_d''' % day.isoweekday()] = str(rotaitem_description)
 				
 		ret.append(x)
 
