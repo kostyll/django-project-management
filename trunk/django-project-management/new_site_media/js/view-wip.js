@@ -19,7 +19,28 @@ var st_wip_items = new Ext.data.GroupingStore({
 		{ name: "modified_date", mapping: "fields.modified_date" },
 		{ name: "created_date", mapping: "fields.created_date" },
 		{ name: "description", mapping: "fields.description" },
-		{ name: "assignee", mapping: "fields.assignee.fields.username" },
+		{ name: "assignee", mapping: "fields.assignee.extras.get_full_name" },
+		{ name: "deadline", mapping: "fields.deadline" },
+		{ name: "complete", mapping: "fields.complete", type: 'bool' },
+		{ name: "objective", mapping: "fields.objective", type: 'bool' },
+		{ name: "engineering_days", mapping: "extras.get_engineering_days_as_ul" },
+		{ name: "history", mapping: "fields.history" }
+	]}), 
+	sortInfo:{field: 'assignee', direction: "ASC"},
+	groupField:'heading',
+	autoLoad: true
+});
+
+var st_wip_objectives = new Ext.data.GroupingStore({
+	proxy: new Ext.data.HttpProxy({ url: "/WIP/" + wip_report + "/Objectives/?xhr" }),
+	reader: new Ext.data.JsonReader({ root: "", fields: [
+		{ name: "pk", mapping: "pk" },
+		{ name: "status", mapping: "fields.status" },
+		{ name: "heading", mapping: "extras.get_heading" },
+		{ name: "modified_date", mapping: "fields.modified_date" },
+		{ name: "created_date", mapping: "fields.created_date" },
+		{ name: "description", mapping: "fields.description" },
+		{ name: "assignee", mapping: "fields.assignee.extras.get_full_name" },
 		{ name: "deadline", mapping: "fields.deadline" },
 		{ name: "complete", mapping: "fields.complete", type: 'bool' },
 		{ name: "objective", mapping: "fields.objective", type: 'bool' },
@@ -41,14 +62,14 @@ var st_wip_status = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"Act
 
 var st_assignee = new Ext.data.Store({
 	proxy: new Ext.data.HttpProxy({ url: "/WIP/" + wip_report + "/xhr/assignees/" }),
-	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"id", mapping:"pk"},{name:"username", mapping: "fields.username"},{name:"first_name", mapping: "fields.first_name"},{name:"last_name", mapping:"fields.last_name"}]}),
+	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"id", mapping:"pk"},{name:"username", mapping: "extras.get_full_name"},{name:"first_name", mapping: "fields.first_name"},{name:"last_name", mapping:"fields.last_name"}]}),
 	autoLoad: true
 });
 
 
 var st_heading = new Ext.data.Store({
 	proxy: new Ext.data.HttpProxy({ url: "/WIP/" + wip_report + "/Headings/" }),
-	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"heading", mapping: "fields.heading"},{name:"company",mapping:"fields.company.company_name"}]}),
+	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"heading", mapping: "extras.get_heading"},{name:"company",mapping:"fields.company.company_name"}]}),
 	autoLoad: true
 });
 
@@ -137,6 +158,7 @@ var edit_wip_item = function(b,e){
                                             function() { 
                                             	window_edit_wip.hide(); 
                                             	Ext.getCmp("grid_wip_items").store.load();
+                                            	Ext.getCmp("grid_wip_objectives").store.load();
                                             	Ext.getCmp("work_item_detail").body.update('Please select a Work Item to see more details');
                                           });
 									    },  
@@ -148,6 +170,7 @@ var edit_wip_item = function(b,e){
 									, { text: 'Close', handler: function(){ window_edit_wip.hide(); } }] });
 
 	window_edit_wip.show();
+	window_edit_wip.center();
 }
 
 var add_heading = function(){
@@ -167,6 +190,7 @@ var add_heading = function(){
 										}}
 										, { text: 'Close', handler: function(){ window_heading.hide(); } }] });
 	window_heading.show();
+	window_heading.center();
 }
 var add_wip_item = function(){
 	var form_add_wip_item = new Ext.form.FormPanel({ url: "/WIP/" + wip_report + "/WIPItem/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: wip_item_fields }); 
@@ -177,6 +201,7 @@ var add_wip_item = function(){
                                             		Ext.Msg.alert('Success', 'WIP Item Added');
                                             		window_wip_item.hide(); 
                                             		Ext.getCmp("grid_wip_items").store.load();
+                                            		Ext.getCmp("grid_wip_objectives").store.load();
                                             		Ext.getCmp("work_item_detail").body.update('Please select a Work Item to see more details');
                                             		},  
                                             		failure: function(f,a){
@@ -186,6 +211,7 @@ var add_wip_item = function(){
 										}}
 										, { text: 'Close', handler: function(){ window_wip_item.hide(); } }] });
 	window_wip_item.show();
+	window_wip_item.center();
 }
 
 
@@ -290,6 +316,39 @@ var grid_wip_items = new Ext.grid.GridPanel({
 	region: 'west'
 });
 
+
+var grid_wip_objectives = new Ext.grid.GridPanel({
+	store: st_wip_objectives,
+	id: "grid_wip_objectives",
+	columns: [
+		new Ext.grid.RowNumberer(),
+		{ header: "Heading", dataIndex: "heading", sortable: true, hidden: true }, 
+		{ header: "Status", dataIndex: "status", sortable: true, hidden: true }, 
+		{ header: "Modified Date", dataIndex: "modified_date", sortable:true, hidden: true },
+		{ header: "Created Date", dataIndex: "created_date", sortable:true, hidden: true },
+		{ header: "Description", dataIndex: "description", sortable:true },
+		{ header: "Assignee", dataIndex: "assignee", sortable:true },
+		{ header: "Deadline", dataIndex: "deadline", sortable:true, hidden: true },
+		{ xtype: 'booleancolumn', header: "Complete", dataIndex: "complete", sortable:true, hidden: true,
+			trueText: 'Yes', falseText: 'No', editor: { xtype: 'checkbox' } },
+		{ xtype: 'booleancolumn', header: "Objective", dataIndex: "objective", sortable:true, 
+			trueText: 'Yes', falseText: 'No', editor: { xtype: 'checkbox' } },
+		{ header: "Engineering Days", dataIndex: "engineering_days", sortable:true, hidden: true },
+	],
+	tbar: [ btn_add_heading, btn_add_wip_item, btn_update_wip_item, btn_complete_wip_item, btn_add_engineering_day ],
+	sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
+	view: new Ext.grid.GroupingView({
+            forceFit:true,
+            groupTextTpl: '{text} ({[values.rs.length]} {[values.rs.length > 1 ? "Items" : "Item"]})'
+    }),
+    height: GRID_HEIGHT,
+	width: GRID_WIDTH,
+	split: true,
+	region: 'west'
+});
+
+
+
 var wip_item_markup = [
 		'<table class="project_table">',
 		'<tr><th>Status</th> <td>{status}</td></tr>',
@@ -311,8 +370,20 @@ var panel_wip_items = new Ext.Panel({
 });
 
 
+var panel_wip_objectives = new Ext.Panel({
+	layout: 'border', height: 400,
+	items: [ grid_wip_objectives, { id: 'work_item_objective_detail', bodyStyle: { background: '#ffffff', padding: '7px' }, region: 'center', html: 'Please select a WIP Item to see more details'} ]
+});
+
+
+
 grid_wip_items.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
 		var wipPanel = Ext.getCmp('work_item_detail');
+		wipItemTpl.overwrite(wipPanel.body, r.data);
+});
+
+grid_wip_objectives.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
+		var wipPanel = Ext.getCmp('work_item_objective_detail');
 		wipItemTpl.overwrite(wipPanel.body, r.data);
 });
 
@@ -325,7 +396,7 @@ grid_wip_items.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
 
 tab_items = [
 	{ xtype: "panel", title: "Agenda", contentEl: "agenda", title: "Agenda" },
-	{ xtype: "panel", title: "Objectives", title: "Objectives" },
+	{ xtype: "panel", title: "Objectives", title: "Objectives", items: [ panel_wip_objectives ] },
 	{ xtype: "panel", title: "Work In Progress", items: [ panel_wip_items ] }
 ]
 

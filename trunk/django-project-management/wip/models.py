@@ -58,7 +58,9 @@ class Heading(models.Model):
 
 	def get_absolute_url(self):
 		return '''%s#heading_%s''' % ( self.report.all()[0].get_absolute_url(), self.id )
-		
+	
+	def get_heading(self):
+		return '''%s - %s''' % ( self.company.company_name, self.heading )	
 
 	class Meta:
 		ordering = ('company',)

@@ -59,17 +59,18 @@ def all_wip_reports(request):
 
 
 @login_required
-def view_wip_report(request, wip_report):
+def view_wip_report(request, wip_report, objectives=None):
 	
 	xhr = request.GET.has_key('xhr')
 
 	wip_report = WIPReport.objects.get(name=wip_report)
 	headings = Heading.objects.filter(report=wip_report)
-	objectives = WIPItem.objects.filter(heading__report=wip_report, complete=False, objective=True)
+	if xhr and objectives:
+		return HttpResponse( serializers.serialize('json', WIPItem.objects.filter(heading__report=wip_report, complete=False, objective=True), display=['status'], relations={'assignee': {'extras': ('get_full_name',)}, 'heading': {'fields': ('title',)}}, extras=['get_heading','get_engineering_days_as_ul']))
 	if xhr:
-		return HttpResponse( serializers.serialize('json', WIPItem.objects.filter(heading__report=wip_report, complete=False), display=['status'], relations=('assignee','heading'), extras=['get_heading','get_engineering_days_as_ul']))
+		return HttpResponse( serializers.serialize('json', WIPItem.objects.filter(heading__report=wip_report, complete=False), display=['status'], relations={'assignee': {'extras': ('get_full_name',)}, 'heading': {'fields': ('title',)}}, extras=['get_heading','get_engineering_days_as_ul']))
 	else:
-		return render_to_response('wip/wip.html', {'wip_report': wip_report, 'headings': headings, 'objectives': objectives }, context_instance=RequestContext(request))
+		return render_to_response('wip/wip.html', {'wip_report': wip_report, 'headings': headings }, context_instance=RequestContext(request))
 
 @login_required
 def get_ajax_form(request, work_item_id):
@@ -346,12 +347,12 @@ def close_heading(request, heading_id):
 def xhr_get_assignees(request, wip_report):
 	
 	wip_report = WIPReport.objects.get(name=wip_report)
-	return HttpResponse( serializers.serialize('json', User.objects.filter( groups__in=wip_report.read_acl.all()).distinct(), excludes=('is_active', 'is_superuser', 'is_staff', 'last_login', 'groups', 'user_permissions', 'password', 'email', 'date_joined') ))
+	return HttpResponse( serializers.serialize('json', User.objects.filter(is_active=True, groups__in=wip_report.read_acl.all()).order_by('first_name').distinct(), excludes=('is_active', 'is_superuser', 'is_staff', 'last_login', 'groups', 'user_permissions', 'password', 'email', 'date_joined'), extras=('get_full_name',) ))
 
 @login_required
 def view_headings(request, wip_report):
 	wip_report = WIPReport.objects.get(name=wip_report)
-	return HttpResponse( serializers.serialize('json', wip_report.headings.all(), relations=('company',) ))
+	return HttpResponse( serializers.serialize('json', wip_report.headings.all(), relations=('company',), extras=('get_heading',) ))
 
 @login_required
 def view_work_item(request, wip_report, work_item_id):
