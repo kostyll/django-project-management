@@ -312,7 +312,14 @@ def add_wip_engineering_day(request, wip_report, work_item_id):
 			if EngineeringDay.objects.filter(work_date=t.work_date, resource=t.resource, day_type__in=[ t.day_type, 2]).count() > 0:
 				logging.debug('''User has tried to book %s on %s when he has existing engineering days booked''' % ( t.resource, t.work_date ))
 				return HttpResponse( handle_generic_error("Sorry - this resource is already booked at this time."))
-				
+
+			# Check the rota, make sure resource isn't on holiday or training etc
+			try:
+				rota = RotaItem.objects.get(date=t.work_date, person=t.resource)
+				if rota.activity.unavailable_for_projects:
+					return HttpResponse( handle_generic_error("Sorry - this resource has an entry in the Rota stopping you booking this Engineering Day."))
+			except RotaItem.DoesNotExist:
+				pass	
 
 			t.save()
 			work_item.engineering_days.add(t)

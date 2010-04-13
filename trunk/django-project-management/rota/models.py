@@ -13,6 +13,9 @@ class RotaActivity(models.Model):
 	def __str__(self):
 		return '''%s''' % self.activity
 
+	class Meta:
+		ordering = ('activity',)
+
 class RotaItem(models.Model):
 
 	date = models.DateField('Date')
