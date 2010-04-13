@@ -114,7 +114,7 @@ var grid_rota = new Ext.grid.GridPanel({
 
 var markup_rota = [
 	'<table class="project_table">',
-	'<tr><td><h1>{user}</h1></td></tr>',
+	'<tr><td colspan="3"><h1>{user}</h1></td></tr>',
 	'<tr><th>Day</th><th>Rota Activity</th><th>Notes</th><th>Engineering Days</th></tr>',
 	'<tr><th>Monday</th> <td>{monday_rota}</td> <td>{monday_rota_desc}</td> <td>{monday_engineering_days}</td>					</tr>',
 	'<tr><th>Tuesday</th> <td>{tuesday_rota}</td> <td>{tuesday_rota_desc}</td> <td>{tuesday_engineering_days}</td>				</tr>',
