@@ -240,14 +240,7 @@ var add_risk = function(b,e){
 
 	var form_risk_add = new Ext.form.FormPanel({ url: "/Risks/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: risk_fields});
 
-	var window_risks = new Ext.Window({
-		width: 620, 
-		height:540, 
-		closeAction:'close', 
-		autoScroll: true, 
-		modal: true, 
-		title: "Add a Risk", 
-		items: [ form_risk_add ],
+	var window_risks = new Ext.Window({ width: 620, height:540, closeAction:'close', autoScroll: true, modal: true, title: "Add a Risk", items: [ form_risk_add ],
 		buttons: [{ text: 'Save',
 			handler: function(){
                        		form_risk_add.getForm().submit({
@@ -304,31 +297,16 @@ var edit_risk = function(b,e){
                                          handler: function(){
                                          form_risk_edit.getForm().submit({
                        			params: { probability: Ext.getCmp("probability").getValue(), impact: Ext.getCmp("impact").getValue()  },
-                                            success:
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                             function(f,a){
-                                            Ext.Msg.alert('Success', 'Risk Updated', 
-                           function() { 
-                              	window_risks.destroy(); 
-                              	Ext.getCmp("grid_risks").store.load();
-                               	Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
-                                            	});
-									    }
-									    
-									    
-									    
-									    
-									    
-									    
-									    
-									    ,  
+                                            success: function(f,a){
+                                            	Ext.Msg.alert('Success', 'Risk Updated', 
+                           							function() { 
+                              							window_risks.destroy(); 
+                              							Ext.getCmp("grid_risks").store.load();
+                               							Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
+                                            		});
+									    	} ,  
                                            	failure: function(f,a){
-                                           Ext.Msg.alert('Warning', a.result.errormsg);
+                                           		Ext.Msg.alert('Warning', a.result.errormsg);
                                             }
                                         });
                                         }}   
