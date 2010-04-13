@@ -1246,25 +1246,18 @@ function delete_file() {
 		Ext.Msg.show({
 			title: 'Remove File',
 			buttons: Ext.MessageBox.YESNO,
-			msg: 'Remove <b>'+sel.data.summary +'</b>?',
+			msg: 'Remove <b>'+sel.data.description +'</b>?',
 			closable: false, 
 			fn: function(btn){
 				if (btn == 'yes'){
-						Ext.Ajax.request({
-        url: "",
-        method: "POST",
-        params: {"pk": fileId
-            
-        },
-        failure: function (response) {
-            Ext.Msg.alert('Error', response.responseText);
-        },
-        success: function (response) {
-            Ext.Msg.alert('Success', sel.data.summary + " has been removed");
-           Ext.getCmp("grid_files").store.load();
-           Ext.getCmp("report_file").body.update('Please select a file to see more details');
-           }
-    });
+						Ext.Ajax.request({ url: "/Files/" + project_number + "/Delete/", method: "POST", params: {"pk": sel.data.pk },
+        					failure: function (response) { Ext.Msg.alert('Error', response.responseText); },
+        					success: function (response) {
+            					Ext.Msg.alert('Success', sel.data.description + " has been removed");
+           						Ext.getCmp("grid_files").store.load();
+           						Ext.getCmp("file_detail").body.update('Please select a file to see more details');
+           					}
+    					});
 				}
 			}
 		});

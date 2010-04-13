@@ -14,7 +14,7 @@ from risks.models import *
 from files.forms import *
 from backends.pdfexport import render_to_pdf
 import settings
-from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success, handle_generic_error
+from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success, handle_generic_error, user_has_write_access
 
 
 @login_required
@@ -70,11 +70,24 @@ def add_file(request, project_number):
 def view_files(request, project_number):
 	project = Project.objects.get(project_number=project_number)
 	files = []
-	files.append({'author': '-', 'file_type': '-', 'description': 'Project Initiation Document', 'url': '/Files/%s/PID/' % project.project_number })
-	files.append({'author': '-', 'file_type': '-', 'description': 'Risk Register', 'url': '/Files/%s/RiskRegister/' % project.project_number })
-	files.append({'author': '-', 'file_type': '-', 'description': 'Work Breakdown Structure', 'url': '/Files/%s/WBS/' % project.project_number })
-	files.append({'author': '-', 'file_type': '-', 'description': 'Issue Log', 'url': '/Files/%s/IssueLog/' % project.project_number })
+	files.append({'pk': 0, 'author': '-', 'file_type': '-', 'description': 'Project Initiation Document', 'url': '/Files/%s/PID/' % project.project_number })
+	files.append({'pk': 0, 'author': '-', 'file_type': '-', 'description': 'Risk Register', 'url': '/Files/%s/RiskRegister/' % project.project_number })
+	files.append({'pk': 0, 'author': '-', 'file_type': '-', 'description': 'Work Breakdown Structure', 'url': '/Files/%s/WBS/' % project.project_number })
+	files.append({'pk': 0, 'author': '-', 'file_type': '-', 'description': 'Issue Log', 'url': '/Files/%s/IssueLog/' % project.project_number })
 	for f in project.files.all():
-		files.append({ 'author': f.author.get_full_name(), 'file_type': f.get_file_type_display(), 'url': f.filename.url, 'description': f.description, 'created_date': f.created_date.strftime("%Y-%m-%d %H:%M:%S") })
+		files.append({'pk': f.id, 'author': f.author.get_full_name(), 'file_type': f.get_file_type_display(), 'url': f.filename.url, 'description': f.description, 'created_date': f.created_date.strftime("%Y-%m-%d %H:%M:%S") })
 	return HttpResponse( json.dumps(files))
+	
+@login_required
+def delete_file(request, project_number):
+	project = Project.objects.get(project_number=project_number)
+	file = ProjectFile.objects.get(id=request.POST['pk'])
+	
+	if user_has_write_access(project, request.user):
+		project.files.remove(file)
+		project.save()
+		return HttpResponse( return_json_success() )
+	else:
+		return HttpResponse( handle_generic_error("Sorry - you don't have permission to delete this file"))
+		r
 	
