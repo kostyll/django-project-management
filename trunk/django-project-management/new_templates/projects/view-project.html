@@ -26,6 +26,8 @@
 <div id="project_initiation" class="x-hide-display">
 
 				<table class="project_table">
+					<tr> <th>Project Number</th><td>{{ project.project_number }}</td> </tr>
+					<tr> <th>Status</th><td>{{ project.get_project_status_display }}</td> </tr>
 					<tr> <th>Company</th><td>{{ project.company.company_name }}</td> </tr>
 
 					<tr> <th>Project Manager</th><td>{% if project.project_manager.get_full_name %}{{ project.project_manager.get_full_name }}
