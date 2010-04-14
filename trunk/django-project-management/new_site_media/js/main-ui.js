@@ -1,3 +1,5 @@
+Ext.QuickTips.init();
+
 Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
 
 Ext.namespace('Ext.ux.tree');
