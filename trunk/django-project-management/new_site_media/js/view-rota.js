@@ -1,7 +1,7 @@
 Ext.QuickTips.init();
 
 /* Some constants used in forms and grids */
-var GRID_HEIGHT = 210
+var GRID_HEIGHT = 550
 var GRID_WIDTH = 500
 var TEXTAREA_WIDTH = 400
 var TEXTAREA_HEIGHT = 80 
@@ -128,8 +128,8 @@ var markup_rota = [
 var template_rota = new Ext.Template(markup_rota);
 
 var panel_rota = new Ext.Panel({
-	layout: 'border', height: 400,
-	items: [ grid_rota, { id: "rota_detail", bodyStyle: { background: "#ffffff", padding: "7px;"}, region: "center", html: "Please select a person to view more details"} ]
+	layout: 'border', height: GRID_HEIGHT,
+	items: [ grid_rota, { id: "rota_detail", bodyStyle: { background: "#ffffff", padding: "7px;"}, region: "center", html: "Please select a person to view more details", autoScroll: true, autoWidth: true } ]
 });
 
 var rota_fields = [
