@@ -105,7 +105,7 @@ class WorkItem(models.Model):
 					return 'rag_status_amber'
 			return 'rag_status_white'
 		else:
-			return 'rag_status_white'
+			return 'rag_status_green'
 
 	class Meta:
 		ordering = ['wbs_number']
