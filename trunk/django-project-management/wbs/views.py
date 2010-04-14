@@ -6,6 +6,7 @@ import logging
 
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Context, Template, RequestContext
 from django.template.loader import get_template
@@ -251,6 +252,10 @@ def view_wbs(request, project_number):
 	for w in wbs:
 		if not w.depends:
 			w.depends = WorkItem(title='')
+		try:
+			i = w.owner
+		except User.DoesNotExist: 
+			w.owner = User()
 	
 	
 	return HttpResponse( serializers.serialize('json', wbs, relations={'depends': {'fields': ('title',)}, 'skill_set': {'fields': ('skill',)}, 'project_stage': {'fields': ('stage',)},'author': {'fields': ('id', 'username'), 'extras': ('get_full_name',)},'owner': { 'fields': ('id', 'username'), 'extras': ('get_full_name',)}}, extras=('get_work_item_status',)))
@@ -260,6 +265,18 @@ def view_work_item(request, project_number, wbs_id):
 	project = get_object_or_404(Project, project_number=project_number)
 	check_project_read_acl(project, request.user)	# Will return Http404 if user isn't allowed to view project
 	work_item = WorkItem.objects.get(id=wbs_id)
+
+	# Some error checking
+	if not work_item.depends:
+		work_item.depends = WorkItem(title='')
+	try:
+		i = work_item.owner
+	except User.DoesNotExist: 
+		work_item.owner = User()
+	
+	
+
+
 	JSONSerializer = serializers.get_serializer('json')
 	j = JSONSerializer()
 	if work_item.start_date != None: work_item.start_date = work_item.start_date.strftime("%m/%d/%Y")
