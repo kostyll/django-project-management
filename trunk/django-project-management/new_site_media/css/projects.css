@@ -11,11 +11,11 @@
 
 .rag_status_red { color:white; padding:5px; background-image:url(/site_media/img/red-stripe.png); }
 .rag_status_red a { color:white; }
-.rag_status_amber { background-color:#FF9900; color:white; padding:5px; }
+.rag_status_amber { color:white; padding:5px; background-image:url(/site_media/img/orange-stripe.png);}
 .rag_status_amber a { color:white; }
 .rag_status_green { color:white; padding:5px; background-image:url(/site_media/img/green-stripe.png); }
 .rag_status_green a { color:white; }
-.rag_status_blue { background-color:blue; color:white; padding:5px; }
+.rag_status_blue { color:white; padding:5px; background-image:url(/site_media/img/blue-stripe.png); }
 .rag_status_blue a { color:white; }
 .rag_status_grey { background-color:gray; color:white; padding:5px; background-image:url(/site_media/img/grey-stripe.png); }
 .rag_status_grey a { color:white; }
@@ -46,3 +46,7 @@
 
 .upload-icon { background: url('/site_media/js/extjs/examples/shared/icons/fam/image_add.png') no-repeat 0 0 !important; }
 
+.content {font-family:arial,tahoma,helvetica,sans-serif; font-size:11px; font-size-adjust:none; font-style:normal; font-variant:normal; font-weight:normal;}
+.content strong {font-family:arial,tahoma,helvetica,sans-serif; font-size:13px; font-size-adjust:none; font-variant:normal; font-weight: bold;}
+.breadcrumbs {}
+#subpages_menu {font-family:arial,tahoma,helvetica,sans-serif; font-size:11px; font-size-adjust:none; font-style:normal; font-variant:normal; font-weight:normal;}
