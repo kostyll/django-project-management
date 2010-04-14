@@ -25,7 +25,7 @@
 
 
 .rag_status_red-selected { color:white; padding:5px; background-image:url(/site_media/img/red-stripe-hover.png); }
-.rag_status_amber-selected { background-color:#FF9900; color:white; padding:5px; }
+.rag_status_amber-selected { color:white; padding:5px; background-image:url(/site_media/img/orange-stripe-hover.png);}
 .rag_status_green-selected { color:white; padding:5px; background-image:url(/site_media/img/green-stripe-hover.png); }
 .rag_status_blue-selected { background-color:blue; color:white; padding:5px; }
 .rag_status_grey-selected { background-color:gray; color:white; padding:5px; }
@@ -33,7 +33,7 @@
 
 
 .rag_status_red-hover { color:black; padding:5px; background-image:url(/site_media/img/red-stripe-hover.png); }
-.rag_status_amber-hover { background-color:yellow; color:black; padding:5px; }
+.rag_status_amber-hover { color:black; padding:5px; background-image:url(/site_media/img/orange-stripe-hover.png); }
 .rag_status_green-hover { color:black; padding:5px; background-image:url(/site_media/img/green-stripe-hover.png); }
 .rag_status_blue-hover { background-color:cyan; color:black; padding:5px; }
 .rag_status_grey-hover { background-color:black; color:white; padding:5px; }
