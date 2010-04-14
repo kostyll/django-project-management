@@ -52,14 +52,12 @@ Ext.extend(Ext.ux.tree.State, Ext.util.Observable, {
 Ext.DatePicker.prototype.startDay = 1;
 
 var tree_data = [
-					{ text: 'Projects', id: 'projectsNode', leaf: false,
-						children: [{ text: 'View Dashboard', href: "/", leaf: true }]},
-  					{ text: 'Work In Progress', id: 'wipNode', leaf: false,
-    					children: [{ text: "All WIP Reports", href: "/WIP/", leaf: true}] },
+					{ text: 'Projects', id: 'projectsNode', leaf: false, children: [{ text: 'View Dashboard', href: "/", leaf: true }]},
+  					{ text: 'Work In Progress', id: 'wipNode', leaf: false, children: [{ text: "All WIP Reports", href: "/WIP/", leaf: true}] },
   					{ text: 'Rota', id: 'rotaNode', leaf: false,
     					children: [{ text: "All Rotas", href: "/Rota/ViewAll/", leaf: true}, { text: "My Teams Rota", href: "/Rota/ViewMyTeam/", leaf: true }, { text: "My Rota", href: "/Rota/ViewMyRota/", leaf: true } ]},
   					{ text: 'Documentation', id: 'docNode', leaf: false,
-    					children: [{ text: "Help Files", href: "/en/", leaf: true}, { text: "Bugs/Source code", href: "http://code.google.com/p/django-project-management", leaf: true }] },
+    					children: [{ text: "Help Files", href: "/en/", leaf: true}, { text: "Bugs/Source code", href: "http://code.google.com/p/django-project-management", leaf: true }] }
 			
 				]
 
