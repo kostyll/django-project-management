@@ -1,9 +1,9 @@
 
 /* Some constants used in forms and grids */
-var GRID_HEIGHT = 210
-var GRID_WIDTH = 500
-var TEXTAREA_WIDTH = 400
-var TEXTAREA_HEIGHT = 80 
+var GRID_HEIGHT = 210;
+var GRID_WIDTH = 500;
+var TEXTAREA_WIDTH = 400;
+var TEXTAREA_HEIGHT = 80; 
 
 
 /*
@@ -92,13 +92,13 @@ wip_item_fields = [
 	{ xtype: "checkbox", fieldLabel: "Objective", name: "objective" },
 	{ xtype: "datefield", fieldLabel: "Deadline", name: "deadline", format: "d/m/Y" },
 	{ xtype: "checkbox", fieldLabel: "Complete", name: "complete" },
-	{ xtype: "combo", fieldLabel: "Status", hiddenName: "status", lazyInit: false, store: st_wip_status, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" },
-]	
+	{ xtype: "combo", fieldLabel: "Status", hiddenName: "status", lazyInit: false, store: st_wip_status, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" }
+];	
 
 var wip_heading_fields = [
 	{ xtype: "textfield", fieldLabel: "Heading", name: "heading" },
 	{ xtype: "combo", fieldLabel: "Company", hiddenName: "company", lazyInit: false,  store: st_company, mode: "local", displayField: "name", valueField: "pk", triggerAction: "all" }
-]
+];
 
 var get_resources_from_date = function(picker,date_string){
 
@@ -109,9 +109,9 @@ var get_resources_from_date = function(picker,date_string){
 	var day = chosen_date.getDate();
 	//Ext.Msg.alert("Hmmmm", "date_string =>" + date_string + ", Year =>" + year + ", Month =>" + month + ", Day =>" + day);
 	
-	st_engineering_day_resource.proxy = new Ext.data.HttpProxy({ url: "/WIP/" + wip_report + "/EngineeringDayResources/" + year + "-" + month + "-" + day + "/" + day_type + "/"}),
+	st_engineering_day_resource.proxy = new Ext.data.HttpProxy({ url: "/WIP/" + wip_report + "/EngineeringDayResources/" + year + "-" + month + "-" + day + "/" + day_type + "/"});
 	st_engineering_day_resource.load();
-}
+};
 
 var get_resources_from_day_type = function(){
 	
@@ -122,16 +122,16 @@ var get_resources_from_day_type = function(){
 	var month = chosen_date.getMonth() + 1;
 	var day = chosen_date.getDate();
 	
-	st_engineering_day_resource.proxy = new Ext.data.HttpProxy({ url: "/WIP/" + wip_report + "/EngineeringDayResources/" + year + "-" + month + "-" + day + "/" + day_type + "/"}),
+	st_engineering_day_resource.proxy = new Ext.data.HttpProxy({ url: "/WIP/" + wip_report + "/EngineeringDayResources/" + year + "-" + month + "-" + day + "/" + day_type + "/"});
 	st_engineering_day_resource.load();
 
-}
+};
 
 var engineering_day_fields = [
 	{ xtype: "datefield", fieldLabel: "Date", format: 'd/m/Y', name: "work_date", listeners: { select: get_resources_from_date }, id: "eday_date" },
 	{ xtype: "combo", fieldLabel: "Day Type", hiddenName: "day_type", lazyInit: false, store: st_engineering_day_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all", id: "eday_day_type", listeners: { select: get_resources_from_day_type}, data: '1' },
 	{ xtype: "combo", fieldLabel: "Resource", hiddenName: "resource", lazyInit: false, store: st_engineering_day_resource, mode: "local", displayField: "resource", valueField: "pk", triggerAction: "all", height: '200px' }
-]
+];
 /*
  * Define the form that is used to add/edit WIP items
  */
@@ -166,12 +166,12 @@ var edit_wip_item = function(b,e){
                                             	Ext.Msg.alert('Warning', a.result.errormsg);
                                             }
                                         });
-                                        }}   
-									, { text: 'Close', handler: function(){ window_edit_wip.hide(); } }] });
+                                        }}   , { text: 'Close', handler: function(){ window_edit_wip.hide(); } }] });
+
 
 	window_edit_wip.show();
 	window_edit_wip.center();
-}
+};
 
 var add_heading = function(){
 	var form_add_heading = new Ext.form.FormPanel({ url: "/WIP/" + wip_report + "/Heading/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: wip_heading_fields }); 
@@ -187,11 +187,11 @@ var add_heading = function(){
                                             		Ext.Msg.alert('Warning', a.result.errormsg);
 													}
 												});
-										}}
-										, { text: 'Close', handler: function(){ window_heading.hide(); } }] });
+										}} , { text: 'Close', handler: function(){ window_heading.hide(); } }] });
+
 	window_heading.show();
 	window_heading.center();
-}
+};
 var add_wip_item = function(){
 	var form_add_wip_item = new Ext.form.FormPanel({ url: "/WIP/" + wip_report + "/WIPItem/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: wip_item_fields }); 
 	var window_wip_item = new Ext.Window({autoHeight: true, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Add a WIP Item", items: [ form_add_wip_item ],
@@ -208,11 +208,11 @@ var add_wip_item = function(){
                                             		Ext.Msg.alert('Warning', a.result.errormsg);
 													}
 												});
-										}}
-										, { text: 'Close', handler: function(){ window_wip_item.hide(); } }] });
+										}} , { text: 'Close', handler: function(){ window_wip_item.hide(); } }] });
+
 	window_wip_item.show();
 	window_wip_item.center();
-}
+};
 
 
 // Complete Work item 
@@ -245,7 +245,7 @@ var complete_work_item = function() {
 			}
 		});
 	};
-}
+};
  
 
 var add_engineering_day = function(){
@@ -272,18 +272,18 @@ var add_engineering_day = function(){
 
 	});
 	window_engineering_day.show();
-}
+};
 
 
 /*
  * Define the Toolbar buttons for the grid
  */
 
-var btn_add_heading = { iconCls: 'icon-add', text: 'Add Heading', handler: add_heading }
-var btn_add_wip_item = { iconCls: 'icon-add', text: 'Add WIP Item', handler: add_wip_item }
-var btn_update_wip_item = { iconCls: 'icon-update', text: 'Update WIP Item', handler: edit_wip_item }
-var btn_complete_wip_item = { iconCls: 'icon-complete', text: 'Complete WIP Item', handler: complete_work_item }
-var btn_add_engineering_day = { iconCls: 'icon-add', text: 'Add Engineering Day', handler: add_engineering_day }
+var btn_add_heading = { iconCls: 'icon-add', text: 'Add Heading', handler: add_heading };
+var btn_add_wip_item = { iconCls: 'icon-add', text: 'Add WIP Item', handler: add_wip_item };
+var btn_update_wip_item = { iconCls: 'icon-update', text: 'Update WIP Item', handler: edit_wip_item };
+var btn_complete_wip_item = { iconCls: 'icon-complete', text: 'Complete WIP Item', handler: complete_work_item };
+var btn_add_engineering_day = { iconCls: 'icon-add', text: 'Add Engineering Day', handler: add_engineering_day };
 
 
 var grid_wip_items = new Ext.grid.GridPanel({
@@ -302,7 +302,7 @@ var grid_wip_items = new Ext.grid.GridPanel({
 			trueText: 'Yes', falseText: 'No', editor: { xtype: 'checkbox' } },
 		{ xtype: 'booleancolumn', header: "Objective", dataIndex: "objective", sortable:true, 
 			trueText: 'Yes', falseText: 'No', editor: { xtype: 'checkbox' } },
-		{ header: "Engineering Days", dataIndex: "engineering_days", sortable:true, hidden: true },
+		{ header: "Engineering Days", dataIndex: "engineering_days", sortable:true, hidden: true }
 	],
 	tbar: [ btn_add_heading, btn_add_wip_item, btn_update_wip_item, btn_complete_wip_item, btn_add_engineering_day ],
 	sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
@@ -333,7 +333,7 @@ var grid_wip_objectives = new Ext.grid.GridPanel({
 			trueText: 'Yes', falseText: 'No', editor: { xtype: 'checkbox' } },
 		{ xtype: 'booleancolumn', header: "Objective", dataIndex: "objective", sortable:true, 
 			trueText: 'Yes', falseText: 'No', editor: { xtype: 'checkbox' } },
-		{ header: "Engineering Days", dataIndex: "engineering_days", sortable:true, hidden: true },
+		{ header: "Engineering Days", dataIndex: "engineering_days", sortable:true, hidden: true }
 	],
 	tbar: [ btn_add_heading, btn_add_wip_item, btn_update_wip_item, btn_complete_wip_item, btn_add_engineering_day ],
 	sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
@@ -398,8 +398,8 @@ tab_items = [
 	{ xtype: "panel", title: "Agenda", contentEl: "agenda", title: "Agenda" },
 	{ xtype: "panel", title: "Objectives", title: "Objectives", items: [ panel_wip_objectives ] },
 	{ xtype: "panel", title: "Work In Progress", items: [ panel_wip_items ] }
-]
+];
 
 var tabpanel = new Ext.TabPanel({ items: tab_items, bodyStyle: "padding: 15px;", activeTab: 0});
-center_panel.items = [ tabpanel ]
+center_panel.items = [ tabpanel ];
 	
