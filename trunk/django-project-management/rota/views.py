@@ -29,7 +29,7 @@ def rota_homepage(request, rota_url):
 	
 @login_required
 def view_rota_activities(request):
-	return HttpResponse( serializers.serialize('json', RotaActivity.objects.all()))	
+	return HttpResponse( serializers.serialize('json', RotaActivity.objects.filter(active=True)))	
 
 @login_required
 def view_rota(request, year=False, month=False, day=False, template=False, pdf=False, scope=False):

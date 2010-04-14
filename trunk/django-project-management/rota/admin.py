@@ -4,7 +4,7 @@ from django.contrib import admin
 
 class RotaActivityAdmin(admin.ModelAdmin):
 
-	list_display = ['activity', 'description', 'unavailable_for_projects']
+	list_display = ['activity', 'description', 'unavailable_for_projects', 'activity']
 	search_fields = ['description', 'activity']
 
 
