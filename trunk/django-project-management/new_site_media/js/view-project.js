@@ -1,12 +1,12 @@
 Ext.QuickTips.init();
 
 /* Some constants used in forms and grids */
-var GRID_HEIGHT = 210
-var GRID_WIDTH = 500
-var TEXTAREA_WIDTH = 400
-var TEXTAREA_HEIGHT = 80 
-var JSON_DATE = "Y-m-d h:i:s"
-var DATE_RENDERER = Ext.util.Format.dateRenderer("d/m/Y")
+var GRID_HEIGHT = 210;
+var GRID_WIDTH = 500;
+var TEXTAREA_WIDTH = 400;
+var TEXTAREA_HEIGHT = 80;
+var JSON_DATE = "Y-m-d h:i:s";
+var DATE_RENDERER = Ext.util.Format.dateRenderer("d/m/Y");
 
 /* 
  * Some reusable functions
@@ -24,13 +24,13 @@ var st_managers = new Ext.data.Store({
 	proxy: new Ext.data.HttpProxy({ url: "/xhr/" + project_number + "/get_team_managers/" }),
 	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"username", mapping: "extras.get_full_name"}]}),
 	autoLoad: true
-})
+});
 
 var st_non_managers = new Ext.data.Store({
 	proxy: new Ext.data.HttpProxy({ url: "/xhr/" + project_number + "/get_non_team_managers/" }),
 	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"username", mapping: "extras.get_full_name"}]}),
 	autoLoad: true
-})
+});
 
 var date_renderer = Ext.util.Format.dateRenderer('d/m/Y');
 
@@ -47,7 +47,8 @@ var deliverable_fields = [
 		{ xtype: "textarea", fieldLabel: "Method", name: "testing_method", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
 		{ xtype: "textarea", fieldLabel: "Expected Result", name: "expected_result", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
 		{ xtype: "textfield", fieldLabel: "RPO", name: "rpo" },
-		{ xtype: "textfield", fieldLabel: "RTO", name: "rto" } ]
+		{ xtype: "textfield", fieldLabel: "RTO", name: "rto" } 
+];
 
 // Add a Deliverable
 var add_deliverable = function(b,e){
@@ -55,10 +56,10 @@ var add_deliverable = function(b,e){
 	var form_add_deliverable = new Ext.form.FormPanel({ url: "/Deliverables/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: deliverable_fields });
 										
 	var window_deliverable = new Ext.Window({autoHeight: true, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Deliverable", items: [ form_add_deliverable ],
-							buttons: [	{ 	text:'Submit', 
-											handler: function(){
+							buttons: [	{ text:'Submit', 
+										  handler: function(){
 												form_add_deliverable.getForm().submit({
-													success: function(f,a){
+										     		success: function(f,a){
                                             		Ext.Msg.alert('Success', 'Deliverable Added');
                                             		window_deliverable.hide(); 
                                             		Ext.getCmp("grid_deliverables").store.load();
@@ -68,12 +69,12 @@ var add_deliverable = function(b,e){
                                             		Ext.Msg.alert('Warning', a.result.errormsg);
 													}
 												});
-										}}
-										, { text: 'Close', handler: function(){ window_deliverable.hide(); } }] });
+										}},
+										 { text: 'Close', handler: function(){ window_deliverable.hide(); } }] });
 	tabpanel.activate(1);
 	window_deliverable.show();
 	window_deliverable.center();
-}
+};
 
 // Edit Deliverable
 var edit_deliverable = function(b,e){
@@ -98,11 +99,11 @@ var edit_deliverable = function(b,e){
                                             	Ext.Msg.alert('Warning', a.result.errormsg);
                                             }
                                         });
-                                        }}   
-									, { text: 'Close', handler: function(){ window_deliverable.hide(); } }] });
+                                        }} ,  
+									 { text: 'Close', handler: function(){ window_deliverable.hide(); } }] });
 	window_deliverable.show();
 	window_deliverable.center();
-}
+};
 
 // Delete Deliverable
 function delete_deliverable() {
@@ -135,7 +136,7 @@ function delete_deliverable() {
 				}
 			}
 		});
-	};
+	}
 }
  
 // Show Deliverables... 
@@ -154,8 +155,8 @@ var st_deliverable = new Ext.data.Store({
 	autoLoad: true
 });
 
-var btn_update_deliverable = { iconCls: 'icon-update', text: 'Update Deliverable', handler: edit_deliverable }
-var btn_delete_deliverable = { iconCls: 'icon-complete', text: 'Delete Deliverable', handler: delete_deliverable }
+var btn_update_deliverable = { iconCls: 'icon-update', text: 'Update Deliverable', handler: edit_deliverable };
+var btn_delete_deliverable = { iconCls: 'icon-complete', text: 'Delete Deliverable', handler: delete_deliverable };
 
 var grid_deliverables = new Ext.grid.GridPanel({
         store: st_deliverable,
@@ -207,8 +208,8 @@ grid_deliverables.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
  * RISKS!!!
  *
  * */
-probability_list = ["", "Very Unlikely", "Unlikely", "Possible", "Likely"]
-impact_list = ["", "Low Impact", "Some Impact", "High Impact", "Critical"]
+probability_list = ["", "Very Unlikely", "Unlikely", "Possible", "Likely"];
+impact_list = ["", "Low Impact", "Some Impact", "High Impact", "Critical"];
 var probability_tip = new Ext.ux.SliderTip({ getText: function(slider){ return String.format('<b>{0}</b>', probability_list[slider.getValue()]); } }); 
 var impact_tip = new Ext.ux.SliderTip({ getText: function(slider){ return String.format('<b>{0}</b>', impact_list[slider.getValue()]); } }); 
 
@@ -230,7 +231,7 @@ var risk_fields = [
 	{ xtype: "textfield", fieldLabel: "Rating", name: "rating", readOnly: true, allowBlank: true, id:'rating', valueField:"rating" },
 	{ xtype: "combo", displayField: "d", valueField: "id", hiddenName: 'counter_measure', mode: "local", store: st_counter, fieldLabel: "Counter Measure", name: "counter_measure", triggerAction: "all" },
 	{ xtype: "combo", displayField: "d", valueField: "id", hiddenName: 'status', mode: "local", store: st_status, fieldLabel: "Status", name: "status", triggerAction: "all" }
-]
+];
 
 function getRating()
 {
@@ -276,7 +277,7 @@ var add_risk = function(b,e){
 	tabpanel.activate(2);
 	window_risks.show();
 	window_risks.center();
-}
+};
 
 var edit_risk = function(b,e){
 	var	risk_id = grid_risks.getSelectionModel().getSelected().get("pk");
@@ -312,12 +313,12 @@ var edit_risk = function(b,e){
                                            		Ext.Msg.alert('Warning', a.result.errormsg);
                                             }
                                         });
-                                        }}   
-									, { text: 'Close', handler: function(){ window_risks.destroy(); } }] });
+                                        }},   
+									 { text: 'Close', handler: function(){ window_risks.destroy(); } }] });
 	window_risks.show();
 	window_risks.center();
 
-}
+};
 
 // Delete Risk
 function delete_risk() {
@@ -386,8 +387,8 @@ var st_risks = new Ext.data.Store({
 	autoLoad: true
 });
 
-var btn_update_risk = { iconCls: 'icon-update', text: 'Update Risk', handler: edit_risk }
-var btn_delete_risk = { iconCls: 'icon-complete', text: 'Delete Risk', handler: delete_risk }
+var btn_update_risk = { iconCls: 'icon-update', text: 'Update Risk', handler: edit_risk };
+var btn_delete_risk = { iconCls: 'icon-complete', text: 'Delete Risk', handler: delete_risk };
 
 var grid_risks = new Ext.grid.GridPanel({
         store: st_risks,
@@ -510,12 +511,12 @@ var wbs_fields = [
 		{ xtype: "textfield", fieldLabel: "Cost", name: "cost" },
 		{ xtype: "textarea", fieldLabel: "Update", name: "update", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
 		{ xtype: "textarea", fieldLabel: "History", name: "history", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, readOnly: true }
-]
+];
 
 var stage_plan_fields = [
 		{ xtype: "textfield", fieldLabel: "Stage Number", name: "stage_number" },
 		{ xtype: "textfield", fieldLabel: "Stage", name: "stage" },
-		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH }]
+		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH }];
 
 var add_wbs = function(b,e){
 	var form_add_wbs = new Ext.form.FormPanel({ url: "/WBS/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: wbs_fields});
@@ -534,12 +535,12 @@ var add_wbs = function(b,e){
                                             		Ext.Msg.alert('Warning', a.result.errormsg);
 													}
 												});
-										}}
-										, { text: 'Close', handler: function(){ window_wbs.destroy(); } }] });
+										}},
+										 { text: 'Close', handler: function(){ window_wbs.destroy(); } }] });
 	window_wbs.show();
 	window_wbs.center();
 
-}
+};
 
 // Delete Work Item
 var delete_wbs = function(b,e){
@@ -572,8 +573,8 @@ var delete_wbs = function(b,e){
 				}
 			}
 		});
-	};
-}
+	}
+};
 
 
 var edit_wbs = function(b,e){
@@ -606,7 +607,7 @@ var edit_wbs = function(b,e){
 });
 	window_wbs.show();
 	window_wbs.center();
-}
+};
 									    
 									    
 // Engineering Days
@@ -627,7 +628,7 @@ var get_resources_from_date = function(picker,date_string){
 	var day = chosen_date.getDate();
 	//Ext.Msg.alert("Hmmmm", "date_string =>" + date_string + ", Year =>" + year + ", Month =>" + month + ", Day =>" + day);
 	
-	st_engineering_day_resource.proxy = new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/EngineeringDayResources/" + year + "-" + month + "-" + day + "/" + wbs_id + "/" + day_type + "/"}),
+	st_engineering_day_resource.proxy = new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/EngineeringDayResources/" + year + "-" + month + "-" + day + "/" + wbs_id + "/" + day_type + "/"});
 	st_engineering_day_resource.load();
 }
 
@@ -641,7 +642,7 @@ var get_resources_from_day_type = function(){
 	var month = chosen_date.getMonth() + 1;
 	var day = chosen_date.getDate();
 	
-	st_engineering_day_resource.proxy = new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/EngineeringDayResources/" + year + "-" + month + "-" + day + "/" + wbs_id + "/" + day_type + "/"}),
+	st_engineering_day_resource.proxy = new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/EngineeringDayResources/" + year + "-" + month + "-" + day + "/" + wbs_id + "/" + day_type + "/"});
 	st_engineering_day_resource.load();
 
 }
@@ -677,7 +678,7 @@ var add_engineering_day = function(){
 	});
 	window_engineering_day.show();
 	window_engineering_day.center();
-}
+};
 									    
 									    
 									    
@@ -704,12 +705,12 @@ var add_project_stage = function(b,e){
                                             		Ext.Msg.alert('Warning', a.result.errormsg);
 													}
 												});
-										}}
-										, { text: 'Close', handler: function(){ window_stage_plan.hide(); } }] });
+										}},
+										 { text: 'Close', handler: function(){ window_stage_plan.hide(); } }] });
 	window_stage_plan.show();
 	window_stage_plan.center();
 
-}
+};
 
 
 
@@ -751,7 +752,7 @@ var grid_wbs = new Ext.grid.GridPanel({
 		view: new Ext.grid.GroupingView({
             forceFit:true,
             getRowClass: function(record, rowIndex, rp, ds){
-								return record.json.extras.get_work_item_status
+								return record.json.extras.get_work_item_status;
 								//console.debug(grid_wbs.grid.getView().getRow(rowIndex).getRowClass());
     },
     onRowSelect: function(row){
@@ -855,7 +856,7 @@ var issue_fields = [
 	{ xtype: "combo", fieldLabel: "Priority", hiddenName: "priority", name: "priority", lazyInit: false, store: st_issue_priority, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" }, 
 	{ xtype: "textfield", fieldLabel: "Related RFC", name: "related_rfc" },
 	{ xtype: "textfield", fieldLabel: "Related Helpdesk", name: "related_helpdesk" }
-	]
+];
 
 var add_issue = function(b,e){
 	var form_add_issue = new Ext.form.FormPanel({ url: "/Issues/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: issue_fields});
@@ -875,13 +876,12 @@ var add_issue = function(b,e){
                                             		Ext.Msg.alert('Warning', a.result.errormsg);
 													}
 												});
-										}}
-										, { text: 'Close', handler: function(){ window_issue.hide(); } }] });
+										}} , { text: 'Close', handler: function(){ window_issue.hide(); } }] });
 	project_menu.hide();
 	tabpanel.activate(4);
 	window_issues.show();
 	window_issues.center();
-}
+};
 
 var edit_issue = function(b,e){
 	var	issue_id = grid_issues.getSelectionModel().getSelected().get("pk");
@@ -906,12 +906,11 @@ var edit_issue = function(b,e){
                                            Ext.Msg.alert('Warning', a.result.errormsg);
                                             }
                                         });
-                                        }}   
-									, { text: 'Close', handler: function(){ window_issues.hide(); } }] });
+                                        }}   , { text: 'Close', handler: function(){ window_issues.hide(); } }] });
 	window_issues.show();
 	window_issues.center();
 
-}
+};
 
 
 // Delete Issue
@@ -981,8 +980,8 @@ var st_issues = new Ext.data.GroupingStore({
 	sortInfo:{field: 'description', direction: "ASC"}
 });
 
-var btn_update_issues = { iconCls: 'icon-update', text: 'Update Issue', handler: edit_issue }
-var btn_delete_issues = { iconCls: 'icon-complete', text: 'Delete Issue', handler: delete_issue }
+var btn_update_issues = { iconCls: 'icon-update', text: 'Update Issue', handler: edit_issue };
+var btn_delete_issues = { iconCls: 'icon-complete', text: 'Delete Issue', handler: delete_issue };
 
 var grid_issues = new Ext.grid.GridPanel({
 	store: st_issues,
@@ -1046,7 +1045,7 @@ grid_issues.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
 var lesson_fields = [
 		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
 		{ xtype: "checkbox", fieldLabel: "Publish to Client", name: "publish_to_client" }
-]
+];
 
 var add_lesson = function(b,e){
 	var form_add_lesson = new Ext.form.FormPanel({ url: "/Lessons/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: lesson_fields });
@@ -1073,7 +1072,7 @@ var add_lesson = function(b,e){
 	tabpanel.activate(5);
 	window_lesson.show();
 	window_lesson.center();
-}
+};
 
 
 
@@ -1100,13 +1099,12 @@ var edit_lessons = function(b,e){
                                            Ext.Msg.alert('Warning', a.result.errormsg);
                                             }
                                         });
-                                        }}   
-									, { text: 'Close', handler: function(){ window_lessons.hide(); } }
+                                        }}   , { text: 'Close', handler: function(){ window_lessons.hide(); } }
 									] 
 	});
 	window_lessons.show();
 	window_lessons.center();
-}
+};
 
 
 // Delete Lessons
@@ -1140,8 +1138,8 @@ function delete_lesson() {
 				}
 			}
 		});
-	};
-}
+	}
+};
 
 
 var st_lessons = new Ext.data.Store({
@@ -1156,8 +1154,8 @@ var st_lessons = new Ext.data.Store({
 	autoLoad: true
 });
 
-var btn_update_lesson = { iconCls: 'icon-update', text: 'Update Lesson', handler: edit_lessons }
-var btn_delete_lesson = { iconCls: 'icon-complete', text: 'Delete Lesson', handler: delete_lesson }
+var btn_update_lesson = { iconCls: 'icon-update', text: 'Update Lesson', handler: edit_lessons };
+var btn_delete_lesson = { iconCls: 'icon-complete', text: 'Delete Lesson', handler: delete_lesson };
 
 var grid_lessons = new Ext.grid.GridPanel({
 	store: st_lessons,
@@ -1210,7 +1208,7 @@ var file_fields = [
 	{ xtype: "combo", fieldLabel: "File Type", hiddenName: "file_type", displayField: "d", valueField: "id", store: st_file_type, mode: "local", triggerAction: "all" },
 	{ xtype: "combo", fieldLabel: "Author", hiddenName: "author",  lazyInit: false,  store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
 	{ xtype: 'fileuploadfield', id: 'form-file', emptyText: 'Select an file', fieldLabel: 'File', name: 'filename',  buttonText: '', buttonCfg: { iconCls: 'upload-icon' }}
-]
+];
 
 
 
@@ -1235,7 +1233,7 @@ var add_file = function(b,e){
 	});
 	window_file.show();
 	window_file.center();
-}
+};
 
 
 function delete_file() {
@@ -1291,7 +1289,7 @@ var grid_file = new Ext.grid.GridPanel({
             {header: "Description", dataIndex: 'description', renderer: renderer_file },
             {header: "File Type", dataIndex: 'file_type', sortable: true},
             {header: "Author", dataIndex: 'author', sortable: true },
-            {header: "Created Date", dataIndex: 'created_date', sortable: true, hidden: true, renderer: DATE_RENDERER },
+            {header: "Created Date", dataIndex: 'created_date', sortable: true, hidden: true, renderer: DATE_RENDERER }
 	],
     tbar: [ btn_add_file, btn_delete_file ],
 	sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
@@ -1361,8 +1359,7 @@ var st_report_type = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"Ch
                                             Ext.Msg.alert('Warning', 'An Error occured');
                                             }
                                         });
-                                        }}   
-									, { text: 'Close', handler: function(){ window_report.hide(); } }] });
+                                        }}   , { text: 'Close', handler: function(){ window_report.hide(); } }] });
 	window_report.show();
 	window_report.center();
 
