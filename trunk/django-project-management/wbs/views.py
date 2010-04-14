@@ -281,7 +281,7 @@ def view_work_item(request, project_number, wbs_id):
 	j = JSONSerializer()
 	if work_item.start_date != None: work_item.start_date = work_item.start_date.strftime("%m/%d/%Y")
 	if work_item.finish_date != None: work_item.finish_date = work_item.finish_date.strftime("%m/%d/%Y")
-	j.serialize([work_item], fields=('skill_set', 'project_stage', 'title', 'description', 'depends', 'number_days', 'owner', 'percent_complete', 'start_date', 'finish_date', 'wbs_number', 'cost', 'history', 'engineering_days'))
+	j.serialize([work_item], fields=('skill_set', 'project_stage', 'title', 'description', 'depends', 'duration', 'owner', 'percent_complete', 'start_date', 'finish_date', 'wbs_number', 'cost', 'history', 'engineering_days'))
 	return HttpResponse( '''{ success: true, data: %s }''' % json.dumps(j.objects[0]['fields']))
 
 	return HttpResponse( serializers.serialize('json', WorkItem.objects.filter(id=wbs_id), relations=('author', 'owner')))	

@@ -466,7 +466,7 @@ var st_wbs = new Ext.data.GroupingStore({
 		{ name: "title", mapping: "fields.title" },
 		{ name: "depends", mapping: "fields.depends.fields.title" },
 		{ name: "description", mapping: "fields.description" },
-		{ name: "number_days", mapping: "fields.number_days" },
+		{ name: "duration", mapping: "fields.duration" },
 		{ name: "owner", mapping: "fields.owner.extras.get_full_name" },
 		{ name: "percent_complete", mapping: "fields.percent_complete" },
 		{ name: "start_date", mapping: "fields.start_date", type: "date", dateFormat: JSON_DATE },
@@ -491,7 +491,7 @@ var wbs_fields = [
 		{ xtype: "combo", fieldLabel: "Project Stage", hiddenName: "project_stage", lazyInit: false, store: st_stage_plan, mode: "local", displayField: "stage", valueField: "pk", triggerAction: "all" },
 		{ xtype: "combo", fieldLabel: "Depends Upon", hiddenName: "depends", lazyInit: false, store: st_wbs, mode: "local", displayField: "title", valueField: "pk", triggerAction: "all" },
 		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "textfield", fieldLabel: "Number of Days", name: "number_of_days" },
+		{ xtype: "textfield", fieldLabel: "Duration", name: "duration" },
 		{ xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
 		{ xtype: "slider",
 			minValue: 0,
@@ -731,7 +731,7 @@ var grid_wbs = new Ext.grid.GridPanel({
             {header: "Author", dataIndex: 'author', hidden: true, sortable: true },
             {header: "Title", dataIndex: 'title', sortable: true },
             {header: "Description", dataIndex: 'description', hidden: true },
-            {header: "Number of Days", dataIndex: 'number_days', hidden: true, sortable: true },
+            {header: "Duration", dataIndex: 'duration', hidden: true, sortable: true },
             {header: "Owner", dataIndex: 'owner', hidden: true, sortable: true },
             {header: "Percent Complete", dataIndex: 'percent_complete', sortable: true },
             {header: "Start Date", dataIndex: 'start_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
@@ -817,7 +817,7 @@ var markup_wbs = [
 	'<tr><th>Description</th> <td>{description}</td></tr>',
 	'<tr><th>Author</th> <td>{author}</td></tr>',
 	'<tr><th>Depends Upon</th> <td>{depends}</td></tr>',
-	'<tr><th>Number of Days</th> <td>{number_days}</td></tr>',
+	'<tr><th>Duration</th> <td>{duration}</td></tr>',
 	'<tr><th>Owner</th> <td>{owner}</td></tr>',
 	'<tr><th>Cost</th> <td>{cost}</td></tr>',
 	'<tr><th>Percent Complete</th> <td>{percent_complete}%</td></tr>',
@@ -1500,6 +1500,7 @@ var edit_project_initiation = function(b,e){
 	});
 
 	var st_project_status = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[0,"Proposed"],[1,"Draft"],[2,"Active"],[3,"On Hold"],[4,"Completed"],[5,"Archived"],[6,"Informational"]]});
+	var st_duration_type = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[0,"Hours"],[1,"Days"]]});
 
 	var project_initiation_fields = [
 		{ xtype: "textfield", fieldLabel: "Project Name", name: "project_name" },
@@ -1530,6 +1531,7 @@ var edit_project_initiation = function(b,e){
 		},
 
 		{ xtype: "textfield", fieldLabel: "Project Sponsor", name: "project_sponsor" },
+		{ xtype: "combo", fieldLabel: "Duration Type", hiddenName: "duration_type", lazyInit: false,  store: st_duration_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" },
 		{ xtype: "textarea", fieldLabel: "Project Description", name: "project_description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
 		{ xtype: "textarea", fieldLabel: "Business Case", name: "business_case", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
 		{ xtype: "textarea", fieldLabel: "Business Benefits", name: "business_benefits", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },

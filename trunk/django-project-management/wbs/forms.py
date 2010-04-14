@@ -54,7 +54,7 @@ class WBSUserForm(ModelForm):
 		super(WBSUserForm, self).__init__(*args, **kwargs)
 		self.fields['history'].widget.attrs['readonly'] = True
 		self.fields['title'].widget.attrs['readonly'] = True
-		self.fields['number_days'].widget.attrs['disabled'] = True
+		self.fields['duration'].widget.attrs['disabled'] = True
 		self.fields['start_date'].widget.attrs['disabled'] = True
 		self.fields['finish_date'].widget.attrs['disabled'] = True
 		self.fields['cost'].widget.attrs['disabled'] = True

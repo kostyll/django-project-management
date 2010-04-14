@@ -33,7 +33,8 @@ UPDATE wbs_workitem SET project_stage_id = 1;
 ALTER TABLE wbs_workitem DROP COLUMN project_phase_id;
 ALTER TABLE files_projectfile CHANGE COLUMN type `file_type` integer NOT NULL;
 
-
+ALTER TABLE projects_project ADD COLUMN `duration_type` integer NOT NULL;
+ALTER TABLE wbs_workitem CHANGE COLUMN number_days duration integer;
 
 
 

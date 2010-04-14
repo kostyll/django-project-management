@@ -74,6 +74,11 @@ class Project(models.Model):
 					(6, 'Informational'),
 	)
 
+	DURATION_TYPE = (
+					(0, 'Hours'),
+					(1, 'Days'),
+	)
+
 	''' Django object to describe a Project and relationships to all it's other data '''
 
 	project_name = models.CharField(max_length=255, unique=True, help_text='''Choose a short name for the project''')
@@ -107,6 +112,7 @@ class Project(models.Model):
 	work_item_order = models.CharField('Order of Work Items', max_length=1024, blank=True)
 	executive_summary = models.ManyToManyField(ExecutiveSummary, blank=True, null=True, related_name='project')
 	stage_plan = models.ManyToManyField(ProjectStage, blank=True, null=True, related_name='project')
+	duration_type = models.IntegerField(choices=DURATION_TYPE)
 
 
 	def __str__(self):

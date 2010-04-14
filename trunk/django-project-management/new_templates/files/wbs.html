@@ -8,7 +8,7 @@
 
 <h1>Work Breakdown Structure: {{ project.project_name }}</h1>
 				<table class="pdf-table" repeat="1">
-					<tr class="first_row"> <th width="20">WBS</th><th>Description</th><th>Start Date</th><th>Finish Date</th><th>Owner</th><th>Duration</th><th>Engineering Days Booked</th><th width="50">% Complete</th></tr>
+					<tr class="first_row"> <th width="20">WBS</th><th>Description</th><th>Start Date</th><th>Finish Date</th><th>Owner</th><th>Duration ({{ project.get_duration_type_display }})</th><th>Engineering Days Booked</th><th width="50">% Complete</th></tr>
 					{% for w in project.work_items.all %}
 
 						{% if w.active %}
@@ -18,7 +18,7 @@
 							<td>{{ w.start_date|date:"jS M y" }}</td>
 							<td>{{ w.finish_date|date:"jS M y" }}</td>
 							<td>{% if w.owner.get_full_name %} {{ w.owner.get_full_name }} {% else %} {{ w.owner|default_if_none:"No Owner" }} {% endif %}</td>
-							<td>{{ w.number_days|default_if_none:"Not Set" }}</td>
+							<td>{{ w.duration|default_if_none:"Not Set" }}</td>
 							<td>{% if w.engineering_days.all  %} {% for day in w.engineering_days.all %}<li>{{ day.work_date|date:"jS M y" }} - {% get_initials_for_user day.resource %}</li> {% endfor %} {% else %} {% endif %}</td> 
 							<td>{{ w.percent_complete|default_if_none:"0" }} %</td>
 						</tr>

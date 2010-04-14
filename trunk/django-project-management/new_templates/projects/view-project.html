@@ -37,6 +37,7 @@
 	
 														{% endfor %}</ul></td> </tr>
 					<tr> <th>Project Sponsor</th><td>{{ project.project_sponsor }} </td> </tr>
+					<tr> <th>Duration Type</th><td>{{ project.get_duration_type_display }} </td> </tr>
 					<tr> <th>Project Description</th><td>{{ project.project_description|linebreaks }}</td> </tr>
 					<tr> <th>Business Case</th><td>{{ project.business_case|linebreaks }}</td> </tr>
 					<tr> <th>Business Benefits</th><td>{{ project.business_benefits|linebreaks }}</td> </tr>
