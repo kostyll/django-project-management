@@ -60,7 +60,7 @@ var add_deliverable = function(b,e){
 										  handler: function(){
 												form_add_deliverable.getForm().submit({
 										     		success: function(f,a){
-                                            		Ext.Msg.alert('Success', 'Deliverable Added');
+                                            		Ext.message.msg('Success', 'Deliverable Added', 5);
                                             		window_deliverable.hide(); 
                                             		Ext.getCmp("grid_deliverables").store.load();
                                             		Ext.getCmp("deliverable_detail").body.update('Please select a deliverable to see more details');
@@ -88,12 +88,10 @@ var edit_deliverable = function(b,e){
                                          handler: function(){
                                          form_deliverable_edit.getForm().submit({
                                             success: function(f,a){
-                                            Ext.Msg.alert('Success', 'Deliverable Updated', 
-                                            function() { 
-                                            	window_deliverable.hide(); 
-                                            	Ext.getCmp("grid_deliverables").store.load();
-                                            	Ext.getCmp("deliverable_detail").body.update('Please select a deliverable to see more details');
-                                            	});
+                                            window_deliverable.hide(); 
+                                            Ext.getCmp("grid_deliverables").store.load();
+                                            Ext.getCmp("deliverable_detail").body.update('Please select a deliverable to see more details');
+                                            Ext.message.msg('Success', 'Deliverable Updated', 5);
 									    },  
                                             failure: function(f,a){
                                             	Ext.Msg.alert('Warning', a.result.errormsg);
@@ -128,7 +126,7 @@ function delete_deliverable() {
             Ext.Msg.alert('Error', response.responseText);
         },
         success: function (response) {
-            Ext.Msg.alert('Success', sel.data.description + " has been removed");
+           Ext.message.msg('Success', sel.data.description + " has been removed", 5);
            Ext.getCmp("grid_deliverables").store.load();
            Ext.getCmp("deliverable_detail").body.update('Please select a deliverable to see more details');
            }
@@ -250,12 +248,10 @@ var add_risk = function(b,e){
                        		params: { probability: Ext.getCmp("probability").getValue(), impact: Ext.getCmp("impact").getValue()  },
 									
 			success: function(f,a){
-						Ext.Msg.alert('Success', 'Risks Updated', 
-                           function() { 
+				Ext.message.msg('Success', 'Risk Added', 5); 
                               	window_risks.destroy(); 
                               	Ext.getCmp("grid_risks").store.load();
                                	Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
-                           	});
 									    },  
            failure: function(f,a){
                 Ext.Msg.alert('Warning', a.result.errormsg);
@@ -302,12 +298,10 @@ var edit_risk = function(b,e){
                                          form_risk_edit.getForm().submit({
                        			params: { probability: Ext.getCmp("probability").getValue(), impact: Ext.getCmp("impact").getValue()  },
                                             success: function(f,a){
-                                            	Ext.Msg.alert('Success', 'Risk Updated', 
-                           							function() { 
-                              							window_risks.destroy(); 
-                              							Ext.getCmp("grid_risks").store.load();
-                               							Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
-                                            		});
+                                            	Ext.message.msg('Success', 'Risk Updated', 5);
+                           			window_risks.destroy(); 
+                              			Ext.getCmp("grid_risks").store.load();
+                               			Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
 									    	} ,  
                                            	failure: function(f,a){
                                            		Ext.Msg.alert('Warning', a.result.errormsg);
@@ -346,12 +340,10 @@ function delete_risk() {
                             
                              if (res.success == true)
                              {
-                             	Ext.Msg.alert('Success', sel.data.risk_number + " has been removed", 
-                           function() { 
+                             	Ext.message.msg('Success', sel.data.risk_number + " has been removed", 5); 
                               	//window_risks.destroy(); 
                               	Ext.getCmp("grid_risks").store.load();
                                	Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
-                                            	});
                             }
                             else {
                                Ext.Msg.alert('Error', res.errormsg, 
@@ -526,7 +518,7 @@ var add_wbs = function(b,e){
 												form_add_wbs.getForm().submit({
 													params: { percent_complete: Ext.getCmp("percent_complete").value },
 													success: function(f,a){
-                                            		Ext.Msg.alert('Success', 'Work Item Added');
+                                            		Ext.message.msg('Success', 'Work Item Added', 5);
                                             		window_wbs.destroy(); 
                                             		Ext.getCmp("grid_wbs").store.load();
                                             		Ext.getCmp("wbs_detail").body.update('Please select a Work Item to see more details');
@@ -565,7 +557,7 @@ var delete_wbs = function(b,e){
             Ext.Msg.alert('Error', response.responseText);
         },
         success: function (response) {
-            Ext.Msg.alert('Success', sel.data.description + " has been removed");
+           Ext.message.msg('Success', sel.data.description + " has been removed", 5);
            Ext.getCmp("grid_wbs").store.load();
            Ext.getCmp("wbs_detail").body.update('Please select a Work Item to see more details');
            }
@@ -595,12 +587,10 @@ var edit_wbs = function(b,e){
                                          form_wbs_edit.getForm().submit({
                                          	params: { percent_complete: Ext.getCmp("percent_complete").value },
 																					success: function(f,a){
-                                            Ext.Msg.alert('Success', 'Work Item Updated', 
-                           						function() { 
-                              						window_wbs.destroy(); 
-                              						Ext.getCmp("grid_wbs").store.load();
-                               						Ext.getCmp("wbs_detail").body.update('Please select a Work Item to see more details');
-                                           	});
+                                            Ext.message.msg('Success', 'Work Item Updated', 5);
+                          		window_wbs.destroy(); 
+                              		Ext.getCmp("grid_wbs").store.load();
+                               		Ext.getCmp("wbs_detail").body.update('Please select a Work Item to see more details');
 									    }});
 					}}]
 					
@@ -662,13 +652,11 @@ var add_engineering_day = function(){
 				handler: function(){ 
 					form_add_engineering_day.getForm().submit({
 						success: function(f,a){
-							Ext.Msg.alert('Success', 'Engineering Day Booked',
-								function(){
-									window_engineering_day.close();
-									Ext.getCmp("grid_wip_items").store.load();
-                                            				Ext.getCmp("wbs_detail").body.update('Please select a Work Item to see more details');
+							Ext.message.msg('Success', 'Engineering Day Booked', 5);
+							window_engineering_day.close();
+							Ext.getCmp("grid_wip_items").store.load();
+                                            		Ext.getCmp("wbs_detail").body.update('Please select a Work Item to see more details');
 
-							});	
 						},failure: function(f,a){
 							Ext.Msg.alert('Warning', a.result.errormsg);
 							}
@@ -695,7 +683,7 @@ var add_project_stage = function(b,e){
 											handler: function(){
 												form_add_project_stage.getForm().submit({
 													success: function(f,a){
-                                            		Ext.Msg.alert('Success', 'Project Stage Added');
+                                            		Ext.message.msg('Success', 'Project Stage Added', 5);
                                             		window_stage_plan.hide(); 
 													window.location.reload(); // At the moment we have to reload at this point - to be resolved.
 													//st_stage_plan.load();
@@ -866,11 +854,10 @@ var add_issue = function(b,e){
 												form_add_issue.getForm().submit({
 													params: { author: user_id },
 													success: function(f,a){
-                                            		Ext.Msg.alert('Success', 'Issue Added', function(){
-														window_issues.hide();
-                                            			Ext.getCmp("issues_grid").store.load();
-                                            			Ext.getCmp("issues_detail").body.update('Please select an issue to see more details');
-													});
+                                            		Ext.message.msg('Success', 'Issue Added', 5);
+							window_issues.hide();
+                                            		Ext.getCmp("issues_grid").store.load();
+                                            		Ext.getCmp("issues_detail").body.update('Please select an issue to see more details');
                                             	},  
                                             		failure: function(f,a){
                                             		Ext.Msg.alert('Warning', a.result.errormsg);
@@ -896,11 +883,10 @@ var edit_issue = function(b,e){
                                          handler: function(){
                                          form_issue_edit.getForm().submit({
                                             success: function(f,a){
-                                            Ext.Msg.alert('Success', 'Issue Updated',function() { 
+                                            Ext.message.msg('Success', 'Issue Updated', 5);
                                             	window_issues.hide(); 
                                             	Ext.getCmp("issues_grid").store.load();
                                             	Ext.getCmp("issues_detail").body.update('Please select an issue to see more details');
-                                            	});
 									    },  
                                            	failure: function(f,a){
                                            Ext.Msg.alert('Warning', a.result.errormsg);
@@ -939,11 +925,9 @@ function delete_issue() {
                             
                              if (res.success == true)
                              {
-                             	Ext.Msg.alert('Success', 'Issue Deleted', 
-                           function() { 
+                             	Ext.message.msg('Success', 'Issue Deleted', 5); 
                               	Ext.getCmp("issues_grid").store.load();
                                	Ext.getCmp("issues_detail").body.update('Please select an issue to see more details');
-                                            	});
                             }
                             else {
                                Ext.Msg.alert('Error', res.errormsg, 
@@ -1056,7 +1040,7 @@ var add_lesson = function(b,e){
 									form_add_lesson.getForm().submit({
 										params: { author: user_id },
 										success: function(f,a){
-											Ext.Msg.alert("Success", "Lesson Added");
+											Ext.message.msg("Success", "Lesson Added", 5);
 											window_lesson.hide();
 											Ext.getCmp("grid_lessons").store.load();
 											Ext.getCmp("lessons_detail").body.update("Please select a lesson to see more details");
@@ -1088,12 +1072,10 @@ var edit_lessons = function(b,e){
                                          form_lessons_edit.getForm().submit({
 											params: { author: user_id },
                                             success: function(f,a){
-                                            			Ext.Msg.alert('Success', 'Lesson Updated', 
-                                            				function() { 
+                                            			Ext.message.msg('Success', 'Lesson Updated', 5);
                                             					window_lessons.hide(); 
                                             					Ext.getCmp("grid_lessons").store.load();
                                             					Ext.getCmp("lessons_detail").body.update('Please select a lesson to see more details');
-                                            					});
 									    },  
                                             failure: function(f,a){
                                            Ext.Msg.alert('Warning', a.result.errormsg);
@@ -1130,7 +1112,7 @@ function delete_lesson() {
             Ext.Msg.alert('Error', response.responseText);
         },
         success: function (response) {
-            Ext.Msg.alert('Success', sel.data.description + " has been removed");
+            Ext.message.msg('Success', sel.data.description + " has been removed", 5);
            Ext.getCmp("grid_lessons").store.load();
            Ext.getCmp("lesson_detail").body.update('Please select a lesson to see more details');
            }
@@ -1219,7 +1201,7 @@ var add_file = function(b,e){
 								handler: function(){
 									form_add_file.getForm().submit({
 										success: function(f,a){
-											Ext.Msg.alert("Success", "File Added");
+											Ext.message.msg("Success", "File Added", 5);
 											window_file.destroy();
 											Ext.getCmp("grid_files").store.load();
 											Ext.getCmp("file_detail").body.update("Please select a File to see more details");
@@ -1251,7 +1233,7 @@ function delete_file() {
 						Ext.Ajax.request({ url: "/Files/" + project_number + "/Delete/", method: "POST", params: {"pk": sel.data.pk },
         					failure: function (response) { Ext.Msg.alert('Error', response.responseText); },
         					success: function (response) {
-            					Ext.Msg.alert('Success', sel.data.description + " has been removed");
+            					Ext.message.msg('Success', sel.data.description + " has been removed", 5);
            						Ext.getCmp("grid_files").store.load();
            						Ext.getCmp("file_detail").body.update('Please select a file to see more details');
            					}
@@ -1348,12 +1330,10 @@ var st_report_type = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"Ch
                                          form_report_edit.getForm().submit({
 											params: { author: user_id },
                                             success: function(f,a){
-                                            Ext.Msg.alert('Success', 'Report Updated', 
-                                            function() { 
+                                            Ext.message.msg('Success', 'Report Updated', 5);
                                             	window_report.hide(); 
                                             	Ext.getCmp("grid_reports").store.load();
                                             	Ext.getCmp("report_detail").body.update('Please select a report to see more details');
-                                            	});
 									    },  
                                             failure: function(f,a){
                                             Ext.Msg.alert('Warning', 'An Error occured');
@@ -1373,7 +1353,7 @@ var add_report = function(b,e){
 									form_add_report.getForm().submit({
 										params: { author: user_id },
 										success: function(f,a){
-											Ext.Msg.alert("Success", "Report Added");
+											Ext.message.msg("Success", "Report Added", 5);
 											window_report.hide();
 											Ext.getCmp("grid_reports").store.load();
 											Ext.getCmp("report_detail").body.update("Please select a Report to see more details");
@@ -1414,7 +1394,7 @@ function delete_report() {
             Ext.Msg.alert('Error', response.responseText);
         },
         success: function (response) {
-            Ext.Msg.alert('Success', sel.data.summary + " has been removed");
+            Ext.message.msg('Success', sel.data.summary + " has been removed", 5);
            Ext.getCmp("grid_reports").store.load();
            Ext.getCmp("report_detail").body.update('Please select a report to see more details');
            }
@@ -1561,7 +1541,9 @@ var edit_project_initiation = function(b,e){
                                          	params: { paramsWithArrayJson: jsondata  },
                                             success: function(f,a){
                                             		
-                                            Ext.Msg.alert('Success', 'Project Initiation Updated', function() { pid_win.hide(); window.location.reload();});
+                                            Ext.message.msg('Success', 'Project Initiation Updated', 5);
+						pid_win.hide(); 
+						window.location.reload();
 					    },  
                                             failure: function(f,a){
                                             Ext.Msg.alert('Warning', 'An Error occured');
