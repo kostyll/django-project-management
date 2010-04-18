@@ -41,13 +41,13 @@ var date_renderer = Ext.util.Format.dateRenderer('d/m/Y');
  * */
 
 var deliverable_fields = [
-		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "textarea", fieldLabel: "Acceptance Criteria", name: "acceptance_criteria", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "textfield", fieldLabel: "Deliverable Tester", name: "deliverable_tester" },
-		{ xtype: "textarea", fieldLabel: "Method", name: "testing_method", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "textarea", fieldLabel: "Expected Result", name: "expected_result", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "textfield", fieldLabel: "RPO", name: "rpo" },
-		{ xtype: "textfield", fieldLabel: "RTO", name: "rto" } 
+		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "deliverable-description" },
+		{ xtype: "textarea", fieldLabel: "Acceptance Criteria", name: "acceptance_criteria", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "deliverable-acceptance" },
+		{ xtype: "textfield", fieldLabel: "Deliverable Tester", name: "deliverable_tester", ttEnabled: true, cmsSlug: "deliverable-tester" },
+		{ xtype: "textarea", fieldLabel: "Method", name: "testing_method", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "deliverable-testing" },
+		{ xtype: "textarea", fieldLabel: "Expected Result", name: "expected_result", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "deliverable-result" },
+		{ xtype: "textfield", fieldLabel: "RPO", name: "rpo", ttEnabled: true, cmsSlug: "deliverable-rpo" },
+		{ xtype: "textfield", fieldLabel: "RTO", name: "rto", ttEnabled: true, cmsSlug: "deliverable-rto" } 
 ];
 
 // Add a Deliverable
@@ -217,20 +217,20 @@ var st_counter = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"Preven
 var st_status = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"Closed"],[2,"Reducing"],[3,"Increasing"],[4,"No Change"]]});
 
 var risk_fields = [
-	{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-	{ xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
-	{ xtype: "slider", minValue: 1, maxValue: 4, plugins: probability_tip, fieldLabel: "Probability", name: "probability", id: "probability",  listeners: {    
+	{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "risk-description" },
+	{ xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "risk-owner" },
+	{ xtype: "slider", minValue: 1, maxValue: 4, plugins: probability_tip, fieldLabel: "Probability", name: "probability", id: "probability", ttEnabled: true, cmsSlug: "risk-probability", listeners: {    
     change : function(slider, newValue) { getRating(); },
     setValue: function(slider) { slider.getValue(); }
    }
  },
-	{ xtype: "slider", minValue: 1, maxValue: 4, plugins: impact_tip, fieldLabel: "Impact", name: "impact", id: 'impact',  listeners: {    
+	{ xtype: "slider", minValue: 1, maxValue: 4, plugins: impact_tip, fieldLabel: "Impact", name: "impact", id: 'impact',  ttEnabled: true, cmsSlug: "risk-impact", listeners: {    
   change : function(slider, newValue) { getRating(); }
    }
  },
-	{ xtype: "textfield", fieldLabel: "Rating", name: "rating", readOnly: true, allowBlank: true, id:'rating', valueField:"rating" },
-	{ xtype: "combo", displayField: "d", valueField: "id", hiddenName: 'counter_measure', mode: "local", store: st_counter, fieldLabel: "Counter Measure", name: "counter_measure", triggerAction: "all" },
-	{ xtype: "combo", displayField: "d", valueField: "id", hiddenName: 'status', mode: "local", store: st_status, fieldLabel: "Status", name: "status", triggerAction: "all" }
+	{ xtype: "textfield", fieldLabel: "Rating", name: "rating", readOnly: true, allowBlank: true, id:'rating', valueField:"rating", ttEnabled: true, cmsSlug: "risk-rating" },
+	{ xtype: "combo", displayField: "d", valueField: "id", hiddenName: 'counter_measure', mode: "local", store: st_counter, fieldLabel: "Counter Measure", name: "counter_measure", triggerAction: "all", ttEnabled: true, cmsSlug: "risk-countermeasure" },
+	{ xtype: "combo", displayField: "d", valueField: "id", hiddenName: 'status', mode: "local", store: st_status, fieldLabel: "Status", name: "status", triggerAction: "all", ttEnabled: true, cmsSlug: "risk-status" }
 ];
 
 function getRating()
@@ -487,13 +487,13 @@ var st_wbs = new Ext.data.GroupingStore({
 
 
 var wbs_fields = [ 
-		{ xtype: "combo", fieldLabel: "Skill Set", name: "skill_set", hiddenName: "skill_set", lazyInit: false, store: st_skillset, mode: "local", displayField: "skill", valueField: "pk", triggerAction: "all" },
-		{ xtype: "textfield", fieldLabel: "Title", name: "title" },
-		{ xtype: "combo", fieldLabel: "Project Stage", hiddenName: "project_stage", lazyInit: false, store: st_stage_plan, mode: "local", displayField: "stage", valueField: "pk", triggerAction: "all" },
-		{ xtype: "combo", fieldLabel: "Depends Upon", hiddenName: "depends", lazyInit: false, store: st_wbs, mode: "local", displayField: "title", valueField: "pk", triggerAction: "all" },
-		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "textfield", fieldLabel: "Duration", name: "duration" },
-		{ xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
+		{ xtype: "combo", fieldLabel: "Skill Set", name: "skill_set", hiddenName: "skill_set", lazyInit: false, store: st_skillset, mode: "local", displayField: "skill", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "wbs-skillset" },
+		{ xtype: "textfield", fieldLabel: "Title", name: "title", ttEnabled: true, cmsSlug: "wbs-title" },
+		{ xtype: "combo", fieldLabel: "Project Stage", hiddenName: "project_stage", lazyInit: false, store: st_stage_plan, mode: "local", displayField: "stage", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "wbs-stage" },
+		{ xtype: "combo", fieldLabel: "Depends Upon", hiddenName: "depends", lazyInit: false, store: st_wbs, mode: "local", displayField: "title", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "wbs-depends" },
+		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "wbs-description" },
+		{ xtype: "textfield", fieldLabel: "Duration", name: "duration", ttEnabled: true, cmsSlug: "wbs-duration" },
+		{ xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "wbs-owner" },
 		{ xtype: "slider",
 			minValue: 0,
 			maxValue: 100,
@@ -505,18 +505,18 @@ var wbs_fields = [
 			listeners: { setValue: function(slider) { slider.getValue(); } }  
 		},
     //{ xtype: "textfield", fieldLabel: "Percent Complete", name: "percent_complete", id: "percent_complete", listeners: { beforerender: function(slider) { Ext.getCmp("percentageSlider").value = slider.value;}} },
-		{ xtype: "datefield", fieldLabel: "Start Date", name: "start_date", format: "d/m/Y" },
-		{ xtype: "datefield", fieldLabel: "Finish Date", name: "finish_date", format: "d/m/Y" },
+		{ xtype: "datefield", fieldLabel: "Start Date", name: "start_date", format: "d/m/Y", ttEnabled: true, cmsSlug: "wbs-startdate" },
+		{ xtype: "datefield", fieldLabel: "Finish Date", name: "finish_date", format: "d/m/Y", ttEnabled: true, cmsSlug: "wbs-finishdate" },
 	//	{ xtype: "textfield", fieldLabel: "WBS Number", name: "wbs_number" },
-		{ xtype: "textfield", fieldLabel: "Cost", name: "cost" },
-		{ xtype: "textarea", fieldLabel: "Update", name: "update", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "textarea", fieldLabel: "History", name: "history", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, readOnly: true }
+		{ xtype: "textfield", fieldLabel: "Cost", name: "cost", ttEnabled: true, cmsSlug: "wbs-cost" },
+		{ xtype: "textarea", fieldLabel: "Update", name: "update", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "wbs-update" },
+		{ xtype: "textarea", fieldLabel: "History", name: "history", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, readOnly: true, ttEnabled: true, cmsSlug: "wbs-history" }
 ];
 
 var stage_plan_fields = [
-		{ xtype: "textfield", fieldLabel: "Stage Number", name: "stage_number" },
-		{ xtype: "textfield", fieldLabel: "Stage", name: "stage" },
-		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH }];
+		{ xtype: "textfield", fieldLabel: "Stage Number", name: "stage_number", ttEnabled: true, cmsSlug: "wbs-stagenumber" },
+		{ xtype: "textfield", fieldLabel: "Stage", name: "stage", ttEnabled: true, cmsSlug: "wbs-stage" },
+		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "wbs-stagedescription" }];
 
 var add_wbs = function(b,e){
 	var form_add_wbs = new Ext.form.FormPanel({ url: "/WBS/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: wbs_fields});
@@ -648,9 +648,9 @@ var get_resources_from_day_type = function(){
 }
 
 var engineering_day_fields = [
-	{ xtype: "datefield", fieldLabel: "Date", format: 'd/m/Y', name: "work_date", listeners: { select: get_resources_from_date }, id: "eday_date" },
-	{ xtype: "combo", fieldLabel: "Day Type", hiddenName: "day_type", lazyInit: false, store: st_engineering_day_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all", id: "eday_day_type", listeners: { select: get_resources_from_day_type}, data: '1' },
-	{ xtype: "combo", fieldLabel: "Resource", hiddenName: "resource", lazyInit: false, store: st_engineering_day_resource, mode: "local", displayField: "resource", valueField: "pk", triggerAction: "all", width: 300  }
+	{ xtype: "datefield", fieldLabel: "Date", format: 'd/m/Y', name: "work_date", listeners: { select: get_resources_from_date }, id: "eday_date", ttEnabled: true, cmsSlug: "engineering-day-date" },
+	{ xtype: "combo", fieldLabel: "Day Type", hiddenName: "day_type", lazyInit: false, store: st_engineering_day_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all", id: "eday_day_type", listeners: { select: get_resources_from_day_type}, data: '1', ttEnabled: true, cmsSlug: "engineering-day-type" },
+	{ xtype: "combo", fieldLabel: "Resource", hiddenName: "resource", lazyInit: false, store: st_engineering_day_resource, mode: "local", displayField: "resource", valueField: "pk", triggerAction: "all", width: 300, ttEnabled: true, cmsSlug: "engineering-day-resource"  }
 ]
 
 var add_engineering_day = function(){
@@ -849,13 +849,13 @@ var st_issue_type = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"Req
 var st_issue_status = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"Open"],[2,"In Progress"],[3,"Completed"],[4,"Closed"]]});
 var st_issue_priority = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"1"],[2,"2"],[3,"3"],[4,"4"],[5,"5"]]});
 var issue_fields = [
-	{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-	{ xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", name: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
-	{ xtype: "combo", fieldLabel: "Type", hiddenName: "type", name: "type", lazyInit: false, store: st_issue_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" },
-	{ xtype: "combo", fieldLabel: "Status", hiddenName: "status", name: "status", lazyInit: false, store: st_issue_status, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" },
-	{ xtype: "combo", fieldLabel: "Priority", hiddenName: "priority", name: "priority", lazyInit: false, store: st_issue_priority, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" }, 
-	{ xtype: "textfield", fieldLabel: "Related RFC", name: "related_rfc" },
-	{ xtype: "textfield", fieldLabel: "Related Helpdesk", name: "related_helpdesk" }
+	{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "issue-description" },
+	{ xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", name: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "issue-owner" },
+	{ xtype: "combo", fieldLabel: "Type", hiddenName: "type", name: "type", lazyInit: false, store: st_issue_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all", ttEnabled: true, cmsSlug: "issue-type" },
+	{ xtype: "combo", fieldLabel: "Status", hiddenName: "status", name: "status", lazyInit: false, store: st_issue_status, mode: "local", displayField: "d", valueField: "id", triggerAction: "all", ttEnabled: true, cmsSlug: "issue-status" },
+	{ xtype: "combo", fieldLabel: "Priority", hiddenName: "priority", name: "priority", lazyInit: false, store: st_issue_priority, mode: "local", displayField: "d", valueField: "id", triggerAction: "all", ttEnabled: true, cmsSlug: "issue-priority" }, 
+	{ xtype: "textfield", fieldLabel: "Related RFC", name: "related_rfc", ttEnabled: true, cmsSlug: "issue-related-rfc" },
+	{ xtype: "textfield", fieldLabel: "Related Helpdesk", name: "related_helpdesk", ttEnabled: true, cmsSlug: "issue-related-helpdesk"  }
 ];
 
 var add_issue = function(b,e){
@@ -1043,8 +1043,8 @@ grid_issues.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
 
 // Add Lesson
 var lesson_fields = [
-		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "checkbox", fieldLabel: "Publish to Client", name: "publish_to_client" }
+		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "lesson-description"  },
+		{ xtype: "checkbox", fieldLabel: "Publish to Client", name: "publish_to_client", ttEnabled: true, cmsSlug: "lesson-publish"  }
 ];
 
 var add_lesson = function(b,e){
@@ -1204,10 +1204,10 @@ var st_file_type = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"Proj
 
 
 var file_fields = [
-	{ xtype: "textarea", fieldLabel: "Description", name: "description", width: TEXTAREA_WIDTH, height: TEXTAREA_HEIGHT },
-	{ xtype: "combo", fieldLabel: "File Type", hiddenName: "file_type", displayField: "d", valueField: "id", store: st_file_type, mode: "local", triggerAction: "all" },
-	{ xtype: "combo", fieldLabel: "Author", hiddenName: "author",  lazyInit: false,  store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
-	{ xtype: 'fileuploadfield', id: 'form-file', emptyText: 'Select an file', fieldLabel: 'File', name: 'filename',  buttonText: '', buttonCfg: { iconCls: 'upload-icon' }}
+	{ xtype: "textarea", fieldLabel: "Description", name: "description", width: TEXTAREA_WIDTH, height: TEXTAREA_HEIGHT, ttEnabled: true, cmsSlug: "file-description"  },
+	{ xtype: "combo", fieldLabel: "File Type", hiddenName: "file_type", displayField: "d", valueField: "id", store: st_file_type, mode: "local", triggerAction: "all", ttEnabled: true, cmsSlug: "file-type"  },
+	{ xtype: "combo", fieldLabel: "Author", hiddenName: "author",  lazyInit: false,  store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "file-author"  },
+	{ xtype: 'fileuploadfield', id: 'form-file', emptyText: 'Select an file', fieldLabel: 'File', name: 'filename',  buttonText: '', buttonCfg: { iconCls: 'upload-icon' }, ttEnabled: true, cmsSlug: "file-upload" }
 ];
 
 
@@ -1334,8 +1334,8 @@ grid_file.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
 var st_report_type = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"Checkpoint Report"],[2,"Executive Summary"]]});
  
  var report_fields = [
-		{ xtype: "textarea", fieldLabel: "Summary", name: "summary", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "combo", fieldLabel: "Type", hiddenName: "type", name: "type", lazyInit: false, store: st_report_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" } ]
+		{ xtype: "textarea", fieldLabel: "Summary", name: "summary", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "report-summary"  },
+		{ xtype: "combo", fieldLabel: "Type", hiddenName: "type", name: "type", lazyInit: false, store: st_report_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all", ttEnabled: true, cmsSlug: "report-type"  } ]
  
   /* Edit Reports */
  var edit_report = function(b,e){
@@ -1500,11 +1500,11 @@ var edit_project_initiation = function(b,e){
 	var st_duration_type = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[0,"Hours"],[1,"Days"]]});
 
 	var project_initiation_fields = [
-		{ xtype: "textfield", fieldLabel: "Project Name", name: "project_name" },
-		{ xtype: "textfield", fieldLabel: "Project Number", name: "project_number" },
-		{ xtype: "combo", fieldLabel: "Project Status", hiddenName: "project_status", lazyInit: false,  store: st_project_status, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" },
-		{ xtype: "combo", fieldLabel: "Company", hiddenName: "company", lazyInit: false,  store: st_company, mode: "local", displayField: "name", valueField: "pk", triggerAction: "all" },
-		{ xtype: "combo", fieldLabel: "Project Manager", hiddenName: "project_manager", lazyInit: false,  store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all" },
+		{ xtype: "textfield", fieldLabel: "Project Name", name: "project_name", ttEnabled: true, cmsSlug: "project-name"  },
+		{ xtype: "textfield", fieldLabel: "Project Number", name: "project_number", ttEnabled: true, cmsSlug: "project-number" },
+		{ xtype: "combo", fieldLabel: "Project Status", hiddenName: "project_status", lazyInit: false,  store: st_project_status, mode: "local", displayField: "d", valueField: "id", triggerAction: "all", ttEnabled: true, cmsSlug: "project-status" },
+		{ xtype: "combo", fieldLabel: "Company", hiddenName: "company", lazyInit: false,  store: st_company, mode: "local", displayField: "name", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "project-company" },
+		{ xtype: "combo", fieldLabel: "Project Manager", hiddenName: "project_manager", lazyInit: false,  store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "project-manager" },
 
 		{ xtype: 'itemselector', name: "team_managers_placeholder", hiddenName: 'team_managers_placeholder', fieldLabel: 'Team Managers',
 	        imagePath: '/site_media/js/extjs/examples/ux/images/',
@@ -1524,19 +1524,19 @@ var edit_project_initiation = function(b,e){
                 store: st_managers,
                 displayField: 'username',
                 valueField: 'pk'
-	        }]
+	        }], ttEnabled: true, cmsSlug: "project-team-managers"
 		},
 
-		{ xtype: "textfield", fieldLabel: "Project Sponsor", name: "project_sponsor" },
-		{ xtype: "combo", fieldLabel: "Duration Type", hiddenName: "duration_type", lazyInit: false,  store: st_duration_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" },
-		{ xtype: "textarea", fieldLabel: "Project Description", name: "project_description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "textarea", fieldLabel: "Business Case", name: "business_case", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "textarea", fieldLabel: "Business Benefits", name: "business_benefits", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "textarea", fieldLabel: "Project Scope", name: "project_scope", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "textarea", fieldLabel: "Exclusions", name: "exclusions", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "textarea", fieldLabel: "Assumptions", name: "assumptions", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "textarea", fieldLabel: "Communications Plan", name: "communications_plan", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-		{ xtype: "textarea", fieldLabel: "Quality Plan", name: "quality_plan", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH }]
+		{ xtype: "textfield", fieldLabel: "Project Sponsor", name: "project_sponsor", ttEnabled: true, cmsSlug: "project-sponsor" },
+		{ xtype: "combo", fieldLabel: "Duration Type", hiddenName: "duration_type", lazyInit: false,  store: st_duration_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all", ttEnabled: true, cmsSlug: "project-duration-type" },
+		{ xtype: "textarea", fieldLabel: "Project Description", name: "project_description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "project-description" },
+		{ xtype: "textarea", fieldLabel: "Business Case", name: "business_case", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "project-business-case" },
+		{ xtype: "textarea", fieldLabel: "Business Benefits", name: "business_benefits", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "project-business-benefits" },
+		{ xtype: "textarea", fieldLabel: "Project Scope", name: "project_scope", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "project-scope" },
+		{ xtype: "textarea", fieldLabel: "Exclusions", name: "exclusions", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "project-exclusions" },
+		{ xtype: "textarea", fieldLabel: "Assumptions", name: "assumptions", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "project-assumptions" },
+		{ xtype: "textarea", fieldLabel: "Communications Plan", name: "communications_plan", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "project-communications-plan" },
+		{ xtype: "textarea", fieldLabel: "Quality Plan", name: "quality_plan", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "project-quality-plan" }]
 	var project_initiation_form = new Ext.form.FormPanel({url: "/Projects/" + project_number + "/Edit/EditPID/", bodyStyle: "padding: 15px;", autoScroll: true, items: project_initiation_fields });
 	project_initiation_form.getForm().load({ url: "/xhr/" + project_number + "/edit_pid/", method: "GET" });
 	var pid_win = new Ext.Window({width: 620, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Edit Project Initiation", items: [ project_initiation_form ],
