@@ -51,6 +51,43 @@ Ext.extend(Ext.ux.tree.State, Ext.util.Observable, {
 
 Ext.DatePicker.prototype.startDay = 1;
 
+
+// Function for Ajax mouseover tooltips on form fields
+Ext.override(Ext.form.Field, {
+    afterRender: function() {
+        var label = findLabel(this);
+        if(label){                                  
+ 			if(this.ttEnabled){
+            	new Ext.ToolTip({
+                	target: label,
+                	width: 250,
+                	autoLoad: {
+                    	url: '/GetDoc/', 
+                    	params : { 
+                        	field : this.cmsSlug
+                    	}
+                	}
+            	});
+			}
+       }
+       Ext.form.Field.superclass.afterRender.call(this);
+       this.initEvents(); 
+  }
+});
+
+var findLabel = function(field) {  
+    var wrapDiv = null;
+    var label = null
+    wrapDiv = field.getEl().up('div.x-form-item');    
+    if(wrapDiv) {
+        label = wrapDiv.child('label');        
+    }
+    if(label) {
+        return label;
+    }    
+}  
+
+
 var tree_data = [
 					{ text: 'Projects', id: 'projectsNode', leaf: false, children: [{ text: 'View Dashboard', href: "/", leaf: true }]},
   					{ text: 'Work In Progress', id: 'wipNode', leaf: false, children: [{ text: "All WIP Reports", href: "/WIP/", leaf: true}] },
