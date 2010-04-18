@@ -520,7 +520,7 @@ var stage_plan_fields = [
 
 var add_wbs = function(b,e){
 	var form_add_wbs = new Ext.form.FormPanel({ url: "/WBS/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: wbs_fields});
-	var window_wbs = new Ext.Window({autoHeight: true, height:540, closeAction: "close", autoScroll: true, modal: true, title: "Add a Work Item", items: [ form_add_wbs ],
+	var window_wbs = new Ext.Window({autoHeight: true, width:620, closeAction: "close", autoScroll: true, modal: true, title: "Add a Work Item", items: [ form_add_wbs ],
 							buttons: [	{ 	text:'Submit', 
 											handler: function(){
 												form_add_wbs.getForm().submit({
@@ -690,7 +690,7 @@ var add_engineering_day = function(){
 var add_project_stage = function(b,e){
 	var form_add_project_stage = new Ext.form.FormPanel({ url: "/WBS/" + project_number + "/StagePlan/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: stage_plan_fields });
 
-	var window_stage_plan = new Ext.Window({autoHeight: true,  autoWidth: true, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Project Stage", items: [ form_add_project_stage ],
+	var window_stage_plan = new Ext.Window({ width: 620, height: 300, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Project Stage", items: [ form_add_project_stage ],
 							buttons: [	{ 	text:'Submit', 
 											handler: function(){
 												form_add_project_stage.getForm().submit({
@@ -1050,7 +1050,7 @@ var lesson_fields = [
 var add_lesson = function(b,e){
 	var form_add_lesson = new Ext.form.FormPanel({ url: "/Lessons/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: lesson_fields });
 	
-	var window_lesson = new Ext.Window({autoHeight: true, autoWidth: true, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Lesson", items: [ form_add_lesson ],
+	var window_lesson = new Ext.Window({width: 620, height:300, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Lesson", items: [ form_add_lesson ],
 				buttons: [ {	text: "Submit",
 								handler: function(){
 									form_add_lesson.getForm().submit({
@@ -1367,7 +1367,7 @@ var st_report_type = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"Ch
 
 var add_report = function(b,e){
 	var form_add_report = new Ext.form.FormPanel({ url: "/Projects/" + project_number + "/Reports/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: report_fields });
-	var window_report = new Ext.Window({autoHeight: true, autoWidth: true, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Report", items: [ form_add_report ],
+	var window_report = new Ext.Window({width: 620, height:300,  closeAction: "hide", autoScroll: true, modal: true, title: "Add a Report", items: [ form_add_report ],
 				buttons: [ {	text: "Submit",
 								handler: function(){
 									form_add_report.getForm().submit({
