@@ -31,6 +31,7 @@ urlpatterns = patterns('',
 	(r'^WIP/',			include('wip.urls')),
 	(r'^Rota/',			include('rota.urls')),
 	(r'^admin/filebrowser/',		include('filebrowser.urls')),
+	(r'^GetDoc/$', 'projects.views.get_doc'),
 
 	# General
 	(r'^accounts/login/', login, {'template_name': 'login.html'}),

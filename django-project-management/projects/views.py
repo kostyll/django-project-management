@@ -8,7 +8,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Context, Template, RequestContext
 from django.template.loader import get_template
 from django.shortcuts import render_to_response, get_object_or_404
+from django.template.defaultfilters import striptags
 from django.db.models import Q
+from cms.models import PageContent
 from projects.models import *
 from projects.forms import *
 from risks.forms import RiskForm
@@ -188,3 +190,11 @@ def view_project_phases(request, project_number):
 	project = get_object_or_404(Project, project_number=project_number)
 	check_project_write_acl(project, request.user)	# Will return Http404 if user isn't allowed to write to project
 	return HttpResponse( serializers.serialize('json', ProjectPhase.objects.filter(work_items__project=project)))
+
+@login_required
+def get_doc(request):
+	try:
+		p = PageContent.objects.get(slug=request.POST['field'])
+		return HttpResponse(striptags( p.content ))
+	except PageContent.DoesNotExist:
+		return HttpResponse( "Sorry, The Administrator has yet to add help content for this field" )
