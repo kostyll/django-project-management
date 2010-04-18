@@ -161,12 +161,10 @@ grid_rota.on('rowdblclick', function(sm, rowIdx, r) {
 							form_edit_rota.getForm().submit({
 								params: { monday_date: monday_date, person_id: person_id },
 								success: function(f,a){
-									Ext.Msg.alert('Success', 'Rota Updated',
-										function() {
+									Ext.message.msg('Success', 'Rota Updated', 5);
 											window_rota.destroy();
 											Ext.getCmp('grid_rota').store.load();
 											Ext.getCmp('rota_detail').body.update('Please select a person to see more details');
-										});
 								},
 								failure: function(f,a){ Ext.Msg.alert('Warning', a.result.errormsg); }
 							});
