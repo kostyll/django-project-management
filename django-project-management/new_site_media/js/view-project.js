@@ -55,7 +55,7 @@ var add_deliverable = function(b,e){
 	
 	var form_add_deliverable = new Ext.form.FormPanel({ url: "/Deliverables/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: deliverable_fields });
 										
-	var window_deliverable = new Ext.Window({autoHeight: true, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Deliverable", items: [ form_add_deliverable ],
+	var window_deliverable = new Ext.Window({height: 540, width:620, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Deliverable", items: [ form_add_deliverable ],
 							buttons: [	{ text:'Submit', 
 										  handler: function(){
 												form_add_deliverable.getForm().submit({
