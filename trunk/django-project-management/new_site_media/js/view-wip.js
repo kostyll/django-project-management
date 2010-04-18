@@ -154,13 +154,11 @@ var edit_wip_item = function(b,e){
                         handler: function(){
                             form_wip_edit.getForm().submit({
                                             success: function(f,a){
-                                            Ext.Msg.alert('Success', 'WIP Item Updated', 
-                                            function() { 
+                                            Ext.message.msg('Success', 'WIP Item Updated', 5);
                                             	window_edit_wip.hide(); 
                                             	Ext.getCmp("grid_wip_items").store.load();
                                             	Ext.getCmp("grid_wip_objectives").store.load();
                                             	Ext.getCmp("work_item_detail").body.update('Please select a Work Item to see more details');
-                                          });
 									    },  
                                             failure: function(f,a){
                                             	Ext.Msg.alert('Warning', a.result.errormsg);
@@ -179,7 +177,7 @@ var add_heading = function(){
 			buttons: [{text:'Submit', handler: function(){
 					form_add_heading.getForm().submit({
 						success: function(f,a){
-                                            		Ext.Msg.alert('Success', 'Heading Added');
+                                            		Ext.message.msg('Success', 'Heading Added', 5);
                                             		window_heading.hide(); 
                                             		st_heading.load();
                                             		},  
@@ -198,7 +196,7 @@ var add_wip_item = function(){
 			buttons: [{text:'Submit', handler: function(){
 					form_add_wip_item.getForm().submit({
 						success: function(f,a){
-                                            		Ext.Msg.alert('Success', 'WIP Item Added');
+                                            		Ext.message.msg('Success', 'WIP Item Added', 5);
                                             		window_wip_item.hide(); 
                                             		Ext.getCmp("grid_wip_items").store.load();
                                             		Ext.getCmp("grid_wip_objectives").store.load();
@@ -236,7 +234,7 @@ var complete_work_item = function() {
             Ext.Msg.alert('Error', response.responseText);
         },
         success: function (response) {
-            Ext.Msg.alert('Success', sel.data.description + " has been removed");
+            Ext.message.msg('Success', sel.data.description + " has been removed", 5);
            Ext.getCmp("grid_wip_items").store.load();
            Ext.getCmp("work_item_detail").body.update('Please select a work item to see more details');
            }
@@ -257,13 +255,11 @@ var add_engineering_day = function(){
 				handler: function(){ 
 					form_add_engineering_day.getForm().submit({
 						success: function(f,a){
-							Ext.Msg.alert('Success', 'Engineering Day Booked',
-								function(){
+							Ext.Msg.alert('Success', 'Engineering Day Booked', 5);
 									window_engineering_day.close();
 									Ext.getCmp("grid_wip_items").store.load();
                                             				Ext.getCmp("work_item_detail").body.update('Please select a Work Item to see more details');
 
-							});	
 						},failure: function(f,a){
 							Ext.Msg.alert('Warning', a.result.errormsg);
 							}
