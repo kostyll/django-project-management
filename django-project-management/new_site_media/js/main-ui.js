@@ -126,7 +126,7 @@ var tree_data = [
   					{ text: 'Documentation', id: 'docNode', leaf: false,
     					children: [{ text: "Help Files", href: "/en/", leaf: true}, { text: "Bugs/Source code", href: "http://code.google.com/p/django-project-management", leaf: true }] },
   					{ text: 'My Account', id: 'accountNode', leaf: false,
-    					children: [{ text: "Log out", href: "/accounts/logout/", leaf: true}] },
+    					children: [{ text: "Log out", href: "/accounts/logout/", leaf: true}] }
 			
 				]
 
