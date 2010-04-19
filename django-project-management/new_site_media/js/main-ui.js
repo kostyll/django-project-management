@@ -137,7 +137,7 @@ var center_html_content = { xtype: "panel", contentEl: "center_panel_html", body
 //var toolbar = new Ext.Toolbar({ items: [ new_menu ] });
 var toolbar = new Ext.Toolbar({ items: [ ] });
 
-var center_panel = { xtype: "panel", region: "center", title: "WTMS Traffic", items: [ toolbar, center_html_content ], bodyStyle: "padding: 0px;"}
+var center_panel = { xtype: "panel", region: "center", title: "WTMS Traffic", items: [ toolbar, center_html_content ], bodyStyle: "padding: 0px;", autoScroll: true}
 var west_panel = { xtype: "panel", title: 'Navigation', region: 'west', margins: '0 0 0 0',
 					cmargins: '0 5 0 0', width: 175, minSize: 100, maxSize: 250, items: [ tree ] }
 					
