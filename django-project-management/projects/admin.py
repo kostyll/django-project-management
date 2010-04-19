@@ -11,6 +11,7 @@ class ProjectAdmin(admin.ModelAdmin):
 	)
 
 	list_display = ['project_name', 'project_status', 'company', 'project_number']
+	search_fields = ['project_number', 'project_description']
 			
 
 admin.site.register(Project, ProjectAdmin)
