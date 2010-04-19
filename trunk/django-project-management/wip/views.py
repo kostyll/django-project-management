@@ -115,7 +115,7 @@ def add_heading(request, wip_report):
 		else:
 			return HttpResponse( handle_form_errors(form.errors))
 	else:
-		raise Http404	
+		return HttpResponse( handle_generic_error("Sorry, you don't have permissions to add a WIP heading"))
 
 @login_required
 def add_work_item(request, wip_report):
