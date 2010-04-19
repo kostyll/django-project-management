@@ -173,7 +173,7 @@ var edit_wip_item = function(b,e){
 
 var add_heading = function(){
 	var form_add_heading = new Ext.form.FormPanel({ url: "/WIP/" + wip_report + "/Heading/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: wip_heading_fields }); 
-	var window_heading = new Ext.Window({autoHeight: true, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Add a WIP Heading", items: [ form_add_heading ],
+	var window_heading = new Ext.Window({autoHeight: true, width:540, closeAction: "hide", autoScroll: true, modal: true, title: "Add a WIP Heading", items: [ form_add_heading ],
 			buttons: [{text:'Submit', handler: function(){
 					form_add_heading.getForm().submit({
 						success: function(f,a){
