@@ -6,7 +6,7 @@ from django.contrib.auth.admin import UserAdmin
 class ProjectAdmin(admin.ModelAdmin):
 
 	fieldsets = ( 
-			(None, { 'fields': ('project_name', 'project_status', 'company', 'project_manager', 'project_number', 'project_sponsor', 'read_acl', 'write_acl') }),
+			(None, { 'fields': ('project_name', 'project_status', 'company', 'project_manager', 'project_number', 'duration_type', 'project_sponsor', 'read_acl', 'write_acl') }),
 
 	)
 
