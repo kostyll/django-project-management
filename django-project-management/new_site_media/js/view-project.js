@@ -15,21 +15,21 @@ var DATE_RENDERER = Ext.util.Format.dateRenderer("d/m/Y");
 
 
 var st_users = new Ext.data.Store({
-	proxy: new Ext.data.HttpProxy({ url: "/xhr/" + project_number + "/get_users/" }),
-	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"username", mapping: "extras.get_full_name"}]}),
-	autoLoad: true
+    proxy: new Ext.data.HttpProxy({ url: "/xhr/" + project_number + "/get_users/" }),
+    reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"username", mapping: "extras.get_full_name"}]}),
+    autoLoad: true
 });
 
 var st_managers = new Ext.data.Store({
-	proxy: new Ext.data.HttpProxy({ url: "/xhr/" + project_number + "/get_team_managers/" }),
-	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"username", mapping: "extras.get_full_name"}]}),
-	autoLoad: true
+    proxy: new Ext.data.HttpProxy({ url: "/xhr/" + project_number + "/get_team_managers/" }),
+    reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"username", mapping: "extras.get_full_name"}]}),
+    autoLoad: true
 });
 
 var st_non_managers = new Ext.data.Store({
-	proxy: new Ext.data.HttpProxy({ url: "/xhr/" + project_number + "/get_non_team_managers/" }),
-	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"username", mapping: "extras.get_full_name"}]}),
-	autoLoad: true
+    proxy: new Ext.data.HttpProxy({ url: "/xhr/" + project_number + "/get_non_team_managers/" }),
+    reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk", mapping: "pk"},{name:"username", mapping: "extras.get_full_name"}]}),
+    autoLoad: true
 });
 
 var date_renderer = Ext.util.Format.dateRenderer('d/m/Y');
@@ -41,164 +41,160 @@ var date_renderer = Ext.util.Format.dateRenderer('d/m/Y');
  * */
 
 var deliverable_fields = [
-		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "deliverable-description" },
-		{ xtype: "textarea", fieldLabel: "Acceptance Criteria", name: "acceptance_criteria", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "deliverable-acceptance" },
-		{ xtype: "textfield", fieldLabel: "Deliverable Tester", name: "deliverable_tester", ttEnabled: true, cmsSlug: "deliverable-tester" },
-		{ xtype: "textarea", fieldLabel: "Method", name: "testing_method", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "deliverable-testing" },
-		{ xtype: "textarea", fieldLabel: "Expected Result", name: "expected_result", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "deliverable-result" },
-		{ xtype: "textfield", fieldLabel: "RPO", name: "rpo", ttEnabled: true, cmsSlug: "deliverable-rpo" },
-		{ xtype: "textfield", fieldLabel: "RTO", name: "rto", ttEnabled: true, cmsSlug: "deliverable-rto" } 
+    { xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "deliverable-description" },
+    { xtype: "textarea", fieldLabel: "Acceptance Criteria", name: "acceptance_criteria", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "deliverable-acceptance" },
+    { xtype: "textfield", fieldLabel: "Deliverable Tester", name: "deliverable_tester", ttEnabled: true, cmsSlug: "deliverable-tester" },
+    { xtype: "textarea", fieldLabel: "Method", name: "testing_method", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "deliverable-testing" },
+    { xtype: "textarea", fieldLabel: "Expected Result", name: "expected_result", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "deliverable-result" },
+    { xtype: "textfield", fieldLabel: "RPO", name: "rpo", ttEnabled: true, cmsSlug: "deliverable-rpo" },
+    { xtype: "textfield", fieldLabel: "RTO", name: "rto", ttEnabled: true, cmsSlug: "deliverable-rto" } 
 ];
 
 // Add a Deliverable
 var add_deliverable = function(b,e){
-	
-	var form_add_deliverable = new Ext.form.FormPanel({ url: "/Deliverables/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: deliverable_fields });
-										
-	var window_deliverable = new Ext.Window({height: 540, width:620, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Deliverable", items: [ form_add_deliverable ],
-							buttons: [	{ text:'Submit', 
-										  handler: function(){
-												form_add_deliverable.getForm().submit({
-										     		success: function(f,a){
-                                            		Ext.message.msg('Success', 'Deliverable Added', 5);
-                                            		window_deliverable.hide(); 
-                                            		Ext.getCmp("grid_deliverables").store.load();
-                                            		Ext.getCmp("deliverable_detail").body.update('Please select a deliverable to see more details');
-                                            		},  
-                                            		failure: function(f,a){
-                                            		Ext.Msg.alert('Warning', a.result.errormsg);
-													}
-												});
-										}},
-										 { text: 'Close', handler: function(){ window_deliverable.hide(); } }] });
-	tabpanel.activate(1);
-	window_deliverable.show();
-	window_deliverable.center();
+    var form_add_deliverable = new Ext.form.FormPanel({ url: "/Deliverables/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: deliverable_fields });
+
+    var window_deliverable = new Ext.Window({height: 540, width:620, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Deliverable", items: [ form_add_deliverable ],
+        buttons: [{ text:'Submit', 
+            handler: function(){
+                form_add_deliverable.getForm().submit({
+                    success: function(f,a){
+                        Ext.message.msg('Success', 'Deliverable Added', 5);
+                        window_deliverable.hide(); 
+                        Ext.getCmp("grid_deliverables").store.load();
+                        Ext.getCmp("deliverable_detail").body.update('Please select a deliverable to see more details');
+                    },  
+                    failure: function(f,a){
+                        Ext.Msg.alert('Warning', a.result.errormsg);
+                    }
+                });
+            }},
+            { text: 'Close', handler: function(){ window_deliverable.hide(); } }] });
+    tabpanel.activate(1);
+    window_deliverable.show();
+    window_deliverable.center();
 };
 
 // Edit Deliverable
 var edit_deliverable = function(b,e){
 
-	var deliverable_id = grid_deliverables.getSelectionModel().getSelected().get("pk");
-	var form_deliverable_edit = new Ext.form.FormPanel({url: "/Deliverables/" + project_number + "/" + deliverable_id + "/Edit/", bodyStyle: "padding: 15px;", autoScroll: true, items: deliverable_fields });
-	form_deliverable_edit.getForm().load({ url: "/Deliverables/" + project_number + "/" + deliverable_id + "/", method: "GET" });
-	
-	var window_deliverable = new Ext.Window({width: 620, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Edit a Deliverable", items: [ form_deliverable_edit ],
-							buttons: [ { text: 'Save',
-                                         handler: function(){
-                                         form_deliverable_edit.getForm().submit({
-                                            success: function(f,a){
-                                            window_deliverable.hide(); 
-                                            Ext.getCmp("grid_deliverables").store.load();
-                                            Ext.getCmp("deliverable_detail").body.update('Please select a deliverable to see more details');
-                                            Ext.message.msg('Success', 'Deliverable Updated', 5);
-									    },  
-                                            failure: function(f,a){
-                                            	Ext.Msg.alert('Warning', a.result.errormsg);
-                                            }
-                                        });
-                                        }} ,  
-									 { text: 'Close', handler: function(){ window_deliverable.hide(); } }] });
-	window_deliverable.show();
-	window_deliverable.center();
+    var deliverable_id = grid_deliverables.getSelectionModel().getSelected().get("pk");
+    var form_deliverable_edit = new Ext.form.FormPanel({url: "/Deliverables/" + project_number + "/" + deliverable_id + "/Edit/", bodyStyle: "padding: 15px;", autoScroll: true, items: deliverable_fields });
+    form_deliverable_edit.getForm().load({ url: "/Deliverables/" + project_number + "/" + deliverable_id + "/", method: "GET" });
+    var window_deliverable = new Ext.Window({width: 620, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Edit a Deliverable", items: [ form_deliverable_edit ],
+        buttons: [ { text: 'Save',
+            handler: function(){
+                form_deliverable_edit.getForm().submit({
+                    success: function(f,a){
+                        window_deliverable.hide(); 
+                        Ext.getCmp("grid_deliverables").store.load();
+                        Ext.getCmp("deliverable_detail").body.update('Please select a deliverable to see more details');
+                        Ext.message.msg('Success', 'Deliverable Updated', 5);
+                    },  
+                    failure: function(f,a){
+                        Ext.Msg.alert('Warning', a.result.errormsg);
+                    }
+                });
+            }} ,  
+                { text: 'Close', handler: function(){ window_deliverable.hide(); } }] });
+    window_deliverable.show();
+    window_deliverable.center();
 };
 
 // Delete Deliverable
 function delete_deliverable() {
-	var deliverableId = grid_deliverables.getSelectionModel().getSelected().get("pk");
-	var sm = grid_deliverables.getSelectionModel();
-	var sel = sm.getSelected();
-	if (sm.hasSelection()){
-		Ext.Msg.show({
-			title: 'Remove Deliverable',
-			buttons: Ext.MessageBox.YESNO,
-			msg: 'Remove <b>'+sel.data.description+'</b>?',
-			closable: false, 
-			fn: function(btn){
-				if (btn == 'yes'){
-						Ext.Ajax.request({
-        url: "/Deliverables/" + project_number + "/" + deliverableId + "/" + "Delete/",
-        method: "POST",
-        params: {"pk": deliverableId
-            
-        },
-        failure: function (response) {
-            Ext.Msg.alert('Error', response.responseText);
-        },
-        success: function (response) {
-           Ext.message.msg('Success', sel.data.description + " has been removed", 5);
-           Ext.getCmp("grid_deliverables").store.load();
-           Ext.getCmp("deliverable_detail").body.update('Please select a deliverable to see more details');
-           }
-    });
-				}
-			}
-		});
-	}
+    var deliverableId = grid_deliverables.getSelectionModel().getSelected().get("pk");
+    var sm = grid_deliverables.getSelectionModel();
+    var sel = sm.getSelected();
+    if (sm.hasSelection()){
+        Ext.Msg.show({
+            title: 'Remove Deliverable',
+            buttons: Ext.MessageBox.YESNO,
+            msg: 'Remove <b>'+sel.data.description+'</b>?',
+            closable: false, 
+            fn: function(btn){
+                if (btn == 'yes'){
+                    Ext.Ajax.request({
+                        url: "/Deliverables/" + project_number + "/" + deliverableId + "/" + "Delete/",
+                        method: "POST", params: {"pk": deliverableId },
+                        failure: function (response) {
+                            Ext.Msg.alert('Error', response.responseText);
+                        },
+                        success: function (response) {
+                            Ext.message.msg('Success', sel.data.description + " has been removed", 5);
+                            Ext.getCmp("grid_deliverables").store.load();
+                            Ext.getCmp("deliverable_detail").body.update('Please select a deliverable to see more details');
+                        }
+                    });
+                }
+            }
+        });
+    }
 }
  
 // Show Deliverables... 
 var st_deliverable = new Ext.data.Store({
-	proxy: new Ext.data.HttpProxy({ url: "/Deliverables/" + project_number + "/" }),
-	reader: new Ext.data.JsonReader({ root: "", fields: [	{name:"description", mapping: "fields.description"},
-															{name:"pk", mapping: "pk"},
-															{name:"acceptance_criteria", mapping: "fields.acceptance_criteria"},
-															{name:"deliverable_tester",mapping:"fields.deliverable_tester"},
-															{name:"testing_method", mapping: "fields.testing_method"},
-															{name:"expected_result", mapping: "fields.expected_result"},
-															{name:"rpo", mapping: "fields.rpo"},
-															{name:"rto", mapping: "fields.rto"},
-															{name:"created_date", type: "date", dateFormat: JSON_DATE, mapping: "fields.created_date"},
-															{name:"modified_date", type: "date", dateFormat: JSON_DATE, mapping: "fields.modified_date"} ]}),
-	autoLoad: true
+    proxy: new Ext.data.HttpProxy({ url: "/Deliverables/" + project_number + "/" }),
+    reader: new Ext.data.JsonReader({ root: "", fields: [
+        {name:"description", mapping: "fields.description"},
+        {name:"pk", mapping: "pk"},
+        {name:"acceptance_criteria", mapping: "fields.acceptance_criteria"},
+        {name:"deliverable_tester",mapping:"fields.deliverable_tester"},
+        {name:"testing_method", mapping: "fields.testing_method"},
+        {name:"expected_result", mapping: "fields.expected_result"},
+        {name:"rpo", mapping: "fields.rpo"},
+        {name:"rto", mapping: "fields.rto"},
+        {name:"created_date", type: "date", dateFormat: JSON_DATE, mapping: "fields.created_date"},
+        {name:"modified_date", type: "date", dateFormat: JSON_DATE, mapping: "fields.modified_date"} ]}),
+    autoLoad: true
 });
 
 var btn_update_deliverable = { iconCls: 'icon-update', text: 'Update Deliverable', handler: edit_deliverable };
 var btn_delete_deliverable = { iconCls: 'icon-complete', text: 'Delete Deliverable', handler: delete_deliverable };
 
 var grid_deliverables = new Ext.grid.GridPanel({
-        store: st_deliverable,
-        columns: [
-            {header: "Description", dataIndex: 'description', sortable: true},
-            {header: "Acceptance Criteria", dataIndex: 'acceptance_criteria', sortable: true},
-            {header: "Tester", dataIndex: 'deliverable_tester', sortable: true},
-            {header: "Method", dataIndex: 'testing_method', sortable: true, hidden: true},
-            {header: "Expected Result", dataIndex: 'expected_result', sortable: true, hidden: true},
-            {header: "RTO", dataIndex: 'rto', sortable: true, hidden: true },
-            {header: "RPO", dataIndex: 'rpo', sortable: true, hidden: true },
-            {header: "Created Date", dataIndex: 'created_date', sortable: true, hidden: true, renderer: DATE_RENDERER },
-            {header: "Modified Date", dataIndex: 'modified_date', sortable: true, hidden: true, renderer: DATE_RENDERER } ],
-        tbar: [ btn_update_deliverable, btn_delete_deliverable ],
-		sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
-		viewConfig: { forceFit: true },
-        height: GRID_HEIGHT,
-        id:'grid_deliverables',
-		width: GRID_WIDTH,
-		split: true,
-		region: 'west'
+    store: st_deliverable,
+    columns: [
+        {header: "Description", dataIndex: 'description', sortable: true},
+        {header: "Acceptance Criteria", dataIndex: 'acceptance_criteria', sortable: true},
+        {header: "Tester", dataIndex: 'deliverable_tester', sortable: true},
+        {header: "Method", dataIndex: 'testing_method', sortable: true, hidden: true},
+        {header: "Expected Result", dataIndex: 'expected_result', sortable: true, hidden: true},
+        {header: "RTO", dataIndex: 'rto', sortable: true, hidden: true },
+        {header: "RPO", dataIndex: 'rpo', sortable: true, hidden: true },
+        {header: "Created Date", dataIndex: 'created_date', sortable: true, hidden: true, renderer: DATE_RENDERER },
+        {header: "Modified Date", dataIndex: 'modified_date', sortable: true, hidden: true, renderer: DATE_RENDERER } ],
+    tbar: [ btn_update_deliverable, btn_delete_deliverable ],
+    sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
+    viewConfig: { forceFit: true },
+    height: GRID_HEIGHT,
+    id:'grid_deliverables',
+    width: GRID_WIDTH,
+    split: true,
+    region: 'west'
 });
 
 var markup_deliverables = [
-	'<table class="project_table">',
-	'<tr><th>Description</th> <td>{description}</td></tr>',
-	'<tr><th>Deliverable Tester</th> <td>{deliverable_tester}</td></tr>',
-	'<tr><th>Acceptance Criteria</th> <td>{acceptance_criteria}</td></tr>',
-	'<tr><th>Method</th> <td>{testing_method}</td></tr>',
-	'<tr><th>Expected Result</th> <td>{expected_result}</td></tr>',
-	'<tr><th>RPO</th> <td>{rpo}</td></tr>',
-	'<tr><th>RTO</th> <td>{rto}</td></tr>',
-	'<tr><th>Created Date</th> <td>{created_date}</td></tr>',
-	'<tr><th>Modified Date</th> <td>{modified_date}</td></tr>', '</table>' ];
+    '<table class="project_table">',
+    '<tr><th>Description</th> <td>{description}</td></tr>',
+    '<tr><th>Deliverable Tester</th> <td>{deliverable_tester}</td></tr>',
+    '<tr><th>Acceptance Criteria</th> <td>{acceptance_criteria}</td></tr>',
+    '<tr><th>Method</th> <td>{testing_method}</td></tr>',
+    '<tr><th>Expected Result</th> <td>{expected_result}</td></tr>',
+    '<tr><th>RPO</th> <td>{rpo}</td></tr>',
+    '<tr><th>RTO</th> <td>{rto}</td></tr>',
+    '<tr><th>Created Date</th> <td>{created_date}</td></tr>',
+    '<tr><th>Modified Date</th> <td>{modified_date}</td></tr>', '</table>' ];
 var template_deliverables = new Ext.Template(markup_deliverables);
 
 var panel_deliverables = new Ext.Panel({
-	layout: 'border', height: 400,
-	items: [ grid_deliverables, { id: 'deliverable_detail', bodyStyle: { background: '#ffffff', padding: '7px' }, region: 'center', html: 'Please select a deliverable to see more details'} ]
+    layout: 'border', height: 400,
+    items: [ grid_deliverables, { id: 'deliverable_detail', bodyStyle: { background: '#ffffff', padding: '7px' }, region: 'center', html: 'Please select a deliverable to see more details'} ]
 });
 
 grid_deliverables.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
-		var detailPanel = Ext.getCmp('deliverable_detail');
-		template_deliverables.overwrite(detailPanel.body, r.data);
+    var detailPanel = Ext.getCmp('deliverable_detail');
+    template_deliverables.overwrite(detailPanel.body, r.data);
 });
 
 /*
@@ -215,494 +211,438 @@ var st_counter = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"Preven
 var st_status = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[1,"Closed"],[2,"Reducing"],[3,"Increasing"],[4,"No Change"]]});
 
 var risk_fields = [
-	{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "risk-description" },
-	{ xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "risk-owner" },
-	{ xtype: "slider", minValue: 1, maxValue: 4, plugins: probability_tip, fieldLabel: "Probability", name: "probability", id: "probability", ttEnabled: true, cmsSlug: "risk-probability", listeners: {    
-    change : function(slider, newValue) { getRating(); },
-    setValue: function(slider) { slider.getValue(); }
-   }
- },
-	{ xtype: "slider", minValue: 1, maxValue: 4, plugins: impact_tip, fieldLabel: "Impact", name: "impact", id: 'impact',  ttEnabled: true, cmsSlug: "risk-impact", listeners: {    
-  change : function(slider, newValue) { getRating(); }
-   }
- },
-	{ xtype: "textfield", fieldLabel: "Rating", name: "rating", readOnly: true, allowBlank: true, id:'rating', valueField:"rating", ttEnabled: true, cmsSlug: "risk-rating" },
-	{ xtype: "combo", displayField: "d", valueField: "id", hiddenName: 'counter_measure', mode: "local", store: st_counter, fieldLabel: "Counter Measure", name: "counter_measure", triggerAction: "all", ttEnabled: true, cmsSlug: "risk-countermeasure" },
-	{ xtype: "combo", displayField: "d", valueField: "id", hiddenName: 'status', mode: "local", store: st_status, fieldLabel: "Status", name: "status", triggerAction: "all", ttEnabled: true, cmsSlug: "risk-status" }
+    { xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "risk-description" },
+    { xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "risk-owner" },
+    { xtype: "slider", minValue: 1, maxValue: 4, plugins: probability_tip, fieldLabel: "Probability", name: "probability", id: "probability", ttEnabled: true, cmsSlug: "risk-probability", listeners: {    
+        change : function(slider, newValue) { getRating(); },
+        setValue: function(slider) { slider.getValue(); }
+        }
+    },
+    { xtype: "slider", minValue: 1, maxValue: 4, plugins: impact_tip, fieldLabel: "Impact", name: "impact", id: 'impact',  ttEnabled: true, cmsSlug: "risk-impact", listeners: {    
+        change : function(slider, newValue) { getRating(); }
+        }
+    },
+    { xtype: "textfield", fieldLabel: "Rating", name: "rating", readOnly: true, allowBlank: true, id:'rating', valueField:"rating", ttEnabled: true, cmsSlug: "risk-rating" },
+    { xtype: "combo", displayField: "d", valueField: "id", hiddenName: 'counter_measure', mode: "local", store: st_counter, fieldLabel: "Counter Measure", name: "counter_measure", triggerAction: "all", ttEnabled: true, cmsSlug: "risk-countermeasure" },
+    { xtype: "combo", displayField: "d", valueField: "id", hiddenName: 'status', mode: "local", store: st_status, fieldLabel: "Status", name: "status", triggerAction: "all", ttEnabled: true, cmsSlug: "risk-status" }
 ];
 
-function getRating()
-{
-	Ext.getCmp("rating").setValue(((Ext.getCmp("probability").value * Ext.getCmp("impact").value) / 2));
+function getRating() {
+    Ext.getCmp("rating").setValue(((Ext.getCmp("probability").value * Ext.getCmp("impact").value) / 2));
 }
 
 
 var add_risk = function(b,e){
 
-	var form_risk_add = new Ext.form.FormPanel({ url: "/Risks/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: risk_fields});
+    var form_risk_add = new Ext.form.FormPanel({ url: "/Risks/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: risk_fields});
 
-	var window_risks = new Ext.Window({ width: 620, height:540, closeAction:'close', autoScroll: true, modal: true, title: "Add a Risk", items: [ form_risk_add ],
-		buttons: [{ text: 'Save',
-			handler: function(){
-                       		form_risk_add.getForm().submit({
-                       		params: { probability: Ext.getCmp("probability").getValue(), impact: Ext.getCmp("impact").getValue()  },
-									
-			success: function(f,a){
-				Ext.message.msg('Success', 'Risk Added', 5); 
-                              	window_risks.destroy(); 
-                              	Ext.getCmp("grid_risks").store.load();
-                               	Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
-									    },  
-           failure: function(f,a){
-                Ext.Msg.alert('Warning', a.result.errormsg);
-           }
-                             });
+    var window_risks = new Ext.Window({ width: 620, height:540, closeAction:'close', autoScroll: true, modal: true, title: "Add a Risk", items: [ form_risk_add ],
+        buttons: [{ text: 'Save',
+            handler: function(){
+                form_risk_add.getForm().submit({
+                    params: { probability: Ext.getCmp("probability").getValue(), impact: Ext.getCmp("impact").getValue()  },
+                    success: function(f,a){
+                        Ext.message.msg('Success', 'Risk Added', 5); 
+                        window_risks.destroy(); 
+                        Ext.getCmp("grid_risks").store.load();
+                        Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
+                    },  
+                    failure: function(f,a){
+                        Ext.Msg.alert('Warning', a.result.errormsg);
+                    }
+                });
             }},
-							
-											 { text: 'Close', handler: function(){ window_risks.destroy(); } }],
-											 listeners: { 
-											 		init: function () {
-											 			//form_risk_add.doLayout();
-											 			
-											 			
-											 			//var ourImg = this.store.getAt(0);
-											 		}
-											 	} 
-											 	});
-	project_menu.hide();
-	tabpanel.activate(2);
-	window_risks.show();
-	window_risks.center();
+            { text: 'Close', handler: function(){ window_risks.destroy(); } }]
+    });
+    project_menu.hide();
+    tabpanel.activate(2);
+    window_risks.show();
+    window_risks.center();
 };
 
 var edit_risk = function(b,e){
-	var	risk_id = grid_risks.getSelectionModel().getSelected().get("pk");
-	var form_risk_edit = new Ext.form.FormPanel({ 
-		url: "/Risks/" + project_number + "/" + risk_id + "/Edit/", bodyStyle: "padding: 15px;", 
-		id: "form_risk_edit",
-		autoScroll: true, items: risk_fields
-		});
-	form_risk_edit.getForm().load({ url: "/Risks/" + project_number + "/" + risk_id + "/", method: "GET" });
-	var window_risks = new Ext.Window({width: 620, autoHeight: true, closeAction: "close", autoScroll: true, modal: true, title: "Edit Risk", items: [ form_risk_edit ],
-		listeners: {
-			activate: function(){
-				var impactVal = grid_risks.getSelectionModel().getSelected().get("impact"); 
-				var probabilityVal = grid_risks.getSelectionModel().getSelected().get("probability"); 
-				Ext.getCmp("impact").setValue( impactVal, false);
-				Ext.getCmp("probability").setValue( probabilityVal, false);
-				
-			}
-		},
-							buttons: [ { text: 'Save',
-                                         handler: function(){
-                                         form_risk_edit.getForm().submit({
-                       			params: { probability: Ext.getCmp("probability").getValue(), impact: Ext.getCmp("impact").getValue()  },
-                                            success: function(f,a){
-                                            	Ext.message.msg('Success', 'Risk Updated', 5);
-                           			window_risks.destroy(); 
-                              			Ext.getCmp("grid_risks").store.load();
-                               			Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
-									    	} ,  
-                                           	failure: function(f,a){
-                                           		Ext.Msg.alert('Warning', a.result.errormsg);
-                                            }
-                                        });
-                                        }},   
-									 { text: 'Close', handler: function(){ window_risks.destroy(); } }] });
-	window_risks.show();
-	window_risks.center();
-
+    var risk_id = grid_risks.getSelectionModel().getSelected().get("pk");
+    var form_risk_edit = new Ext.form.FormPanel({ 
+        url: "/Risks/" + project_number + "/" + risk_id + "/Edit/", bodyStyle: "padding: 15px;", 
+        id: "form_risk_edit",
+        autoScroll: true, items: risk_fields
+    });
+    form_risk_edit.getForm().load({ url: "/Risks/" + project_number + "/" + risk_id + "/", method: "GET" });
+    var window_risks = new Ext.Window({width: 620, autoHeight: true, closeAction: "close", autoScroll: true, modal: true, title: "Edit Risk", items: [ form_risk_edit ],
+        listeners: {
+            activate: function(){
+                var impactVal = grid_risks.getSelectionModel().getSelected().get("impact"); 
+                var probabilityVal = grid_risks.getSelectionModel().getSelected().get("probability"); 
+                Ext.getCmp("impact").setValue( impactVal, false);
+                Ext.getCmp("probability").setValue( probabilityVal, false);
+            }
+        },
+        buttons: [ { text: 'Save',
+            handler: function(){
+                form_risk_edit.getForm().submit({
+                    params: { probability: Ext.getCmp("probability").getValue(), impact: Ext.getCmp("impact").getValue()  },
+                        success: function(f,a){
+                            Ext.message.msg('Success', 'Risk Updated', 5);
+                            window_risks.destroy(); 
+                            Ext.getCmp("grid_risks").store.load();
+                            Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
+                        },  
+                        failure: function(f,a){
+                            Ext.Msg.alert('Warning', a.result.errormsg);
+                        }
+                });
+            }},   
+            { text: 'Close', handler: function(){ window_risks.destroy(); } }] });
+    window_risks.show();
+    window_risks.center();
 };
 
 // Delete Risk
 function delete_risk() {
-	var riskId = grid_risks.getSelectionModel().getSelected().get("pk");
-	var sm = grid_risks.getSelectionModel();
-	var sel = sm.getSelected();
-	if (sm.hasSelection()){
-		Ext.Msg.show({
-			title: 'Remove Risk',
-			buttons: Ext.MessageBox.YESNO,
-			msg: 'Remove <b>'+sel.data.risk_number+'</b>?',
-			closable: false, 
-			fn: function(btn){
-				if (btn == 'yes'){
-						Ext.Ajax.request({
-        url: "/Risks/" + project_number + "/" + riskId + "/" + "Delete/",
-        method: "POST",
-        params: {"pk": riskId },
-        failure: function (response) {
-            Ext.Msg.alert('Error', response.responseText);
-        },
-        success: function(result, request) { 
+    var riskId = grid_risks.getSelectionModel().getSelected().get("pk");
+    var sm = grid_risks.getSelectionModel();
+    var sel = sm.getSelected();
+    if (sm.hasSelection()){
+        Ext.Msg.show({
+            title: 'Remove Risk',
+            buttons: Ext.MessageBox.YESNO,
+            msg: 'Remove <b>'+sel.data.risk_number+'</b>?',
+            closable: false, 
+            fn: function(btn){
+                if (btn == 'yes'){
+                    Ext.Ajax.request({
+                        url: "/Risks/" + project_number + "/" + riskId + "/" + "Delete/",
+                        method: "POST", params: {"pk": riskId },
+                        failure: function (response) {
+                            Ext.Msg.alert('Error', response.responseText);
+                        },
+                        success: function(result, request) { 
                             var res = new Object();
                             res = Ext.util.JSON.decode(result.responseText);
-                            
-                             if (res.success == true)
-                             {
-                             	Ext.message.msg('Success', sel.data.risk_number + " has been removed", 5); 
-                              	//window_risks.destroy(); 
-                              	Ext.getCmp("grid_risks").store.load();
-                               	Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
+                            if (res.success == true) {
+                                Ext.message.msg('Success', sel.data.risk_number + " has been removed", 5); 
+                                Ext.getCmp("grid_risks").store.load();
+                                Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
+                            } else {
+                                Ext.Msg.alert('Error', res.errormsg, 
+                                function() { 
+                                    Ext.getCmp("grid_risks").store.load();
+                                    Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
+                                });
                             }
-                            else {
-                               Ext.Msg.alert('Error', res.errormsg, 
-                           function() { 
-                           	  	//window_risks.destroy(); 
-                           	  	Ext.getCmp("grid_risks").store.load();
-                               	Ext.getCmp("risk_detail").body.update('Please select a risk to see more details');
-                                            	});
-                             }
-  						  }
- 					 });
-				}
-			}
-		});
-	}
+                        }
+                    });
+                }
+            }
+        });
+    }
 }
 
 
 var st_risks = new Ext.data.Store({
-	proxy: new Ext.data.HttpProxy({ url: "/Risks/" + project_number + "/" }),
-	reader: new Ext.data.JsonReader({ root: "", fields: [   
-		{name:"pk", mapping: "pk"},
-		{ name: "risk_number", mapping: "fields.risk_number" },
-		{ name: "created_date", mapping: "fields.created_date", type: "date", dateFormat: JSON_DATE },	
-		{ name: "modified_date", mapping: "fields.modified_date", type: "date", dateFormat: JSON_DATE },	
-		{ name: "description", mapping: "fields.description" },	
-		{ name: "owner", mapping: "fields.owner.extras.get_full_name" },	
-		{ name: "probability", mapping: "fields.probability" },	
-		{ name: "impact", mapping: "fields.impact" },	
-		{ name: "rating", mapping: "fields.rating" },	
-		{ name: "counter_measure", mapping: "fields.counter_measure" },	
-		{ name: "status", mapping: "fields.status" }	]	}),
-	autoLoad: true
+    proxy: new Ext.data.HttpProxy({ url: "/Risks/" + project_number + "/" }),
+    reader: new Ext.data.JsonReader({ root: "", fields: [   
+        {name:"pk", mapping: "pk"},
+        { name: "risk_number", mapping: "fields.risk_number" },
+        { name: "created_date", mapping: "fields.created_date", type: "date", dateFormat: JSON_DATE },	
+        { name: "modified_date", mapping: "fields.modified_date", type: "date", dateFormat: JSON_DATE },	
+        { name: "description", mapping: "fields.description" },	
+        { name: "owner", mapping: "fields.owner.extras.get_full_name" },	
+        { name: "probability", mapping: "fields.probability" },	
+        { name: "impact", mapping: "fields.impact" },	
+        { name: "rating", mapping: "fields.rating" },	
+        { name: "counter_measure", mapping: "fields.counter_measure" },	
+        { name: "status", mapping: "fields.status" }	]	}),
+    autoLoad: true
 });
 
 var btn_update_risk = { iconCls: 'icon-update', text: 'Update Risk', handler: edit_risk };
 var btn_delete_risk = { iconCls: 'icon-complete', text: 'Delete Risk', handler: delete_risk };
 
 var grid_risks = new Ext.grid.GridPanel({
-        store: st_risks,
-        columns: [
-            {header: "Risk Number", dataIndex: 'risk_number'},
-            {header: "Description", dataIndex: 'description'},
-            {header: "Probability", dataIndex: 'probability'},
-            {header: "Impact", dataIndex: 'impact'},
-            {header: "Created Date", dataIndex: 'created_date', sortable: true, hidden: true, renderer: DATE_RENDERER },
-            {header: "Modified Date", dataIndex: 'modified_date', sortable: true, hidden: true, renderer: DATE_RENDERER },
-	    {header: "Rating", dataIndex: 'rating'} ],
-		sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
-		viewConfig: { forceFit: true },
-        tbar: [ btn_update_risk, btn_delete_risk ],
-        height: GRID_HEIGHT,
-        id:'grid_risks',
-		width: GRID_WIDTH,
-		split: true,
-		region: 'west'
+    store: st_risks,
+    columns: [
+        {header: "Risk Number", dataIndex: 'risk_number'},
+        {header: "Description", dataIndex: 'description'},
+        {header: "Probability", dataIndex: 'probability'},
+        {header: "Impact", dataIndex: 'impact'},
+        {header: "Created Date", dataIndex: 'created_date', sortable: true, hidden: true, renderer: DATE_RENDERER },
+        {header: "Modified Date", dataIndex: 'modified_date', sortable: true, hidden: true, renderer: DATE_RENDERER },
+        {header: "Rating", dataIndex: 'rating'} ],
+    sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
+    viewConfig: { forceFit: true },
+    tbar: [ btn_update_risk, btn_delete_risk ],
+    height: GRID_HEIGHT,
+    id:'grid_risks',
+    width: GRID_WIDTH,
+    split: true,
+    region: 'west'
 });
 
 var riskMarkup = [
-	'<table class="project_table">',
-	'<tr><th>Risk Number</th> <td>{risk_number}</td></tr>',
-	'<tr><th>Description</th> <td>{description}</td></tr>',
-	'<tr><th>Owner</th> <td>{owner}</td></tr>',
-	'<tr><th>Probability</th> <td>{probability}</td></tr>',
-	'<tr><th>Impact</th> <td>{impact}</td></tr>',
-	'<tr><th>Rating</th> <td>{rating}</td></tr>',
-	'<tr><th>Counter Measure</th> <td>{counter_measure}</td></tr>',
-	'<tr><th>Status</th> <td>{status}</td></tr>',
-	'<tr><th>Created Date</th> <td>{created_date}</td></tr>',
-	'<tr><th>Modified Date</th> <td>{modified_date}</td></tr>', '</table>' ];
+    '<table class="project_table">',
+    '<tr><th>Risk Number</th> <td>{risk_number}</td></tr>',
+    '<tr><th>Description</th> <td>{description}</td></tr>',
+    '<tr><th>Owner</th> <td>{owner}</td></tr>',
+    '<tr><th>Probability</th> <td>{probability}</td></tr>',
+    '<tr><th>Impact</th> <td>{impact}</td></tr>',
+    '<tr><th>Rating</th> <td>{rating}</td></tr>',
+    '<tr><th>Counter Measure</th> <td>{counter_measure}</td></tr>',
+    '<tr><th>Status</th> <td>{status}</td></tr>',
+    '<tr><th>Created Date</th> <td>{created_date}</td></tr>',
+    '<tr><th>Modified Date</th> <td>{modified_date}</td></tr>', '</table>' ];
 var riskTpl = new Ext.Template(riskMarkup);
 
 var risk_panel = new Ext.Panel({
-	layout: 'border', height: 400,
-	items: [ grid_risks, { id: 'risk_detail', bodyStyle: { background: '#ffffff', padding: '7px' }, region: 'center', html: 'Please select a Risk to see more details'} ]
+    layout: 'border', height: 400,
+    items: [ grid_risks, { id: 'risk_detail', bodyStyle: { background: '#ffffff', padding: '7px' }, region: 'center', html: 'Please select a Risk to see more details'} ]
 });
 
 grid_risks.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
-		var riskPanel = Ext.getCmp('risk_detail');
-		riskTpl.overwrite(riskPanel.body, r.data);
+    var riskPanel = Ext.getCmp('risk_detail');
+    riskTpl.overwrite(riskPanel.body, r.data);
 });
 
 /*
  * Create the WBS Grid 
  */
 var st_skillset = new Ext.data.Store({
-	proxy: new Ext.data.HttpProxy({ url: "/xhr/" + project_number + "/get_skillset/" }),
-	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk",mapping:"pk"},{name:"skill",mapping:"fields.skill"}]}),
-	autoLoad: true
+    proxy: new Ext.data.HttpProxy({ url: "/xhr/" + project_number + "/get_skillset/" }),
+    reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk",mapping:"pk"},{name:"skill",mapping:"fields.skill"}]}),
+    autoLoad: true
 });
 
 
 // Stage Plan
 var st_stage_plan = new Ext.data.Store({
-	proxy: new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/StagePlan/" }),
-	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk",mapping:"pk"},{name:"stage",mapping:"fields.stage"},{name:"description",mapping:"fields.description"},{name:"stage_number",mapping:"fields.stage_number"}]}),
-	autoLoad: true,
-	id: "st_stage_plan"
+    proxy: new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/StagePlan/" }),
+    reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk",mapping:"pk"},{name:"stage",mapping:"fields.stage"},{name:"description",mapping:"fields.description"},{name:"stage_number",mapping:"fields.stage_number"}]}),
+    autoLoad: true,
+    id: "st_stage_plan"
 });
 
 
 var percentage_tip = new Ext.ux.SliderTip({ getText: function(slider){ return slider.value } }); 
 
 var st_wbs = new Ext.data.GroupingStore({
-	proxy: new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/" }),
-	reader: new Ext.data.JsonReader({ root: "", fields: [
-		{ name: "pk", mapping: "pk" },
-		{ name: "created_date", mapping: "fields.created_date", type: "date", dateFormat: JSON_DATE },
-		{ name: "modified_date", mapping: "fields.modified_date", type: "date", dateFormat: JSON_DATE },
-		{ name: "skill_set", mapping: "fields.skill_set.fields.skill" },
-		{ name: "project_stage", mapping: "fields.project_stage.fields.stage" },
-		{ name: "author", mapping: "fields.author.extras.get_full_name" },
-		{ name: "title", mapping: "fields.title" },
-		{ name: "depends", mapping: "fields.depends.fields.title" },
-		{ name: "description", mapping: "fields.description" },
-		{ name: "duration", mapping: "fields.duration" },
-		{ name: "owner", mapping: "fields.owner.extras.get_full_name" },
-		{ name: "percent_complete", mapping: "fields.percent_complete" },
-		{ name: "start_date", mapping: "fields.start_date", type: "date", dateFormat: JSON_DATE },
-		{ name: "finish_date", mapping: "fields.finish_date", type: "date", dateFormat: JSON_DATE },
-		{ name: "wbs_number", mapping: "fields.wbs_number" },
-		{ name: "cost", mapping: "fields.cost" },
-		{ name: "history", mapping: "fields.history" },
-		{ name: "engineering_days", mapping: "fields.engineering_days" },
-		{ name: "get_work_item_status", mapping: "fields.get_work_item_status" }
-		
-		 ]}),
-	autoLoad: true,
-	groupField: 'project_stage',
-	sortInfo:{field: 'wbs_number', direction: "ASC"}
+    proxy: new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/" }),
+    reader: new Ext.data.JsonReader({ root: "", 
+    fields: [
+        { name: "pk", mapping: "pk" },
+        { name: "created_date", mapping: "fields.created_date", type: "date", dateFormat: JSON_DATE },
+        { name: "modified_date", mapping: "fields.modified_date", type: "date", dateFormat: JSON_DATE },
+        { name: "skill_set", mapping: "fields.skill_set.fields.skill" },
+        { name: "project_stage", mapping: "fields.project_stage.fields.stage" },
+        { name: "author", mapping: "fields.author.extras.get_full_name" },
+        { name: "title", mapping: "fields.title" },
+        { name: "depends", mapping: "fields.depends.fields.title" },
+        { name: "description", mapping: "fields.description" },
+        { name: "duration", mapping: "fields.duration" },
+        { name: "owner", mapping: "fields.owner.extras.get_full_name" },
+        { name: "percent_complete", mapping: "fields.percent_complete" },
+        { name: "start_date", mapping: "fields.start_date", type: "date", dateFormat: JSON_DATE },
+        { name: "finish_date", mapping: "fields.finish_date", type: "date", dateFormat: JSON_DATE },
+        { name: "wbs_number", mapping: "fields.wbs_number" },
+        { name: "cost", mapping: "fields.cost" },
+        { name: "history", mapping: "fields.history" },
+        { name: "engineering_days", mapping: "fields.engineering_days" },
+        { name: "get_work_item_status", mapping: "fields.get_work_item_status" }
+    ]}),
+    autoLoad: true,
+    groupField: 'project_stage',
+    sortInfo:{field: 'wbs_number', direction: "ASC"}
 });
 
 
 
 var wbs_fields = [ 
-		{ xtype: "combo", fieldLabel: "Skill Set", name: "skill_set", hiddenName: "skill_set", lazyInit: false, store: st_skillset, mode: "local", displayField: "skill", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "wbs-skillset" },
-		{ xtype: "textfield", fieldLabel: "Title", name: "title", ttEnabled: true, cmsSlug: "wbs-title" },
-		{ xtype: "combo", fieldLabel: "Project Stage", hiddenName: "project_stage", lazyInit: false, store: st_stage_plan, mode: "local", displayField: "stage", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "wbs-stage" },
-		{ xtype: "combo", fieldLabel: "Depends Upon", hiddenName: "depends", lazyInit: false, store: st_wbs, mode: "local", displayField: "title", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "wbs-depends" },
-		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "wbs-description" },
-		{ xtype: "textfield", fieldLabel: "Duration", name: "duration", ttEnabled: true, cmsSlug: "wbs-duration" },
-		{ xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "wbs-owner" },
-		{ xtype: "slider",
-			minValue: 0,
-			maxValue: 100,
-			increment: 10,
-			plugins: percentage_tip, 
-			fieldLabel: "Percentage Complete", 
-			name: "percent_complete", 
-			id: "percent_complete",
-			listeners: { setValue: function(slider) { slider.getValue(); } }  
-		},
-    //{ xtype: "textfield", fieldLabel: "Percent Complete", name: "percent_complete", id: "percent_complete", listeners: { beforerender: function(slider) { Ext.getCmp("percentageSlider").value = slider.value;}} },
-		{ xtype: "datefield", fieldLabel: "Start Date", name: "start_date", format: "d/m/Y", ttEnabled: true, cmsSlug: "wbs-startdate" },
-		{ xtype: "datefield", fieldLabel: "Finish Date", name: "finish_date", format: "d/m/Y", ttEnabled: true, cmsSlug: "wbs-finishdate" },
-	//	{ xtype: "textfield", fieldLabel: "WBS Number", name: "wbs_number" },
-		{ xtype: "textfield", fieldLabel: "Cost", name: "cost", ttEnabled: true, cmsSlug: "wbs-cost" },
-		{ xtype: "textarea", fieldLabel: "Update", name: "update", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "wbs-update" },
-		{ xtype: "textarea", fieldLabel: "History", name: "history", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, readOnly: true, ttEnabled: true, cmsSlug: "wbs-history" }
+    { xtype: "combo", fieldLabel: "Skill Set", name: "skill_set", hiddenName: "skill_set", lazyInit: false, store: st_skillset, mode: "local", displayField: "skill", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "wbs-skillset" },
+    { xtype: "textfield", fieldLabel: "Title", name: "title", ttEnabled: true, cmsSlug: "wbs-title" },
+    { xtype: "combo", fieldLabel: "Project Stage", hiddenName: "project_stage", lazyInit: false, store: st_stage_plan, mode: "local", displayField: "stage", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "wbs-stage" },
+    { xtype: "combo", fieldLabel: "Depends Upon", hiddenName: "depends", lazyInit: false, store: st_wbs, mode: "local", displayField: "title", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "wbs-depends" },
+    { xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "wbs-description" },
+    { xtype: "textfield", fieldLabel: "Duration", name: "duration", ttEnabled: true, cmsSlug: "wbs-duration" },
+    { xtype: "combo", fieldLabel: "Owner", hiddenName: "owner", lazyInit: false, store: st_users, mode: "local", displayField: "username", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "wbs-owner" },
+    { xtype: "slider", minValue: 0, maxValue: 100, increment: 10, plugins: percentage_tip, fieldLabel: "Percentage Complete", name: "percent_complete", 
+        id: "percent_complete",
+        listeners: { setValue: function(slider) { slider.getValue(); } }  
+    },
+    { xtype: "datefield", fieldLabel: "Start Date", name: "start_date", format: "d/m/Y", ttEnabled: true, cmsSlug: "wbs-startdate" },
+    { xtype: "datefield", fieldLabel: "Finish Date", name: "finish_date", format: "d/m/Y", ttEnabled: true, cmsSlug: "wbs-finishdate" },
+    //	{ xtype: "textfield", fieldLabel: "WBS Number", name: "wbs_number" },
+    { xtype: "textfield", fieldLabel: "Cost", name: "cost", ttEnabled: true, cmsSlug: "wbs-cost" },
+    { xtype: "textarea", fieldLabel: "Update", name: "update", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "wbs-update" },
+    { xtype: "textarea", fieldLabel: "History", name: "history", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, readOnly: true, ttEnabled: true, cmsSlug: "wbs-history" }
 ];
 
 var stage_plan_fields = [
-		{ xtype: "textfield", fieldLabel: "Stage Number", name: "stage_number", ttEnabled: true, cmsSlug: "wbs-stagenumber" },
-		{ xtype: "textfield", fieldLabel: "Stage", name: "stage", ttEnabled: true, cmsSlug: "wbs-stage" },
-		{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "wbs-stagedescription" }];
+    { xtype: "textfield", fieldLabel: "Stage Number", name: "stage_number", ttEnabled: true, cmsSlug: "wbs-stagenumber" },
+    { xtype: "textfield", fieldLabel: "Stage", name: "stage", ttEnabled: true, cmsSlug: "wbs-stage" },
+    { xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "wbs-stagedescription" }];
 
 var add_wbs = function(b,e){
-	var form_add_wbs = new Ext.form.FormPanel({ url: "/WBS/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: wbs_fields});
-	var window_wbs = new Ext.Window({autoHeight: true, width:620, closeAction: "close", autoScroll: true, modal: true, title: "Add a Work Item", items: [ form_add_wbs ],
-							buttons: [	{ 	text:'Submit', 
-											handler: function(){
-												form_add_wbs.getForm().submit({
-													params: { percent_complete: Ext.getCmp("percent_complete").value },
-													success: function(f,a){
-                                            		Ext.message.msg('Success', 'Work Item Added', 5);
-                                            		window_wbs.destroy(); 
-                                            		Ext.getCmp("grid_wbs").store.load();
-                                            		Ext.getCmp("wbs_detail").body.update('Please select a Work Item to see more details');
-                                            		},  
-                                            		failure: function(f,a){
-                                            		Ext.Msg.alert('Warning', a.result.errormsg);
-													}
-												});
-										}},
-										 { text: 'Close', handler: function(){ window_wbs.destroy(); } }] });
-	window_wbs.show();
-	window_wbs.center();
-
+    var form_add_wbs = new Ext.form.FormPanel({ url: "/WBS/" + project_number + "/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: wbs_fields});
+    var window_wbs = new Ext.Window({autoHeight: true, width:620, closeAction: "close", autoScroll: true, modal: true, title: "Add a Work Item", items: [ form_add_wbs ],
+        buttons: [	{ 	text:'Submit', 
+            handler: function(){
+                form_add_wbs.getForm().submit({
+                    params: { percent_complete: Ext.getCmp("percent_complete").value },
+                    success: function(f,a){
+                        Ext.message.msg('Success', 'Work Item Added', 5);
+                        window_wbs.destroy(); 
+                        Ext.getCmp("grid_wbs").store.load();
+                        Ext.getCmp("wbs_detail").body.update('Please select a Work Item to see more details');
+                    },  
+                    failure: function(f,a){
+                        Ext.Msg.alert('Warning', a.result.errormsg);
+                    }
+                });
+            }},
+            { text: 'Close', handler: function(){ window_wbs.destroy(); } }] });
+    window_wbs.show();
+    window_wbs.center();
 };
 
 // Delete Work Item
 var delete_wbs = function(b,e){
-	var wbsId = grid_wbs.getSelectionModel().getSelected().get("pk");
-	var sm = grid_wbs.getSelectionModel();
-	var sel = sm.getSelected();
-	if (sm.hasSelection()){
-		Ext.Msg.show({
-			title: 'Remove Work Item',
-			buttons: Ext.MessageBox.YESNO,
-			msg: 'Remove <b>'+sel.data.description+'</b>?',
-			closable: false, 
-			fn: function(btn){
-				if (btn == 'yes'){
-						Ext.Ajax.request({
-        url: "/WBS/" + project_number + "/" + wbsId + "/Delete/",
-        method: "POST",
-        params: {"pk": wbsId
-            
-        },
-        failure: function (response) {
-            Ext.Msg.alert('Error', response.responseText);
-        },
-        success: function (response) {
-           Ext.message.msg('Success', sel.data.description + " has been removed", 5);
-           Ext.getCmp("grid_wbs").store.load();
-           Ext.getCmp("wbs_detail").body.update('Please select a Work Item to see more details');
-           }
-    });
-				}
-			}
-		});
-	}
+    var wbsId = grid_wbs.getSelectionModel().getSelected().get("pk");
+    var sm = grid_wbs.getSelectionModel();
+    var sel = sm.getSelected();
+    if (sm.hasSelection()){
+        Ext.Msg.show({
+            title: 'Remove Work Item', buttons: Ext.MessageBox.YESNO,
+            msg: 'Remove <b>'+sel.data.description+'</b>?', closable: false, 
+            fn: function(btn){
+                if (btn == 'yes'){
+                    Ext.Ajax.request({
+                        url: "/WBS/" + project_number + "/" + wbsId + "/Delete/",
+                        method: "POST", params: {"pk": wbsId },
+                        failure: function (response) {
+                            Ext.Msg.alert('Error', response.responseText);
+                        },
+                        success: function (response) {
+                            Ext.message.msg('Success', sel.data.description + " has been removed", 5);
+                            Ext.getCmp("grid_wbs").store.load();
+                            Ext.getCmp("wbs_detail").body.update('Please select a Work Item to see more details');
+                        }
+                    });
+                }
+            }
+        });
+    }
 };
 
 
 var edit_wbs = function(b,e){
-	var	wbs_id = grid_wbs.getSelectionModel().getSelected().get("pk");
-	var form_wbs_edit = new Ext.form.FormPanel({ 
-		url: "/WBS/" + project_number + "/" + wbs_id + "/Edit/", bodyStyle: "padding: 15px;", id: "form_wbs_edit", autoScroll: true, items: wbs_fields });
-	form_wbs_edit.getForm().load({ url: "/WBS/" + project_number + "/" + wbs_id + "/", method: "GET" });
-	var window_wbs = new Ext.Window({width: 620, autoHeight: true, closeAction: "close", autoScroll: true, modal: true, title: "Edit Work Item", items: [ form_wbs_edit ],
-		listeners: {
-			activate: function(){
-				var percentCompleteVal = grid_wbs.getSelectionModel().getSelected().get("percent_complete"); 
-				Ext.getCmp("percent_complete").setValue( percentCompleteVal, false);
-			}
-		},
-		buttons: [ { text: 'Save',
-			
-                    handler: function(){
-                                         form_wbs_edit.getForm().submit({
-                                         	params: { percent_complete: Ext.getCmp("percent_complete").value },
-																					success: function(f,a){
-                                            Ext.message.msg('Success', 'Work Item Updated', 5);
-                          		window_wbs.destroy(); 
-                              		Ext.getCmp("grid_wbs").store.load();
-                               		Ext.getCmp("wbs_detail").body.update('Please select a Work Item to see more details');
-									    }});
-					}}]
-					
-});
-	window_wbs.show();
-	window_wbs.center();
+    var	wbs_id = grid_wbs.getSelectionModel().getSelected().get("pk");
+    var form_wbs_edit = new Ext.form.FormPanel({ 
+        url: "/WBS/" + project_number + "/" + wbs_id + "/Edit/", bodyStyle: "padding: 15px;", id: "form_wbs_edit", autoScroll: true, items: wbs_fields });
+    form_wbs_edit.getForm().load({ url: "/WBS/" + project_number + "/" + wbs_id + "/", method: "GET" });
+    var window_wbs = new Ext.Window({width: 620, autoHeight: true, closeAction: "close", autoScroll: true, modal: true, title: "Edit Work Item", items: [ form_wbs_edit ],
+        listeners: {
+            activate: function(){
+                var percentCompleteVal = grid_wbs.getSelectionModel().getSelected().get("percent_complete"); 
+                Ext.getCmp("percent_complete").setValue( percentCompleteVal, false);
+            }
+        },
+        buttons: [ { text: 'Save',
+            handler: function(){
+                form_wbs_edit.getForm().submit({
+                    params: { percent_complete: Ext.getCmp("percent_complete").value },
+                    success: function(f,a){
+                        Ext.message.msg('Success', 'Work Item Updated', 5);
+                        window_wbs.destroy(); 
+                        Ext.getCmp("grid_wbs").store.load();
+                        Ext.getCmp("wbs_detail").body.update('Please select a Work Item to see more details');
+                    }});
+            }}]
+    });
+    window_wbs.show();
+    window_wbs.center();
 };
 									    
 									    
 // Engineering Days
-
 var st_engineering_day_resource =  new Ext.data.Store({
-	reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk",mapping:"pk"},{name:"resource", mapping:"resource"},{name:"available", mapping:"available"}]})
+    reader: new Ext.data.JsonReader({ root: "", fields: [{name:"pk",mapping:"pk"},{name:"resource", mapping:"resource"},{name:"available", mapping:"available"}]})
 });
 
 var st_engineering_day_type = new Ext.data.ArrayStore({fields: ["id", "d"], data: [[0,"Half-day AM"],[1,"Half-day PM"],[2,"Full Day"]]});
 
 var get_resources_from_date = function(picker,date_string){
-
-	var wbs_id = grid_wbs.getSelectionModel().getSelected().get("pk");
-	var day_type = Ext.getCmp("eday_day_type").getValue();
-	var chosen_date = new Date(date_string);
-	var year = chosen_date.getFullYear();
-	var month = chosen_date.getMonth() + 1;
-	var day = chosen_date.getDate();
-	//Ext.Msg.alert("Hmmmm", "date_string =>" + date_string + ", Year =>" + year + ", Month =>" + month + ", Day =>" + day);
-	
-	st_engineering_day_resource.proxy = new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/EngineeringDayResources/" + year + "-" + month + "-" + day + "/" + wbs_id + "/" + day_type + "/"});
-	st_engineering_day_resource.load();
+    var wbs_id = grid_wbs.getSelectionModel().getSelected().get("pk");
+    var day_type = Ext.getCmp("eday_day_type").getValue();
+    var chosen_date = new Date(date_string);
+    var year = chosen_date.getFullYear();
+    var month = chosen_date.getMonth() + 1;
+    var day = chosen_date.getDate();
+    st_engineering_day_resource.proxy = new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/EngineeringDayResources/" + year + "-" + month + "-" + day + "/" + wbs_id + "/" + day_type + "/"});
+    st_engineering_day_resource.load();
 }
 
 var get_resources_from_day_type = function(){
-	
-	var wbs_id = grid_wbs.getSelectionModel().getSelected().get("pk");
-	var day_type = Ext.getCmp("eday_day_type").getValue();
-	var date_string = Ext.getCmp("eday_date").getValue();
-	var chosen_date = new Date(date_string);
-	var year = chosen_date.getFullYear();
-	var month = chosen_date.getMonth() + 1;
-	var day = chosen_date.getDate();
-	
-	st_engineering_day_resource.proxy = new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/EngineeringDayResources/" + year + "-" + month + "-" + day + "/" + wbs_id + "/" + day_type + "/"});
-	st_engineering_day_resource.load();
-
+    var wbs_id = grid_wbs.getSelectionModel().getSelected().get("pk");
+    var day_type = Ext.getCmp("eday_day_type").getValue();
+    var date_string = Ext.getCmp("eday_date").getValue();
+    var chosen_date = new Date(date_string);
+    var year = chosen_date.getFullYear();
+    var month = chosen_date.getMonth() + 1;
+    var day = chosen_date.getDate();
+    st_engineering_day_resource.proxy = new Ext.data.HttpProxy({ url: "/WBS/" + project_number + "/EngineeringDayResources/" + year + "-" + month + "-" + day + "/" + wbs_id + "/" + day_type + "/"});
+    st_engineering_day_resource.load();
 }
 
 var engineering_day_fields = [
-	{ xtype: "datefield", fieldLabel: "Date", format: 'd/m/Y', name: "work_date", listeners: { select: get_resources_from_date }, id: "eday_date", ttEnabled: true, cmsSlug: "engineering-day-date" },
-	{ xtype: "combo", fieldLabel: "Day Type", hiddenName: "day_type", lazyInit: false, store: st_engineering_day_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all", id: "eday_day_type", listeners: { select: get_resources_from_day_type}, data: '1', ttEnabled: true, cmsSlug: "engineering-day-type" },
-	{ xtype: "combo", fieldLabel: "Resource", hiddenName: "resource", lazyInit: false, store: st_engineering_day_resource, mode: "local", displayField: "resource", valueField: "pk", triggerAction: "all", width: 300, ttEnabled: true, cmsSlug: "engineering-day-resource"  }
+    { xtype: "datefield", fieldLabel: "Date", format: 'd/m/Y', name: "work_date", listeners: { select: get_resources_from_date }, id: "eday_date", ttEnabled: true, cmsSlug: "engineering-day-date" },
+    { xtype: "combo", fieldLabel: "Day Type", hiddenName: "day_type", lazyInit: false, store: st_engineering_day_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all", id: "eday_day_type", listeners: { select: get_resources_from_day_type}, data: '1', ttEnabled: true, cmsSlug: "engineering-day-type" },
+    { xtype: "combo", fieldLabel: "Resource", hiddenName: "resource", lazyInit: false, store: st_engineering_day_resource, mode: "local", displayField: "resource", valueField: "pk", triggerAction: "all", width: 300, ttEnabled: true, cmsSlug: "engineering-day-resource"  }
 ]
 
 var add_engineering_day = function(){
 
-	var wbs_id = grid_wbs.getSelectionModel().getSelected().get("pk");
-	var form_add_engineering_day = new Ext.form.FormPanel({ url: "/WBS/" + project_number + "/AddEngineeringDay/" + wbs_id + "/", bodyStyle: "padding: 15px;", autoScroll: true, items: engineering_day_fields });	
-	var window_engineering_day = new Ext.Window({ width: 620, autoHeight: true, closeAction: "close", autoScroll: true, modal: true, title: "Add Engineering Day", items: [ form_add_engineering_day ],
-			buttons: [ { text: "Save",
-				handler: function(){ 
-					form_add_engineering_day.getForm().submit({
-						success: function(f,a){
-							Ext.message.msg('Success', 'Engineering Day Booked', 5);
-							window_engineering_day.close();
-							Ext.getCmp("grid_wip_items").store.load();
-                                            		Ext.getCmp("wbs_detail").body.update('Please select a Work Item to see more details');
-
-						},failure: function(f,a){
-							Ext.Msg.alert('Warning', a.result.errormsg);
-							}
-						});
-				}},{ text: "Close", handler: function(){ window_engineering_day.close(); }} ]
-
-	});
-	window_engineering_day.show();
-	window_engineering_day.center();
+    var wbs_id = grid_wbs.getSelectionModel().getSelected().get("pk");
+    var form_add_engineering_day = new Ext.form.FormPanel({ url: "/WBS/" + project_number + "/AddEngineeringDay/" + wbs_id + "/", bodyStyle: "padding: 15px;", autoScroll: true, items: engineering_day_fields });	
+    var window_engineering_day = new Ext.Window({ width: 620, autoHeight: true, closeAction: "close", autoScroll: true, modal: true, title: "Add Engineering Day", items: [ form_add_engineering_day ],
+        buttons: [ { text: "Save",
+            handler: function(){ 
+                form_add_engineering_day.getForm().submit({
+                    success: function(f,a){
+                        Ext.message.msg('Success', 'Engineering Day Booked', 5);
+                        window_engineering_day.close();
+                        Ext.getCmp("grid_wip_items").store.load();
+                        Ext.getCmp("wbs_detail").body.update('Please select a Work Item to see more details');
+                    },
+                    failure: function(f,a){
+                        Ext.Msg.alert('Warning', a.result.errormsg);
+                    }
+                });
+            }},
+            { text: "Close", handler: function(){ window_engineering_day.close(); }} ]
+    });
+    window_engineering_day.show();
+    window_engineering_day.center();
 };
 									    
-									    
-									    
-									    
-									    
-
-
-
 var add_project_stage = function(b,e){
-	var form_add_project_stage = new Ext.form.FormPanel({ url: "/WBS/" + project_number + "/StagePlan/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: stage_plan_fields });
-
-	var window_stage_plan = new Ext.Window({ width: 620, height: 300, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Project Stage", items: [ form_add_project_stage ],
-							buttons: [	{ 	text:'Submit', 
-											handler: function(){
-												form_add_project_stage.getForm().submit({
-													success: function(f,a){
-                                            		Ext.message.msg('Success', 'Project Stage Added', 5);
-                                            		window_stage_plan.hide(); 
-													window.location.reload(); // At the moment we have to reload at this point - to be resolved.
-													//st_stage_plan.load();
-                                            		//Ext.getCmp("grid_wbs").store.load();
-                                            		},  
-                                            		failure: function(f,a){
-                                            		Ext.Msg.alert('Warning', a.result.errormsg);
-													}
-												});
-										}},
-										 { text: 'Close', handler: function(){ window_stage_plan.hide(); } }] });
-	window_stage_plan.show();
-	window_stage_plan.center();
-
+    var form_add_project_stage = new Ext.form.FormPanel({ url: "/WBS/" + project_number + "/StagePlan/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: stage_plan_fields });
+    var window_stage_plan = new Ext.Window({ width: 620, height: 300, closeAction: "hide", autoScroll: true, modal: true, title: "Add a Project Stage", items: [ form_add_project_stage ],
+        buttons: [	{ 	text:'Submit', 
+            handler: function(){
+                form_add_project_stage.getForm().submit({
+                    success: function(f,a){
+                        Ext.message.msg('Success', 'Project Stage Added', 5);
+                        window_stage_plan.hide(); 
+                        window.location.reload(); // At the moment we have to reload at this point - to be resolved.
+                    },  
+                    failure: function(f,a){
+                        Ext.Msg.alert('Warning', a.result.errormsg);
+                    }
+                });
+            }},
+            { text: 'Close', handler: function(){ window_stage_plan.hide(); } }] });
+    window_stage_plan.show();
+    window_stage_plan.center();
 };
-
-
-
-
 
 var btn_add_wbs = { iconCls: 'icon-add', text: 'Add Work Item', handler: add_wbs }
 var btn_update_wbs = { iconCls: 'icon-update', text: 'Update Work Item', handler: edit_wbs }
@@ -711,25 +651,25 @@ var btn_add_project_stage = { iconCls: 'icon-add', text: 'Add Project Stage', ha
 var btn_add_engineering_day = { iconCls: 'icon-add', text: 'Add Engineering Day', handler: add_engineering_day }
 
 var grid_wbs = new Ext.grid.GridPanel({
-        store: st_wbs,
-        id: "grid_wbs",
-        columns: [
+    store: st_wbs,
+    id: "grid_wbs",
+    columns: [
     //        {header: "WBS Number", dataIndex: 'wbs_number'},
-            {header: "Skill Set", dataIndex: 'skill_set', hidden: true, sortable: true },
-            {header: "Stage", dataIndex: 'project_stage'},
-            {header: "Author", dataIndex: 'author', hidden: true, sortable: true },
-            {header: "Title", dataIndex: 'title', sortable: true },
-            {header: "Description", dataIndex: 'description', hidden: true },
-            {header: "Duration", dataIndex: 'duration', hidden: true, sortable: true },
-            {header: "Owner", dataIndex: 'owner', hidden: true, sortable: true },
-            {header: "Percent Complete", dataIndex: 'percent_complete', sortable: true },
-            {header: "Start Date", dataIndex: 'start_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
-            {header: "Finish Date", dataIndex: 'finish_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
-            {header: "Work Status", dataIndex: 'get_work_item_status', hidden: true, sortable: true },
-            {header: "Cost", dataIndex: 'cost'},
-            {header: "Created Date", dataIndex: 'created_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
-            {header: "Modified Date", dataIndex: 'modified_date', hidden: true, sortable: true, renderer: DATE_RENDERER }
-		],
+        {header: "Skill Set", dataIndex: 'skill_set', hidden: true, sortable: true },
+        {header: "Stage", dataIndex: 'project_stage'},
+        {header: "Author", dataIndex: 'author', hidden: true, sortable: true },
+        {header: "Title", dataIndex: 'title', sortable: true },
+        {header: "Description", dataIndex: 'description', hidden: true },
+        {header: "Duration", dataIndex: 'duration', hidden: true, sortable: true },
+        {header: "Owner", dataIndex: 'owner', hidden: true, sortable: true },
+        {header: "Percent Complete", dataIndex: 'percent_complete', sortable: true },
+        {header: "Start Date", dataIndex: 'start_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
+        {header: "Finish Date", dataIndex: 'finish_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
+        {header: "Work Status", dataIndex: 'get_work_item_status', hidden: true, sortable: true },
+        {header: "Cost", dataIndex: 'cost'},
+        {header: "Created Date", dataIndex: 'created_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
+        {header: "Modified Date", dataIndex: 'modified_date', hidden: true, sortable: true, renderer: DATE_RENDERER }
+    ],
 //        viewConfig: {
 //   				getRowClass: function(rec, rowIdx, params, store) {
 //      		return rec.get('get_work_item_status').value;
