@@ -5,6 +5,15 @@ from projects.misc import all_username_options, get_dependancies_for_project, ge
 from wbs.models import *
 from tinymce.widgets import TinyMCE
 
+class DependsField(CharField):
+
+    def clean(self, value):
+        if value in ['null', '']:
+            return None
+        else:
+            return WorkItem.objects.get(id=value)
+        
+
 class WBSUpdateField(CharField):
 
 	def clean(self, value):
@@ -37,6 +46,7 @@ class WBSForm(ModelForm):
 		self.fields['history'].widget.attrs['readonly'] = True
 		self.fields['owner'].choices = get_resource_for_project(project)
 		self.fields['depends'].choices = get_dependancies_for_project(project)
+		self.fields['depends'] = DependsField()
 		self.fields['update'] = WBSUpdateField()
 		self.fields['update'].widget = Textarea()
 		self.fields['update'].label = 'Update'
