@@ -312,6 +312,7 @@ var grid_wip_items = new Ext.grid.GridPanel({
 	region: 'west'
 });
 
+grid_wip_items.on('dblclick', function(){ edit_wip_item() });
 
 var grid_wip_objectives = new Ext.grid.GridPanel({
 	store: st_wip_objectives,
