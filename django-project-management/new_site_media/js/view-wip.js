@@ -192,7 +192,7 @@ var add_heading = function(){
 };
 var add_wip_item = function(){
 	var form_add_wip_item = new Ext.form.FormPanel({ url: "/WIP/" + wip_report + "/WIPItem/Add/", bodyStyle: "padding: 15px;", autoScroll: true, items: wip_item_fields }); 
-	var window_wip_item = new Ext.Window({autoHeight: true, width:540, closeAction: "hide", autoScroll: true, modal: true, title: "Add a WIP Item", items: [ form_add_wip_item ],
+	var window_wip_item = new Ext.Window({autoHeight: true, width:600, closeAction: "hide", autoScroll: true, modal: true, title: "Add a WIP Item", items: [ form_add_wip_item ],
 			buttons: [{text:'Submit', handler: function(){
 					form_add_wip_item.getForm().submit({
 						success: function(f,a){
