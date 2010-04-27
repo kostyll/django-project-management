@@ -133,19 +133,19 @@ var panel_rota = new Ext.Panel({
 });
 
 var rota_fields = [
-	{ xtype: "combo", fieldLabel: "Monday", hiddenName: "monday", lazyInit: false, store: st_rota_activities, mode: "local", displayField: "activity", valueField: "pk", triggerAction: "all" },
+	{ xtype: "combo", fieldLabel: "Monday", hiddenName: "monday", lazyInit: false, store: st_rota_activities, mode: "local", displayField: "activity", valueField: "pk", triggerAction: "all", editable: false },
 	{ xtype: "textfield", fieldLabel: "Description", name: "monday_description" },
-	{ xtype: "combo", fieldLabel: "Tuesday", hiddenName: "tuesday", lazyInit: false, store: st_rota_activities, mode: "local", displayField: "activity", valueField: "pk", triggerAction: "all" },
+	{ xtype: "combo", fieldLabel: "Tuesday", hiddenName: "tuesday", lazyInit: false, store: st_rota_activities, mode: "local", displayField: "activity", valueField: "pk", triggerAction: "all", editable: false },
 	{ xtype: "textfield", fieldLabel: "Description", name: "tuesday_description" },
-	{ xtype: "combo", fieldLabel: "Wednesday", hiddenName: "wednesday", lazyInit: false, store: st_rota_activities, mode: "local", displayField: "activity", valueField: "pk", triggerAction: "all" },
+	{ xtype: "combo", fieldLabel: "Wednesday", hiddenName: "wednesday", lazyInit: false, store: st_rota_activities, mode: "local", displayField: "activity", valueField: "pk", triggerAction: "all", editable: false },
 	{ xtype: "textfield", fieldLabel: "Description", name: "wednesday_description" },
-	{ xtype: "combo", fieldLabel: "Thursday", hiddenName: "thursday", lazyInit: false, store: st_rota_activities, mode: "local", displayField: "activity", valueField: "pk", triggerAction: "all" },
+	{ xtype: "combo", fieldLabel: "Thursday", hiddenName: "thursday", lazyInit: false, store: st_rota_activities, mode: "local", displayField: "activity", valueField: "pk", triggerAction: "all", editable: false },
 	{ xtype: "textfield", fieldLabel: "Description", name: "thursday_description" },
-	{ xtype: "combo", fieldLabel: "Friday", hiddenName: "friday", lazyInit: false, store: st_rota_activities, mode: "local", displayField: "activity", valueField: "pk", triggerAction: "all" },
+	{ xtype: "combo", fieldLabel: "Friday", hiddenName: "friday", lazyInit: false, store: st_rota_activities, mode: "local", displayField: "activity", valueField: "pk", triggerAction: "all", editable: false },
 	{ xtype: "textfield", fieldLabel: "Description", name: "friday_description" },
-	{ xtype: "combo", fieldLabel: "Saturday", hiddenName: "saturday", lazyInit: false, store: st_rota_activities, mode: "local", displayField: "activity", valueField: "pk", triggerAction: "all" },
+	{ xtype: "combo", fieldLabel: "Saturday", hiddenName: "saturday", lazyInit: false, store: st_rota_activities, mode: "local", displayField: "activity", valueField: "pk", triggerAction: "all", editable: false },
 	{ xtype: "textfield", fieldLabel: "Description", name: "saturday_description" },
-	{ xtype: "combo", fieldLabel: "Sunday", hiddenName: "sunday", lazyInit: false, store: st_rota_activities, mode: "local", displayField: "activity", valueField: "pk", triggerAction: "all" },
+	{ xtype: "combo", fieldLabel: "Sunday", hiddenName: "sunday", lazyInit: false, store: st_rota_activities, mode: "local", displayField: "activity", valueField: "pk", triggerAction: "all", editable: false },
 	{ xtype: "textfield", fieldLabel: "Description", name: "sunday_description" }
 ]
 	

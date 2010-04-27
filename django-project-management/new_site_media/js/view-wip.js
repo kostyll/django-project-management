@@ -84,20 +84,20 @@ var st_engineering_day_type = new Ext.data.ArrayStore({fields: ["id", "d"], data
 /* Form Fields */
 
 wip_item_fields = [
-	{ xtype: "combo", fieldLabel: "Heading", hiddenName: "heading", lazyInit: false, store: st_heading, mode: "local", displayField: "heading", valueField: "pk", triggerAction: "all" },
+	{ xtype: "combo", fieldLabel: "Heading", hiddenName: "heading", lazyInit: false, store: st_heading, mode: "local", displayField: "heading", valueField: "pk", triggerAction: "all", editable: false },
 	{ xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH },
-	{ xtype: "combo", fieldLabel: "Assignee", hiddenName: "assignee", lazyInit: false, store: st_assignee, mode: "local", displayField: "username", valueField: "id", triggerAction: "all" },
+	{ xtype: "combo", fieldLabel: "Assignee", hiddenName: "assignee", lazyInit: false, store: st_assignee, mode: "local", displayField: "username", valueField: "id", triggerAction: "all", editable: false },
 	{ xtype: "textarea", fieldLabel: "History", name: "history", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, readOnly: true  },
 	{ xtype: "textarea", fieldLabel: "Update", name: "update", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH  },
 	{ xtype: "checkbox", fieldLabel: "Objective", name: "objective" },
 	{ xtype: "datefield", fieldLabel: "Deadline", name: "deadline", format: "d/m/Y" },
 	{ xtype: "checkbox", fieldLabel: "Complete", name: "complete" },
-	{ xtype: "combo", fieldLabel: "Status", hiddenName: "status", lazyInit: false, store: st_wip_status, mode: "local", displayField: "d", valueField: "id", triggerAction: "all" }
+	{ xtype: "combo", fieldLabel: "Status", hiddenName: "status", lazyInit: false, store: st_wip_status, mode: "local", displayField: "d", valueField: "id", triggerAction: "all", editable: false }
 ];	
 
 var wip_heading_fields = [
 	{ xtype: "textfield", fieldLabel: "Heading", name: "heading" },
-	{ xtype: "combo", fieldLabel: "Company", hiddenName: "company", lazyInit: false,  store: st_company, mode: "local", displayField: "name", valueField: "pk", triggerAction: "all" }
+	{ xtype: "combo", fieldLabel: "Company", hiddenName: "company", lazyInit: false,  store: st_company, mode: "local", displayField: "name", valueField: "pk", triggerAction: "all", editable: false }
 ];
 
 var get_resources_from_date = function(picker,date_string){
@@ -129,8 +129,8 @@ var get_resources_from_day_type = function(){
 
 var engineering_day_fields = [
 	{ xtype: "datefield", fieldLabel: "Date", format: 'd/m/Y', name: "work_date", listeners: { select: get_resources_from_date }, id: "eday_date" },
-	{ xtype: "combo", fieldLabel: "Day Type", hiddenName: "day_type", lazyInit: false, store: st_engineering_day_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all", id: "eday_day_type", listeners: { select: get_resources_from_day_type}, data: '1' },
-	{ xtype: "combo", fieldLabel: "Resource", hiddenName: "resource", lazyInit: false, store: st_engineering_day_resource, mode: "local", displayField: "resource", valueField: "pk", triggerAction: "all", height: '200px' }
+	{ xtype: "combo", fieldLabel: "Day Type", hiddenName: "day_type", lazyInit: false, store: st_engineering_day_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all", id: "eday_day_type", listeners: { select: get_resources_from_day_type}, data: '1', editable: false },
+	{ xtype: "combo", fieldLabel: "Resource", hiddenName: "resource", lazyInit: false, store: st_engineering_day_resource, mode: "local", displayField: "resource", valueField: "pk", triggerAction: "all", height: '200px', editable: false }
 ];
 /*
  * Define the form that is used to add/edit WIP items
