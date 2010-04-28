@@ -486,7 +486,7 @@ var add_wbs = function(b,e){
         buttons: [	{ 	text:'Submit', 
             handler: function(){
                 form_add_wbs.getForm().submit({
-                    params: { percent_complete: Ext.getCmp("percent_complete").value },
+                    params: { percent_complete: Ext.getCmp("percent_complete").getValue() },
                     success: function(f,a){
                         Ext.message.msg('Success', 'Work Item Added', 5);
                         window_wbs.destroy(); 
@@ -548,7 +548,7 @@ var edit_wbs = function(b,e){
         buttons: [ { text: 'Save',
             handler: function(){
                 form_wbs_edit.getForm().submit({
-                    params: { percent_complete: Ext.getCmp("percent_complete").value },
+                    params: { percent_complete: Ext.getCmp("percent_complete").getValue() },
                     success: function(f,a){
                         Ext.message.msg('Success', 'Work Item Updated', 5);
                         window_wbs.destroy(); 
