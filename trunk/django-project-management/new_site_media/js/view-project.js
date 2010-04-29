@@ -458,7 +458,7 @@ var st_wbs = new Ext.data.GroupingStore({
 var wbs_fields = [ 
     { xtype: "combo", fieldLabel: "Skill Set", name: "skill_set", hiddenName: "skill_set", lazyInit: false, store: st_skillset, mode: "local", displayField: "skill", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "wbs-skillset", editable: false },
     { xtype: "textfield", fieldLabel: "Title", name: "title", ttEnabled: true, cmsSlug: "wbs-title" },
-    { xtype: "combo", fieldLabel: "Project Stage", hiddenName: "project_stage", lazyInit: false, store: st_stage_plan, mode: "local", displayField: "stage", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "wbs-stage", editable: false },
+    { xtype: "combo", fieldLabel: "Project Stage", hiddenName: "project_stage", lazyInit: false, store: st_stage_plan, mode: "local", displayField: "stage", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "wbs-stage", editable: false, allowBlank: false },
     { xtype: "combo", fieldLabel: "Depends Upon", hiddenName: "depends", lazyInit: false, store: st_wbs, mode: "local", displayField: "title", valueField: "pk", triggerAction: "all", ttEnabled: true, cmsSlug: "wbs-depends", editable: false },
     { xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "wbs-description" },
     { xtype: "textfield", fieldLabel: "Duration", name: "duration", ttEnabled: true, cmsSlug: "wbs-duration" },
