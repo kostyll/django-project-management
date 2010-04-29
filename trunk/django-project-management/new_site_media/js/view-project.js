@@ -654,7 +654,6 @@ var grid_wbs = new Ext.grid.GridPanel({
     store: st_wbs,
     id: "grid_wbs",
     columns: [
-    //        {header: "WBS Number", dataIndex: 'wbs_number'},
         {header: "Skill Set", dataIndex: 'skill_set', hidden: true, sortable: true },
         {header: "Stage", dataIndex: 'project_stage'},
         {header: "Author", dataIndex: 'author', hidden: true, sortable: true },
@@ -670,71 +669,40 @@ var grid_wbs = new Ext.grid.GridPanel({
         {header: "Created Date", dataIndex: 'created_date', hidden: true, sortable: true, renderer: DATE_RENDERER },
         {header: "Modified Date", dataIndex: 'modified_date', hidden: true, sortable: true, renderer: DATE_RENDERER }
     ],
-//        viewConfig: {
-//   				getRowClass: function(rec, rowIdx, params, store) {
-//      		return rec.get('get_work_item_status').value;
-//    			}
-//				},
-        tbar: [ btn_add_project_stage, btn_add_wbs, btn_update_wbs, btn_delete_wbs, btn_add_engineering_day ],
-		sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
-		view: new Ext.grid.GroupingView({
-            forceFit:true,
-            getRowClass: function(record, rowIndex, rp, ds){
-								return record.json.extras.get_work_item_status;
-								//console.debug(grid_wbs.grid.getView().getRow(rowIndex).getRowClass());
-    },
-    onRowSelect: function(row){
-this.addRowClass(row, this.getRowClass(this.grid.getStore().getAt(row)) + '-selected');
-//console.debug(row);
-
-},
-onRowDeselect: function(row){
-this.removeRowClass(row, this.getRowClass(this.grid.getStore().getAt(row)) + '-selected');
-},
-
-onRowOver: function(e, t){
-var row;
-if((row = this.findRowIndex(t)) !== false){
-	this.addRowClass(this.findRowIndex(t), this.getRowClass(this.grid.getStore().getAt(this.findRowIndex(t))) + '-hover');
-this.grid.fireEvent('rowmouseover', this.grid, row);
-}
-},
-
-onRowOut: function(e,t){
-var row;
-if((row = this.findRowIndex(t)) !== false && !e.within(this.getRow(row), true)){
-	this.removeRowClass(this.findRowIndex(t), this.getRowClass(this.grid.getStore().getAt(this.findRowIndex(t))) + '-hover');
-this.grid.fireEvent('rowmouseout', this.grid, row);
-}
-},
-            groupTextTpl: '{text} ({[values.rs.length]} {[values.rs.length > 1 ? "Items" : "Item"]})'
-        }),
-        
-
-        height: GRID_HEIGHT,
-		width: GRID_WIDTH,
-		split: true,
-		region: 'west'
+    tbar: [ btn_add_project_stage, btn_add_wbs, btn_update_wbs, btn_delete_wbs, btn_add_engineering_day ],
+    sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
+    view: new Ext.grid.GroupingView({
+        forceFit:true,
+        getRowClass: function(record, rowIndex, rp, ds){
+            return record.json.extras.get_work_item_status;
+        },
+        onRowSelect: function(row){
+            this.addRowClass(row, this.getRowClass(this.grid.getStore().getAt(row)) + '-selected');
+        },
+        onRowDeselect: function(row){
+            this.removeRowClass(row, this.getRowClass(this.grid.getStore().getAt(row)) + '-selected');
+        },
+        onRowOver: function(e, t){
+            var row;
+            if((row = this.findRowIndex(t)) !== false){
+                this.addRowClass(this.findRowIndex(t), this.getRowClass(this.grid.getStore().getAt(this.findRowIndex(t))) + '-hover');
+                this.grid.fireEvent('rowmouseover', this.grid, row);
+            }
+        },
+        onRowOut: function(e,t){
+            var row;
+            if((row = this.findRowIndex(t)) !== false && !e.within(this.getRow(row), true)){
+                this.removeRowClass(this.findRowIndex(t), this.getRowClass(this.grid.getStore().getAt(this.findRowIndex(t))) + '-hover');
+                this.grid.fireEvent('rowmouseout', this.grid, row);
+            }
+        },
+        groupTextTpl: '{text} ({[values.rs.length]} {[values.rs.length > 1 ? "Items" : "Item"]})'
+    }),
+    height: GRID_HEIGHT,
+    width: GRID_WIDTH,
+    split: true,
+    region: 'west'
 });
-
-
-//Ext.onReady(function(){
-//    Ext.override(Ext.grid.GridView, {
-//        onRowOver : function(e, t){
-//            var row;
-//            if((row = this.findRowIndex(t)) !== false){
-//                this.addRowClass(row, this.getRowClass(this.grid.getStore().getAt(row)) + '-rollover');
-//            }
-//				},
-//				onRowOut : function(e, t){
-//            var row;
-//            if((row = this.findRowIndex(t)) !== false){
-//                this.removeRowClass(row, this.getRowClass(this.grid.getStore().getAt(row)) + '-rollover');
-//            }
-//        }
-//    });
-//});
-
 
 
 var markup_wbs = [
