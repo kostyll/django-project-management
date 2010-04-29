@@ -1490,13 +1490,13 @@ toolbar.add(project_menu_button);
  * */
 tab_items = [
 	{ xtype: "panel", contentEl: "project_initiation", title: "Project Initiation" },
-	{ xtype: "panel", title: "Deliverables", items: [ panel_deliverables ] },
-	{ xtype: "panel", title: "Risks", items: [ risk_panel ] },
-	{ xtype: "panel", title: "Work Items", items: [ panel_wbs ] },
-	{ xtype: "panel", title: "Issues", items: [ panel_issues ] },
-	{ xtype: "panel", title: "Lessons Learnt", items: [ panel_lessons ] },
-	{ xtype: "panel", title: "Reports", items: [ panel_report ] },
-	{ xtype: "panel", title: "Files", items: [ panel_files ] } ]
+	{ xtype: "panel", title: "Deliverables", items: [ panel_deliverables ], autoHeight: true },
+	{ xtype: "panel", title: "Risks", items: [ risk_panel ], autoHeight: true  },
+	{ xtype: "panel", title: "Work Items", items: [ panel_wbs ], autoHeight: true  },
+	{ xtype: "panel", title: "Issues", items: [ panel_issues ], autoHeight: true  },
+	{ xtype: "panel", title: "Lessons Learnt", items: [ panel_lessons ], autoHeight: true  },
+	{ xtype: "panel", title: "Reports", items: [ panel_report ], autoHeight: true  },
+	{ xtype: "panel", title: "Files", items: [ panel_files ], autoHeight: true  } ]
 
 var tabpanel = new Ext.TabPanel({ items: tab_items, bodyStyle: "padding: 15px;", activeTab: 0});	
 center_panel.items = [ toolbar, tabpanel ]
