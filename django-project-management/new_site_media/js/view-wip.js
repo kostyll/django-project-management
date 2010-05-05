@@ -344,7 +344,27 @@ var grid_wip_objectives = new Ext.grid.GridPanel({
 	region: 'west'
 });
 
+var grid_wip_files = new Ext.ux.tree.TreeGrid({
+    autoWidth: true,
+    height: GRID_HEIGHT,
+    columns:[{
+        header: 'Date',
+        dataIndex: 'date',
+        width: 400
+    } ],
+    dataUrl: '/WIP/' + wip_report + '/Archives/'
+});
 
+var treegrid_wip_items = new Ext.ux.tree.TreeGrid({
+    autoWidth: true,
+    height: GRID_HEIGHT,
+    columns: [{
+        header: 'Description',
+        dataIndex: 'description',
+        width: 200
+    }],
+    dataUrl: '/WIP/' + wip_report + '/?as_treegrid=true'
+});
 
 var wip_item_markup = [
 		'<table class="project_table">',
@@ -372,8 +392,6 @@ var panel_wip_objectives = new Ext.Panel({
 	items: [ grid_wip_objectives, { id: 'work_item_objective_detail', bodyStyle: { background: '#ffffff', padding: '7px' }, region: 'center', html: 'Please select a WIP Item to see more details'} ]
 });
 
-
-
 grid_wip_items.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {
 		var wipPanel = Ext.getCmp('work_item_detail');
 		wipItemTpl.overwrite(wipPanel.body, r.data);
@@ -394,7 +412,8 @@ grid_wip_objectives.getSelectionModel().on('rowselect', function(sm, rowIdx, r) 
 tab_items = [
 	{ xtype: "panel", title: "Agenda", contentEl: "agenda", title: "Agenda" },
 	{ xtype: "panel", title: "Objectives", title: "Objectives", items: [ panel_wip_objectives ] },
-	{ xtype: "panel", title: "Work In Progress", items: [ panel_wip_items ] }
+	{ xtype: "panel", title: "Work In Progress", items: [ panel_wip_items ] },
+	{ xtype: "panel", title: "Files", items: [ grid_wip_files ] }
 ];
 
 var tabpanel = new Ext.TabPanel({ items: tab_items, bodyStyle: "padding: 15px;", activeTab: 0});
