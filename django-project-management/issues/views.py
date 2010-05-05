@@ -39,7 +39,7 @@ def edit_issue(request, project_number, issue_id):
         project = Project.objects.get(project_number=project_number)
         issue = Issue.objects.get(id=issue_id)
         if request.method == 'POST':
-                form = IssueForm(request.POST, instance=issue)
+                form = IssueEditForm(request.POST, instance=issue)
                 if form.is_valid():
                         t = form.save()
                         t.save()
