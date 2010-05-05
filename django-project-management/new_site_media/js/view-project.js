@@ -476,7 +476,7 @@ var wbs_fields = [
 ];
 
 var stage_plan_fields = [
-    { xtype: "textfield", fieldLabel: "Stage Number", name: "stage_number", ttEnabled: true, cmsSlug: "wbs-stagenumber" },
+    { xtype: "numberfield", fieldLabel: "Stage Number", name: "stage_number", ttEnabled: true, cmsSlug: "wbs-stagenumber" },
     { xtype: "textfield", fieldLabel: "Stage", name: "stage", ttEnabled: true, cmsSlug: "wbs-stage" },
     { xtype: "textarea", fieldLabel: "Description", name: "description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "wbs-stagedescription" }];
 
@@ -650,6 +650,37 @@ var btn_delete_wbs = { iconCls: 'icon-complete', text: 'Delete Work Item', handl
 var btn_add_project_stage = { iconCls: 'icon-add', text: 'Add Project Stage', handler: add_project_stage }
 var btn_add_engineering_day = { iconCls: 'icon-add', text: 'Add Engineering Day', handler: add_engineering_day }
 
+var copyGridDataToString = function(grid) {
+    var s = '';
+    var rec = 0;
+    grid.getSelectionModel().selectAll();
+    var selRecords = grid.getSelectionModel().getSelections();
+    for (rec = 0; rec < selRecords.length; rec++) {
+        s += selRecords[rec].get('pk') + ',';
+    }
+    grid.getSelectionModel().clearSelections();
+    return s;
+}
+
+var grid_wbs_dragdrop = new Ext.ux.dd.GridDragDropRowOrder({
+    copy: false,
+    scrollable: true,
+    listeners: { afterrowmove: function(objThis, oldIndex, newIndex, records){
+        var s = copyGridDataToString(grid_wbs);
+        Ext.Ajax.request({
+            url: "/WBS/" + project_number + "/Reorder/",
+            method: "POST", params: {"work_item_order": s },
+            failure: function(response){
+                Ext.Msg.alert('Error', response.responseText);
+            },
+            success: function(response){
+                Ext.message.msg('Success', 'Work Item reordered', 5);
+            }
+        })
+    }}
+
+});
+
 var grid_wbs = new Ext.grid.GridPanel({
     store: st_wbs,
     id: "grid_wbs",
@@ -670,7 +701,8 @@ var grid_wbs = new Ext.grid.GridPanel({
         {header: "Modified Date", dataIndex: 'modified_date', hidden: true, sortable: true, renderer: DATE_RENDERER }
     ],
     tbar: [ btn_add_project_stage, btn_add_wbs, btn_update_wbs, btn_delete_wbs, btn_add_engineering_day ],
-    sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
+    plugins: [ grid_wbs_dragdrop ],
+    sm: new Ext.grid.RowSelectionModel({singleSelect: false}),
     view: new Ext.grid.GroupingView({
         forceFit:true,
         getRowClass: function(record, rowIndex, rp, ds){

@@ -44,7 +44,9 @@ def add_project_stage(request, project_number):
         if request.method == 'POST':
                 form = WBSProjectStage(request.POST)
                 if form.is_valid():
-                        t = form.save()
+                        t = form.save(commit=False)
+                        t.stage = '''%s - %s''' % ( t.stage_number, t.stage )
+                        t.save()
                         project.stage_plan.add(t)
                         project.save()
                         return HttpResponse( return_json_success() )
@@ -62,23 +64,23 @@ def view_stage_plan(request, project_number):
 
 @login_required
 def reorder_wbs(request, project_number):
-        project = get_object_or_404(Project, project_number=project_number)
-        check_project_write_acl(project, request.user)  # Will return Http404 if user isn't allowed to view project
-        new_order = request.POST['work_item_order']
+    project = get_object_or_404(Project, project_number=project_number)
+    check_project_write_acl(project, request.user)  # Will return Http404 if user isn't allowed to view project
+    new_order = request.POST['work_item_order']
 
-        new_order_list = [ ]
-        for id in new_order.split('id[]='):
-                id = id.replace('&','')
-                new_order_list.append(id)
+    logging.debug('''New order = %s''' % new_order )
+    new_order_list = [ ]
+    for id in new_order.split(','):
+        new_order_list.append(id)
 
-        i = 1
-        for id in new_order_list:
-                if id != '':
-                        wbs = WorkItem.objects.get(id=id)
-                        wbs.wbs_number = i
-                        wbs.save()
-                        i += 1
-        return HttpResponseRedirect('''/WBS/%s/Edit/''' % project.project_number)
+    i = 1
+    for id in new_order_list:
+        if id != '':
+            wbs = WorkItem.objects.get(id=id)
+            wbs.wbs_number = i
+            wbs.save()
+            i += 1
+    return HttpResponse( return_json_success())
 
 @login_required
 def add_work_item(request, project_number):
