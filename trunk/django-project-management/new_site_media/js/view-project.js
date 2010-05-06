@@ -674,7 +674,7 @@ var grid_wbs_dragdrop = new Ext.ux.dd.GridDragDropRowOrder({
                 Ext.Msg.alert('Error', response.responseText);
             },
             success: function(response){
-                Ext.message.msg('Success', 'Work Item reordered', 5);
+                Ext.message.msg('Success', 'Work Item reordered<br>Please be aware that the new WBS number will not show until you refresh the page', 5);
             }
         })
     }}
@@ -685,6 +685,7 @@ var grid_wbs = new Ext.grid.GridPanel({
     store: st_wbs,
     id: "grid_wbs",
     columns: [
+        {header: "WBS Number", dataIndex: 'wbs_number', hidden: false, sortable: true },
         {header: "Skill Set", dataIndex: 'skill_set', hidden: true, sortable: true },
         {header: "Stage", dataIndex: 'project_stage'},
         {header: "Author", dataIndex: 'author', hidden: true, sortable: true },
