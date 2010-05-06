@@ -7,10 +7,10 @@ from deliverables.models import *
 
 
 class LessonForm(ModelForm):
-	class Meta:
-		model = LessonLearnt
-	def __init__(self, *args, **kwargs):
-		super(LessonForm, self).__init__(*args, **kwargs)
-		self.fields['author'].widget = HiddenInput()
-#		self.fields['active'].widget = HiddenInput()
-#		self.fields['deviceClass'].widget = HiddenInput()
+        class Meta:
+                model = LessonLearnt
+        def __init__(self, *args, **kwargs):
+                super(LessonForm, self).__init__(*args, **kwargs)
+                self.fields['author'].widget = HiddenInput()
+#               self.fields['active'].widget = HiddenInput()
+#               self.fields['deviceClass'].widget = HiddenInput()
