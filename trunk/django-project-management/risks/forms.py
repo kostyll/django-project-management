@@ -7,7 +7,7 @@ from risks.models import *
 
 
 class RiskForm(ModelForm):
-	
-	class Meta:
-		model = Risk
-		fields = ('description', 'owner', 'probability', 'impact', 'counter_measure', 'status',)
+        
+        class Meta:
+                model = Risk
+                fields = ('description', 'owner', 'probability', 'impact', 'counter_measure', 'status',)
