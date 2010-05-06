@@ -403,6 +403,14 @@ def get_archives(request, wip_report, as_treegrid=False):
     wip_archives = WIPArchive.objects.filter(wip_report=wip_report)
 
     ret = []
+
+    now = {}
+    now['date'] = "Now"
+    now['leaf'] = 'true'
+    now['href'] = '''/WIP/Download/%s/''' % wip_report
+    now['pk'] = '0'
+    ret.append(now)
+
     for w in wip_archives.dates('created_date', 'year'):
         dict = {}
         dict['date'] = str(w.strftime("%Y"))
