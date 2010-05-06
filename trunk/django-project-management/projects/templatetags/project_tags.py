@@ -87,6 +87,8 @@ def is_project_documentation_complete(project):
 		return 'rag_status_grey', 'Draft'
 	elif project.project_status == 3:
 		return 'rag_status_grey', 'On Hold'
+	elif project.project_status == 6:
+		return 'rag_status_grey', 'Informational'
 
 	error_list = ''
 	status = 'documentation_status_red'
@@ -120,6 +122,8 @@ def is_project_up_to_date(project):
 		return 'rag_status_grey', 'Draft'
 	elif project.project_status == 3:
 		return 'rag_status_grey', 'On Hold'
+	elif project.project_status == 6:
+		return 'rag_status_grey', 'Informational'
 
 	status = 'rag_status_blue' # Lets start off by assuming we can't successfully determine the status
 
