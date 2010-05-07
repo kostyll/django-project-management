@@ -255,7 +255,7 @@ var add_engineering_day = function(){
 				handler: function(){ 
 					form_add_engineering_day.getForm().submit({
 						success: function(f,a){
-							Ext.Msg.alert('Success', 'Engineering Day Booked', 5);
+							Ext.message.msg('Success', 'Engineering Day Booked', 5);
 									window_engineering_day.close();
 									Ext.getCmp("grid_wip_items").store.load();
                                             				Ext.getCmp("work_item_detail").body.update('Please select a Work Item to see more details');
