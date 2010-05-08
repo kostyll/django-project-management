@@ -18,6 +18,7 @@ from wbs.models import *
 from wbs.forms import *
 from rota.models import RotaItem
 from projects.misc import handle_form_errors, check_project_read_acl, check_project_write_acl, return_json_success, handle_generic_error
+from projects.templatetags.project_tags import get_task_rag_status
 
 @login_required
 def edit_wbs(request, project_number):
@@ -287,3 +288,60 @@ def view_work_item(request, project_number, wbs_id):
         return HttpResponse( '''{ success: true, data: %s }''' % json.dumps(j.objects[0]['fields']))
 
         return HttpResponse( serializers.serialize('json', WorkItem.objects.filter(id=wbs_id), relations=('author', 'owner')))  
+
+@login_required
+def get_timeline(request, project_number):
+    project = get_object_or_404(Project, project_number=project_number)
+    check_project_read_acl(project, request.user)   # Will return Http404 if user isn't allowed to view project
+
+    t_format = "%a %d %b %Y %H:%M:%S +0000"
+
+    ret = {}
+    ret['events'] = []
+    for w in project.work_items.all():
+        dict = {}
+        do_not_append = False
+        if w.start_date and w.duration:
+            dict['start'] = w.start_date.strftime(t_format)
+            dict['durationEvent'] = True
+            if project.duration_type == 0: # Hours
+                end = w.start_date + datetime.timedelta(hours=w.duration)
+                dict['end']  = end.strftime(t_format)
+            elif project.duration_type == 1: # Days
+                end = w.start_date + datetime.timedelta(days=w.duration)
+                dict['end']  = end.strftime(t_format)
+
+        elif w.finish_date and w.duration:
+            dict['end'] = w.finish_date.strftime(t_format)
+            dict['durationEvent'] = True
+            if project.duration_type == 0: # Hours
+                end = w.finish_date + datetime.timedelta(hours=-w.duration)
+                dict['start']  = end.strftime(t_format)
+            elif project.duration_type == 1: # Days
+                end = w.finish_date + datetime.timedelta(days=-w.duration)
+                dict['start']  = end.strftime(t_format)
+        elif w.start_date and w.finish_date:
+            dict['start'] = w.start_date.strftime(t_format)
+            dict['end'] = w.finish_date.strftime(t_format)
+            dict['durationEvent'] = True
+
+        else:
+            do_not_append = True # Can't add to Timeline
+        dict['title'] = w.title
+        dict['description'] = w.description
+        rag_status = get_task_rag_status(w)
+        if rag_status == 'rag_status_red':
+            dict['color'] = '#ff0000'
+        elif rag_status == 'rag_status_amber':
+            dict['color'] = '#ff9900'
+        if w.percent_complete == 100:
+            dict['color'] = '#00ff00'
+
+        if not do_not_append:
+            ret['events'].append(dict)
+
+
+        
+
+    return HttpResponse( json.dumps(ret) )
+
