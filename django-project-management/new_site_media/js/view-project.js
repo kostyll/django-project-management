@@ -174,6 +174,8 @@ var grid_deliverables = new Ext.grid.GridPanel({
     region: 'west'
 });
 
+grid_deliverables.on('dblclick', function(){ edit_deliverable() });
+
 var markup_deliverables = [
     '<table class="project_table">',
     '<tr><th>Description</th> <td>{description}</td></tr>',
@@ -378,6 +380,8 @@ var grid_risks = new Ext.grid.GridPanel({
     split: true,
     region: 'west'
 });
+
+grid_risks.on('dblclick', function(){ edit_risk() });
 
 var riskMarkup = [
     '<table class="project_table">',
@@ -737,6 +741,7 @@ var grid_wbs = new Ext.grid.GridPanel({
     region: 'west'
 });
 
+grid_wbs.on('dblclick', function(){ edit_wbs() });
 
 var markup_wbs = [
 	'<table class="project_table">',
@@ -935,6 +940,8 @@ var grid_issues = new Ext.grid.GridPanel({
 	region: 'west'
 });
 
+grid_issues.on('dblclick', function(){ edit_issue() });
+
 var markup_issues = [
 	'<table class="project_table">',
 	'<tr><th>Owner</th> <td>{owner}</td></tr>',
@@ -1098,6 +1105,8 @@ var grid_lessons = new Ext.grid.GridPanel({
 	split: true,
 	region: 'west'
 });
+
+grid_lessons.on('dblclick', function(){ edit_lesson() });
 
 var markup_lessons = [
 	'<table class="project_table">',
@@ -1380,6 +1389,8 @@ var grid_report = new Ext.grid.GridPanel({
 	split: true,
 	region: 'west'
 });
+
+grid_report.on('dblclick', function(){ edit_report() });
 
 var markup_report = [
 	'<table class="project_table">',
