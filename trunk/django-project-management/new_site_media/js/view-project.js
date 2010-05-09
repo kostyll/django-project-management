@@ -1163,6 +1163,7 @@ var add_file = function(b,e){
 								}},
 							{ text: "Close", handler: function(){ window_file.destroy(); }}]
 	});
+	tabpanel.activate(7);
 	window_file.show();
 	window_file.center();
 };
@@ -1527,6 +1528,9 @@ var project_menu =  new Ext.menu.Menu({	items: [{ text: "Add Deliverable", handl
 var project_menu_button = { xtype: "tbbutton", text: "Manage Project", menu: project_menu }
 toolbar.add(project_menu_button); 
 
+
+
+
 // Project Timeline
 var tl;
 
@@ -1575,11 +1579,24 @@ tab_items = [
 	{ xtype: "panel", title: "Deliverables", items: [ panel_deliverables ], autoHeight: true },
 	{ xtype: "panel", title: "Risks", items: [ risk_panel ], autoHeight: true  },
 	{ xtype: "panel", title: "Work Items", items: [ panel_wbs ], autoHeight: true  },
-	{ xtype: "panel", title: "Time Line", contentEl: 'project_timeline_wrapper', autoHeight: true  },
 	{ xtype: "panel", title: "Issues", items: [ panel_issues ], autoHeight: true  },
 	{ xtype: "panel", title: "Lessons Learnt", items: [ panel_lessons ], autoHeight: true  },
 	{ xtype: "panel", title: "Reports", items: [ panel_report ], autoHeight: true  },
 	{ xtype: "panel", title: "Files", items: [ panel_files ], autoHeight: true  } ]
 
 var tabpanel = new Ext.TabPanel({ items: tab_items, bodyStyle: "padding: 15px;", activeTab: 0});	
+
+// Function to add the Project Timeline to the tabpanel
+var add_timeline_to_tabs = function(){
+    Ext.Msg.alert('Message from Developer', 'The Project timeline feature is still experimental and has some small issues.<br>To activate the timeline please resize your browser');
+    tabpanel.add({ title: "Time Line", contentEl: 'project_timeline_wrapper', closable: true, autoHeight: true }).show();
+};
+
+var project_view_menu = new Ext.menu.Menu({ items: [
+    { text: "View Project Timeline", handler: add_timeline_to_tabs }
+    ]});
+var project_view_menu_button = { xtype: "tbbutton", text: "View", menu: project_view_menu };
+toolbar.add(project_view_menu_button);
+
+
 center_panel.items = [ toolbar, tabpanel ]
