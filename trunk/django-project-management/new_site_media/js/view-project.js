@@ -1584,7 +1584,7 @@ tab_items = [
 	{ xtype: "panel", title: "Reports", items: [ panel_report ], autoHeight: true  },
 	{ xtype: "panel", title: "Files", items: [ panel_files ], autoHeight: true  } ]
 
-var tabpanel = new Ext.TabPanel({ items: tab_items, bodyStyle: "padding: 15px;", activeTab: 0});	
+var tabpanel = new Ext.TabPanel({ items: tab_items, bodyStyle: "padding: 15px;", activeTab: 0, autoDestroy: false});	
 
 // Function to add the Project Timeline to the tabpanel
 var add_timeline_to_tabs = function(){
