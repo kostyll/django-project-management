@@ -339,9 +339,91 @@ def get_timeline(request, project_number):
 
         if not do_not_append:
             ret['events'].append(dict)
-
-
-        
-
     return HttpResponse( json.dumps(ret) )
 
+@login_required
+def get_jsgantt_xml(request, project_number):
+    project = get_object_or_404(Project, project_number=project_number)
+    check_project_read_acl(project, request.user)   # Will return Http404 if user isn't allowed to view project
+    #t_format = "%a %d %b %Y %H:%M:%S +0000"
+    t_format = "%d/%m/%Y"
+
+    from xml.dom.minidom import Document
+    doc = Document()
+    xml_project = doc.createElement("project")
+    doc.appendChild(xml_project)
+    for w in project.work_items.all():
+        task = doc.createElement("task")
+        xml_project.appendChild(task)
+
+        pID = doc.createElement("pID")
+        pID.appendChild( doc.createTextNode(str(w.wbs_number)) )
+        task.appendChild(pID)
+
+        pName = doc.createElement("pName")
+        pName.appendChild( doc.createTextNode(w.title))
+        task.appendChild(pName)
+
+        pStart = doc.createElement("pStart")
+        pEnd = doc.createElement("pEnd")
+        pMile = doc.createElement("pMile")
+
+        if w.start_date and w.finish_date:
+            start_date = w.start_date.strftime(t_format)
+            finish_date = w.finish_date.strftime(t_format)
+            mile = "0"
+        elif w.start_date and w.duration:
+            start_date =  w.start_date.strftime(t_format)
+            mile = "0"
+            if project.duration_type == 0: # Hours
+                finish_date = (w.start_date + datetime.timedelta(hours=w.duration)).strftime(t_format)
+            elif project.duration_type == 1: # Days
+                finish_date = (w.start_date + datetime.timedelta(days=w.duration)).strftime(t_format)
+        elif w.finish_date and w.duration:
+            finish_date = w.finish_date.strftime(t_format)
+            mile = "0"
+            if project.duration_type == 0: # Hours
+                start_date = (w.finish_date + datetime.timedelta(hours=-w.duration)).strftime(t_format)
+            elif project.duration_type == 1: # Days
+                start_date = (w.finish_date + datetime.timedelta(days=-w.duration)).strftime(t_format)
+        else:
+            if w.start_date:
+                start_date = w.start_date.strftime(t_format)
+                finish_date = w.start_date.strftime(t_format)
+            elif w.finish_date:
+                start_date = w.finish_date.strftime(t_format)
+                finish_date = w.finish_date.strftime(t_format)
+            mile = "1"
+        pStart.appendChild( doc.createTextNode(start_date))
+        task.appendChild(pStart)
+        pEnd.appendChild( doc.createTextNode(finish_date))
+        task.appendChild(pEnd)
+        pMile.appendChild( doc.createTextNode(mile))
+        task.appendChild(pMile)
+
+        pRes = doc.createElement("pRes")
+        pRes.appendChild( doc.createTextNode(w.owner.get_full_name()))
+        task.appendChild(pRes)
+
+        if w.percent_complete:
+            pComp = doc.createElement("pComp")
+            pComp.appendChild( doc.createTextNode(str(w.percent_complete)))
+            task.appendChild(pComp)
+        if w.depends:
+            pDepend = doc.createElement("pDepend")
+            pDepend.appendChild( doc.createTextNode(str(w.depends.wbs_number)))
+            task.appendChild(pDepend)
+
+
+    print doc.toprettyxml()
+    return HttpResponse(doc.toprettyxml(), mimetype="text/xml")
+            
+
+            
+            
+@login_required
+def view_gantt_chart(request, project_number):
+    project = get_object_or_404(Project, project_number=project_number)
+    check_project_read_acl(project, request.user)   # Will return Http404 if user isn't allowed to view project
+    return render_to_response('wbs/gantt.html', { 'project': project }, context_instance=RequestContext(request))
+    
