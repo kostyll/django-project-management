@@ -282,8 +282,8 @@ def view_work_item(request, project_number, wbs_id):
 
         JSONSerializer = serializers.get_serializer('json')
         j = JSONSerializer()
-        if work_item.start_date != None: work_item.start_date = work_item.start_date.strftime("%m/%d/%Y")
-        if work_item.finish_date != None: work_item.finish_date = work_item.finish_date.strftime("%m/%d/%Y")
+        if work_item.start_date != None: work_item.start_date = work_item.start_date.strftime("%d/%m/%Y")
+        if work_item.finish_date != None: work_item.finish_date = work_item.finish_date.strftime("%d/%m/%Y")
         j.serialize([work_item], fields=('skill_set', 'project_stage', 'title', 'description', 'depends', 'duration', 'owner', 'percent_complete', 'start_date', 'finish_date', 'wbs_number', 'cost', 'history', 'engineering_days'))
         return HttpResponse( '''{ success: true, data: %s }''' % json.dumps(j.objects[0]['fields']))
 
@@ -346,7 +346,7 @@ def get_jsgantt_xml(request, project_number):
     project = get_object_or_404(Project, project_number=project_number)
     check_project_read_acl(project, request.user)   # Will return Http404 if user isn't allowed to view project
     #t_format = "%a %d %b %Y %H:%M:%S +0000"
-    t_format = "%d/%m/%Y"
+    t_format = "%m/%d/%Y"
 
     from xml.dom.minidom import Document
     doc = Document()
