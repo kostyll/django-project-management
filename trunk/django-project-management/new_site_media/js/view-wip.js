@@ -411,9 +411,9 @@ grid_wip_objectives.getSelectionModel().on('rowselect', function(sm, rowIdx, r) 
 
 tab_items = [
 	{ xtype: "panel", title: "Agenda", contentEl: "agenda", title: "Agenda" },
-	{ xtype: "panel", title: "Objectives", title: "Objectives", items: [ panel_wip_objectives ] },
-	{ xtype: "panel", title: "Work In Progress", items: [ panel_wip_items ] },
-	{ xtype: "panel", title: "Files", items: [ grid_wip_files ] }
+	{ xtype: "panel", title: "Objectives", title: "Objectives", items: [ panel_wip_objectives ], autoHeight: true },
+	{ xtype: "panel", title: "Work In Progress", items: [ panel_wip_items ], autoHeight: true },
+	{ xtype: "panel", title: "Files", items: [ grid_wip_files ], autoHeight: true }
 ];
 
 var tabpanel = new Ext.TabPanel({ items: tab_items, bodyStyle: "padding: 15px;", activeTab: 0});
