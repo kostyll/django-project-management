@@ -1592,8 +1592,14 @@ var add_timeline_to_tabs = function(){
     tabpanel.add({ title: "Time Line", contentEl: 'project_timeline_wrapper', closable: true, autoHeight: true }).show();
 };
 
+// Function to open the Gantt chart in a new browser window
+var open_gantt = function(){
+    window.open("/WBS/" + project_number + "/JsGantt/", "gantt_window");
+};
+
 var project_view_menu = new Ext.menu.Menu({ items: [
-    { text: "View Project Timeline", handler: add_timeline_to_tabs }
+    { text: "View Project Timeline", handler: add_timeline_to_tabs },
+    { text: "View Gantt", handler: open_gantt }
     ]});
 var project_view_menu_button = { xtype: "tbbutton", text: "View", menu: project_view_menu };
 toolbar.add(project_view_menu_button);
