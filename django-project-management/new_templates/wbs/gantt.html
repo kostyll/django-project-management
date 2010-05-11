@@ -5,9 +5,11 @@
        </head>
 
        <body>
-		<div style="position:relative" class="gantt" id="GanttChartDIV"></div>
+		<div style="position:relative;" class="gantt" id="GanttChartDIV"></div>
 	        <script type="text/javascript">
 			var g = new JSGantt.GanttChart('g',document.getElementById('GanttChartDIV'), 'day');
+			g.setDateDisplayFormat('dd/mm/yyyy')
+			g.setDateInputFormat('dd/mm/yyyy')
 			JSGantt.parseXML("/WBS/{{ project.project_number }}/JsGantt/project.xml",g);
       			g.Draw();
       			g.DrawDependencies();
