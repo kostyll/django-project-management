@@ -346,7 +346,7 @@ def get_jsgantt_xml(request, project_number):
     project = get_object_or_404(Project, project_number=project_number)
     check_project_read_acl(project, request.user)   # Will return Http404 if user isn't allowed to view project
     #t_format = "%a %d %b %Y %H:%M:%S +0000"
-    t_format = "%m/%d/%Y"
+    t_format = "%d/%m/%Y"
 
     from xml.dom.minidom import Document
     doc = Document()
