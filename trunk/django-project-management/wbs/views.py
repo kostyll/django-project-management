@@ -414,8 +414,6 @@ def get_jsgantt_xml(request, project_number):
             pDepend.appendChild( doc.createTextNode(str(w.depends.wbs_number)))
             task.appendChild(pDepend)
 
-
-    print doc.toprettyxml()
     return HttpResponse(doc.toprettyxml(), mimetype="text/xml")
             
 
