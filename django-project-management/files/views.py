@@ -73,6 +73,7 @@ def view_files(request, project_number):
         files.append({'pk': 0, 'author': '-', 'file_type': '-', 'description': 'Project Initiation Document', 'url': '/Files/%s/PID/' % project.project_number })
         files.append({'pk': 0, 'author': '-', 'file_type': '-', 'description': 'Risk Register', 'url': '/Files/%s/RiskRegister/' % project.project_number })
         files.append({'pk': 0, 'author': '-', 'file_type': '-', 'description': 'Work Breakdown Structure', 'url': '/Files/%s/WBS/' % project.project_number })
+        files.append({'pk': 0, 'author': '-', 'file_type': '-', 'description': 'MS Project File (XML Format)', 'url': '/WBS/%s/MSProject/' % project.project_number })
         files.append({'pk': 0, 'author': '-', 'file_type': '-', 'description': 'Issue Log', 'url': '/Files/%s/IssueLog/' % project.project_number })
         for f in project.files.all():
                 files.append({'pk': f.id, 'author': f.author.get_full_name(), 'file_type': f.get_file_type_display(), 'url': f.filename.url, 'description': f.description, 'created_date': f.created_date.strftime("%Y-%m-%d %H:%M:%S") })
