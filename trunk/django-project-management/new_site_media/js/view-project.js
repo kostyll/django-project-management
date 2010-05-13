@@ -789,7 +789,9 @@ var issue_fields = [
 	{ xtype: "combo", fieldLabel: "Status", hiddenName: "status", name: "status", lazyInit: false, store: st_issue_status, mode: "local", displayField: "d", valueField: "id", triggerAction: "all", ttEnabled: true, cmsSlug: "issue-status", editable: false },
 	{ xtype: "combo", fieldLabel: "Priority", hiddenName: "priority", name: "priority", lazyInit: false, store: st_issue_priority, mode: "local", displayField: "d", valueField: "id", triggerAction: "all", ttEnabled: true, cmsSlug: "issue-priority", editable: false }, 
 	{ xtype: "textfield", fieldLabel: "Related RFC", name: "related_rfc", ttEnabled: true, cmsSlug: "issue-related-rfc" },
-	{ xtype: "textfield", fieldLabel: "Related Helpdesk", name: "related_helpdesk", ttEnabled: true, cmsSlug: "issue-related-helpdesk"  }
+	{ xtype: "textfield", fieldLabel: "Related Helpdesk", name: "related_helpdesk", ttEnabled: true, cmsSlug: "issue-related-helpdesk"  },
+    { xtype: "textarea", fieldLabel: "Update", name: "update", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "issue-update" },
+    { xtype: "textarea", fieldLabel: "History", name: "history", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, readOnly: true, ttEnabled: true, cmsSlug: "issue-history" }
 ];
 
 var add_issue = function(b,e){
@@ -824,7 +826,7 @@ var edit_issue = function(b,e){
 		autoScroll: true, items: issue_fields
 		});
 	form_issue_edit.getForm().load({ url: "/Issues/" + project_number + "/" + issue_id + "/", method: "GET" });
-	var window_issues = new Ext.Window({width: 620, height:400, closeAction: "hide", autoScroll: true, modal: true, title: "Edit Issue", items: [ form_issue_edit ],
+	var window_issues = new Ext.Window({width: 620, height:540, closeAction: "hide", autoScroll: true, modal: true, title: "Edit Issue", items: [ form_issue_edit ],
 							buttons: [ { text: 'Save',
                                          handler: function(){
                                          form_issue_edit.getForm().submit({
@@ -902,6 +904,8 @@ var st_issues = new Ext.data.GroupingStore({
 		{ name: "author", mapping: "fields.author.extras.get_full_name" },
 		{ name: "type", mapping: "fields.type" },
 		{ name: "status", mapping: "fields.status" },
+		{ name: "history", mapping: "fields.history" },
+		{ name: "history_html", mapping: "extras.get_history_html" },
 		{ name: "priority", mapping: "fields.priority" },
 		{ name: "related_rfc", mapping: "fields.related_rfc" },
 		{ name: "related_helpdesk", mapping: "fields.related_helpdesk" } ]}),
@@ -952,6 +956,7 @@ var markup_issues = [
 	'<tr><th>Priority</th> <td>{priority}</td></tr>',
 	'<tr><th>Related RFC</th> <td>{related_rfc}</td></tr>',
 	'<tr><th>Related Helpdesk</th> <td>{related_helpdesk}</td></tr>',
+	'<tr><th>History</th> <td>{history_html}</td></tr>',
 	'<tr><th>Created Date</th> <td>{created_date}</td></tr>',
 	'<tr><th>Modified Date</th> <td>{modified_date}</td></tr>', '</table>' ];
 var tpl_issues = new Ext.Template(markup_issues);
