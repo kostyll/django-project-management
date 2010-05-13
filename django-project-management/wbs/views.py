@@ -462,6 +462,10 @@ def get_msproject_xml(request, project_number):
 
     last_task = project.work_items.all()[0]     # and the last task
 
+    errors = check_project_tasks(project)
+    if errors:
+        return HttpResponse(errors)
+
     for w in project.work_items.all():
         task = doc.createElement("Task")
 
@@ -697,6 +701,7 @@ def get_msproject_xml(request, project_number):
         ass.appendChild(a_finish)
 
         assignments.appendChild(ass)
+        ass_index += 1
 
 
 
@@ -717,4 +722,24 @@ def get_msproject_xml(request, project_number):
     response['Content-Disposition'] = 'attachment;filename=%s' % '''%s_MSPROJECT_XML.xml''' % project.project_number
     return response
 
+def check_project_tasks(project):
+
+    errors = ''
+    for w in project.work_items.all():
+        ok = False
+        if w.start_date and w.finish_date:
+            ok = True
+        elif w.start_date and w.duration:
+            ok = True
+        elif w.finish_date and w.duration:
+            ok = True
+
+        if not ok:
+            errors += '''<li>Work Item %s needs a start date, finish date or duration''' % w.title
+
+    if errors:
+        errors = '''<h1>Sorry, unable to continue</h1><p><ul>%s''' % errors
+        errors = '''%s</ul>''' % errors
+
+    return errors
 
