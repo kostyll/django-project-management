@@ -262,7 +262,10 @@ def view_wbs(request, project_number):
                         w.owner = User()
         
         
-        return HttpResponse( serializers.serialize('json', wbs, relations={'depends': {'fields': ('title',)}, 'skill_set': {'fields': ('skill',)}, 'project_stage': {'fields': ('stage',)},'author': {'fields': ('id', 'username'), 'extras': ('get_full_name',)},'owner': { 'fields': ('id', 'username'), 'extras': ('get_full_name',)}}, extras=('get_work_item_status',)))
+        return HttpResponse( serializers.serialize('json', wbs,
+            relations={'depends': {'fields': ('title',)}, 'skill_set': {'fields': ('skill',)}, 'project_stage': {'fields':
+                    ('stage',)},'author': {'fields': ('id', 'username'), 'extras': ('get_full_name',)},'owner': { 'fields':
+                            ('id', 'username'), 'extras': ('get_full_name',)}}, extras=('get_work_item_status', 'get_history_html',)))
         
 @login_required
 def view_work_item(request, project_number, wbs_id):

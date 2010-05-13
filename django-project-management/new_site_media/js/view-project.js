@@ -454,6 +454,7 @@ var st_wbs = new Ext.data.GroupingStore({
         { name: "wbs_number", mapping: "fields.wbs_number" },
         { name: "cost", mapping: "fields.cost" },
         { name: "history", mapping: "fields.history" },
+        { name: "history_html", mapping: "extras.get_history_html" },
         { name: "engineering_days", mapping: "fields.engineering_days" },
         { name: "get_work_item_status", mapping: "fields.get_work_item_status" }
     ]}),
@@ -763,13 +764,14 @@ var markup_wbs = [
 	'<tr><th>Percent Complete</th> <td>{percent_complete}%</td></tr>',
 	'<tr><th>Start Date</th> <td>{start_date}</td></tr>',
 	'<tr><th>Finish Date</th> <td>{finish_date}</td></tr>',
+	'<tr><th>History</th> <td>{history_html}</td></tr>',
 	'<tr><th>Created Date</th> <td>{created_date}</td></tr>',
 	'<tr><th>Modified Date</th> <td>{modified_date}</td></tr>', '</table>' ];
 var tpl_wbs = new Ext.Template(markup_wbs);
 
 var panel_wbs = new Ext.Panel({
 	layout: 'border', height: 400,
-	items: [ grid_wbs, { id: 'wbs_detail', bodyStyle: { background: '#ffffff', padding: '7px' }, region: 'center', html: 'Please select a Work Item to see more details'} ]
+	items: [ grid_wbs, { id: 'wbs_detail', bodyStyle: { background: '#ffffff', padding: '7px' }, region: 'center', html: 'Please select a Work Item to see more details', autoScroll: true} ]
 });
 
 grid_wbs.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {

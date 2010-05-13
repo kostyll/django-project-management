@@ -2,6 +2,7 @@ import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.html import linebreaks
 
 # Create your models here.
 class SkillSet(models.Model):
@@ -106,6 +107,9 @@ class WorkItem(models.Model):
                         return 'rag_status_white'
                 else:
                         return 'rag_status_green'
+        
+        def get_history_html(self):
+            return linebreaks(self.history)
 
         class Meta:
                 ordering = ['wbs_number']
