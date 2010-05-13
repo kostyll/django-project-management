@@ -3,6 +3,7 @@ from django.contrib.auth.models import User, Group
 from django.utils.html import urlize
 from projects.models import Company
 from wbs.models import EngineeringDay
+from django.utils.html import linebreaks
 
 # Create your models here.
 
@@ -45,6 +46,8 @@ class WIPItem(models.Model):
         def __str__(self):
                 return self.description[:50]
 
+        def get_history_html(self):
+            return linebreaks(self.history)
 
 class Heading(models.Model):
 

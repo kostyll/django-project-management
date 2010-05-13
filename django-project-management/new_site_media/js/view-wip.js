@@ -24,7 +24,8 @@ var st_wip_items = new Ext.data.GroupingStore({
 		{ name: "complete", mapping: "fields.complete", type: 'bool' },
 		{ name: "objective", mapping: "fields.objective", type: 'bool' },
 		{ name: "engineering_days", mapping: "extras.get_engineering_days_as_ul" },
-		{ name: "history", mapping: "fields.history" }
+		{ name: "history", mapping: "fields.history" },
+		{ name: "history_html", mapping: "extras.get_history_html" }
 	]}), 
 	sortInfo:{field: 'assignee', direction: "ASC"},
 	groupField:'heading',
@@ -45,7 +46,8 @@ var st_wip_objectives = new Ext.data.GroupingStore({
 		{ name: "complete", mapping: "fields.complete", type: 'bool' },
 		{ name: "objective", mapping: "fields.objective", type: 'bool' },
 		{ name: "engineering_days", mapping: "extras.get_engineering_days_as_ul" },
-		{ name: "history", mapping: "fields.history" }
+		{ name: "history", mapping: "fields.history" },
+		{ name: "history_html", mapping: "extras.get_history_html" }
 	]}), 
 	sortInfo:{field: 'assignee', direction: "ASC"},
 	groupField:'heading',
@@ -377,19 +379,19 @@ var wip_item_markup = [
 		'<tr><th>Complete</th> <td>{complete}</td></tr>',
 		'<tr><th>Objective</th> <td>{objective}</td></tr>',
 		'<tr><th>Engineering Days</th> <td>{engineering_days}</td></tr>',
-		'<tr><th>History</th> <td>{history}</td></tr>', '</table>' ];
+		'<tr><th>History</th> <td>{history_html}</td></tr>', '</table>' ];
 var wipItemTpl = new Ext.Template(wip_item_markup);
 
 
 var panel_wip_items = new Ext.Panel({
 	layout: 'border', height: 400,
-	items: [ grid_wip_items, { id: 'work_item_detail', bodyStyle: { background: '#ffffff', padding: '7px' }, region: 'center', html: 'Please select a WIP Item to see more details'} ]
+	items: [ grid_wip_items, { id: 'work_item_detail', bodyStyle: { background: '#ffffff', padding: '7px' }, region: 'center', html: 'Please select a WIP Item to see more details', autoScroll: true } ]
 });
 
 
 var panel_wip_objectives = new Ext.Panel({
 	layout: 'border', height: 400,
-	items: [ grid_wip_objectives, { id: 'work_item_objective_detail', bodyStyle: { background: '#ffffff', padding: '7px' }, region: 'center', html: 'Please select a WIP Item to see more details'} ]
+	items: [ grid_wip_objectives, { id: 'work_item_objective_detail', bodyStyle: { background: '#ffffff', padding: '7px' }, region: 'center', html: 'Please select a WIP Item to see more details', autoScroll: true} ]
 });
 
 grid_wip_items.getSelectionModel().on('rowselect', function(sm, rowIdx, r) {

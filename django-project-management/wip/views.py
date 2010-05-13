@@ -67,10 +67,16 @@ def view_wip_report(request, wip_report, objectives=None):
     wip_report = WIPReport.objects.get(name=wip_report)
     headings = Heading.objects.filter(report=wip_report)
     if xhr and objectives:
-        return HttpResponse( serializers.serialize('json', WIPItem.objects.filter(heading__report=wip_report, complete=False, objective=True), display=['status'], relations={'assignee': {'extras': ('get_full_name',)}, 'heading': {'fields': ('title',)}}, extras=['get_heading','get_engineering_days_as_ul']))
+        return HttpResponse( serializers.serialize('json',
+            WIPItem.objects.filter(heading__report=wip_report, complete=False,
+                objective=True), display=['status'], relations={'assignee': {'extras': ('get_full_name',)}, 'heading': {'fields': ('title',)}},
+                    extras=['get_heading','get_engineering_days_as_ul', 'get_history_html']))
 
     if xhr:
-        return HttpResponse( serializers.serialize('json', WIPItem.objects.filter(heading__report=wip_report, complete=False), display=['status'], relations={'assignee': {'extras': ('get_full_name',)}, 'heading': {'fields': ('title',)}}, extras=['get_heading','get_engineering_days_as_ul']))
+        return HttpResponse( serializers.serialize('json',
+            WIPItem.objects.filter(heading__report=wip_report, complete=False),
+            display=['status'], relations={'assignee': {'extras': ('get_full_name',)}, 'heading': {'fields': ('title',)}},
+            extras=['get_heading','get_engineering_days_as_ul', 'get_history_html']))
 
     if as_treegrid:
         ret = []
