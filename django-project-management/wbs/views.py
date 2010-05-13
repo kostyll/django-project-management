@@ -466,6 +466,47 @@ def get_msproject_xml(request, project_number):
     if errors:
         return HttpResponse(errors)
 
+    # Add an all week calendar
+    calendars = doc.createElement("Calendars")
+    calendar = doc.createElement("Calendar")
+    c_uid = doc.createElement("UID")
+    c_uid.appendChild(doc.createTextNode("1"))
+    calendar.appendChild(c_uid)
+
+    c_name = doc.createElement("Name")
+    c_name.appendChild(doc.createTextNode("Work Weekends"))
+    calendar.appendChild(c_name)
+
+    weekdays = doc.createElement("WeekDays")
+
+    for day in range(0,6):
+        weekday = doc.createElement("WeekDay")
+        day_type = doc.createElement("DayType")
+        day_type.appendChild(doc.createTextNode(str(day)))
+        weekday.appendChild(day_type)
+
+        day_working = doc.createElement("DayWorking")
+        day_working.appendChild(doc.createTextNode("1"))
+        weekday.appendChild(day_working)
+
+        working_times = doc.createElement("WorkingTimes")
+        working_time = doc.createElement("WorkingTime")
+        from_time = doc.createElement("FromTime")
+        from_time.appendChild(doc.createTextNode("08:00:00"))
+        working_time.appendChild(from_time)
+
+        to_time = doc.createElement("ToTime")
+        to_time.appendChild(doc.createTextNode("18:00:00"))
+        working_time.appendChild(to_time)
+
+        working_times.appendChild(working_time)
+        weekday.appendChild(working_times)
+
+        weekdays.appendChild(weekday)
+    calendar.appendChild(weekdays)
+    calendars.appendChild(calendar)
+    p.appendChild(calendars)
+
     for w in project.work_items.all():
         task = doc.createElement("Task")
 
