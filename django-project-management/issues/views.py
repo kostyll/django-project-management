@@ -36,19 +36,26 @@ def add_issue(request, project_number):
 @login_required
 def edit_issue(request, project_number, issue_id):
 
-        project = Project.objects.get(project_number=project_number)
-        issue = Issue.objects.get(id=issue_id)
-        if request.method == 'POST':
-                form = IssueEditForm(request.POST, instance=issue)
-                if form.is_valid():
-                        t = form.save()
-                        t.save()
-                        request.user.message_set.create(message='''Issue %s Edited''' % t.id)
-                        for change in form.changed_data:
-                                updateLog(request, project_number, 'Issue %s updated' % ( t.id ))
-                        return HttpResponse( return_json_success() )
+    project = Project.objects.get(project_number=project_number)
+    issue = Issue.objects.get(id=issue_id)
+    if request.method == 'POST':
+        form = IssueEditForm(request.POST, instance=issue)
+        if form.is_valid():
+            t = form.save(commit=False)
+            if request.POST['update'] != '':                        
+                if request.user.get_full_name() == '':
+                    update_name = request.user.username
                 else:
-                        return HttpResponse( handle_form_errors(form.errors))
+                    update_name = request.user.get_full_name()
+                    t.history = '''\n\n------Updated by %s on %s------\n\n%s\n\n%s''' % ( update_name, time.strftime("%Y-%m-%d %H:%M"),
+                    form.cleaned_data.get('update'), issue.history )
+            t.save()
+            request.user.message_set.create(message='''Issue %s Edited''' % t.id)
+            for change in form.changed_data:
+                updateLog(request, project_number, 'Issue %s updated' % ( t.id ))
+            return HttpResponse( return_json_success() )
+        else:
+            return HttpResponse( handle_form_errors(form.errors))
 
 @login_required
 def delete_issue(request, project_number, issue_id):
@@ -70,14 +77,18 @@ def view_issues(request, project_number):
         project = Project.objects.get(project_number=project_number)
         check_project_read_acl(project, request.user)   # Will return Http404 if user isn't allowed to view project
 
-        return HttpResponse( serializers.serialize('json', project.issues.all(), relations={'owner': {'fields': ('username',), 'extras': ('get_full_name',)}, 'author': {'fields': ('username',), 'extras': ('get_full_name',)}    }, display=['type', 'status', 'priority']))
+        return HttpResponse( serializers.serialize('json', project.issues.all(),
+            relations={'owner': {'fields': ('username',), 'extras':
+                ('get_full_name',)}, 'author': {'fields': ('username',),
+                    'extras': ('get_full_name',)},}, extras=('get_history_html',) , display=['type', 'status', 'priority']))
 
 @login_required
 def view_issue(request, project_number, issue_id):
         issue = Issue.objects.get(id=issue_id)
         JSONSerializer = serializers.get_serializer('json')
         j = JSONSerializer()
-        j.serialize([issue], fields=('description', 'owner', 'author', 'type', 'status', 'priority', 'related_rfc', 'related_helpdesk'))
+        j.serialize([issue], fields=('description', 'owner', 'author', 'type',
+            'status', 'priority', 'related_rfc', 'related_helpdesk', 'history'))
         
         return HttpResponse( '''{ success: true, data: %s }''' % json.dumps(j.objects[0]['fields']))
         
