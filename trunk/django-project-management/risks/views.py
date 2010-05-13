@@ -45,21 +45,26 @@ def get_risk_number(request):
 @login_required
 def edit_risk(request, project_number, risk_id):
 
-        risk = Risk.objects.get(id=risk_id)
-        project = Project.objects.get(project_number=project_number)
+    risk = Risk.objects.get(id=risk_id)
+    project = Project.objects.get(project_number=project_number)
         
-        if request.method == 'POST':
-                form = RiskForm(request.POST, instance=risk)
-                if form.is_valid():
-                        t = form.save(commit=False)
-                        t.rating = _calculate_risk(t.probability, t.impact)
-                        t.save()
-                        request.user.message_set.create(message='''Risk %s Edited''' % t.risk_number)
-                        for change in form.changed_data:
-                                updateLog(request, project.project_number, 'Risk %s: %s changed to %s' % ( t.risk_number, change, eval('''t.%s''' % change)))
-                        return HttpResponse( return_json_success() )
+    if request.method == 'POST':
+        form = RiskForm(request.POST, instance=risk)
+        if form.is_valid():
+            t = form.save(commit=False)
+            t.rating = _calculate_risk(t.probability, t.impact)
+            if request.POST['update'] != '':                        
+                if request.user.get_full_name() == '':
+                    update_name = request.user.username
                 else:
-                        return HttpResponse( handle_form_errors(form.errors))
+                    update_name = request.user.get_full_name()
+                    t.history = '''\n\n------Updated by %s on %s------\n\n%s\n\n%s''' % ( update_name, time.strftime("%Y-%m-%d %H:%M"),
+                    form.cleaned_data.get('update'), risk.history )
+            t.save()
+            request.user.message_set.create(message='''Risk %s Edited''' % t.risk_number)
+            return HttpResponse( return_json_success() )
+        else:
+            return HttpResponse( handle_form_errors(form.errors))
 
 @login_required
 def delete_risk(request, project_number, risk_id):
@@ -79,14 +84,16 @@ def _calculate_risk(probability, impact):
 @login_required
 def view_risks(request, project_number):
         project = Project.objects.get(project_number=project_number)
-        return HttpResponse( serializers.serialize('json', project.risks.all(), relations={'owner': {'fields': ('username',), 'extras': ('get_full_name',)}}, display=['status', 'counter_measure']))
+        return HttpResponse( serializers.serialize('json', project.risks.all(),
+            relations={'owner': {'fields': ('username',), 'extras':
+                ('get_full_name',)}}, extras=('get_history_html',), display=['status', 'counter_measure']))
 
 @login_required
 def view_risk(request, project_number, risk_id):
         risk = Risk.objects.get(id=risk_id)
         JSONSerializer = serializers.get_serializer('json')
         j = JSONSerializer()
-        j.serialize([risk], fields=('risk_number', 'description', 'owner', 'probability', 'impact', 'rating', 'counter_measure', 'status'))
+        j.serialize([risk], fields=('risk_number', 'description', 'owner', 'probability', 'impact', 'rating', 'counter_measure', 'status', 'history'))
         
         return HttpResponse( '''{ success: true, data: %s }''' % json.dumps(j.objects[0]['fields']))
         

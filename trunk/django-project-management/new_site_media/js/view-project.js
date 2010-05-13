@@ -226,7 +226,9 @@ var risk_fields = [
     },
     { xtype: "textfield", fieldLabel: "Rating", name: "rating", readOnly: true, allowBlank: true, id:'rating', valueField:"rating", ttEnabled: true, cmsSlug: "risk-rating" },
     { xtype: "combo", displayField: "d", valueField: "id", hiddenName: 'counter_measure', mode: "local", store: st_counter, fieldLabel: "Counter Measure", name: "counter_measure", triggerAction: "all", ttEnabled: true, cmsSlug: "risk-countermeasure", editable: false },
-    { xtype: "combo", displayField: "d", valueField: "id", hiddenName: 'status', mode: "local", store: st_status, fieldLabel: "Status", name: "status", triggerAction: "all", ttEnabled: true, cmsSlug: "risk-status", editable: false }
+    { xtype: "combo", displayField: "d", valueField: "id", hiddenName: 'status', mode: "local", store: st_status, fieldLabel: "Status", name: "status", triggerAction: "all", ttEnabled: true, cmsSlug: "risk-status", editable: false },
+    { xtype: "textarea", fieldLabel: "Update", name: "update", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "risk-update" },
+    { xtype: "textarea", fieldLabel: "History", name: "history", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, readOnly: true, ttEnabled: true, cmsSlug: "risk-history" }
 ];
 
 function getRating() {
@@ -353,6 +355,8 @@ var st_risks = new Ext.data.Store({
         { name: "probability", mapping: "fields.probability" },	
         { name: "impact", mapping: "fields.impact" },	
         { name: "rating", mapping: "fields.rating" },	
+        { name: "history", mapping: "fields.history" },	
+        { name: "history_html", mapping: "extras.get_history_html" },	
         { name: "counter_measure", mapping: "fields.counter_measure" },	
         { name: "status", mapping: "fields.status" }	]	}),
     autoLoad: true
@@ -393,6 +397,7 @@ var riskMarkup = [
     '<tr><th>Rating</th> <td>{rating}</td></tr>',
     '<tr><th>Counter Measure</th> <td>{counter_measure}</td></tr>',
     '<tr><th>Status</th> <td>{status}</td></tr>',
+    '<tr><th>History</th> <td>{history_html}</td></tr>',
     '<tr><th>Created Date</th> <td>{created_date}</td></tr>',
     '<tr><th>Modified Date</th> <td>{modified_date}</td></tr>', '</table>' ];
 var riskTpl = new Ext.Template(riskMarkup);
