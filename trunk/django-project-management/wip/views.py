@@ -29,7 +29,13 @@ import settings
 @login_required
 def view_my_wip(request):
 
-        headings = Heading.objects.filter(wip_items__assignee=request.user).exclude(wip_items__complete=True)
+    xhr = request.GET.has_key('xhr')
+    headings = Heading.objects.filter(wip_items__assignee=request.user).exclude(wip_items__complete=True)
+    if xhr:
+        return HttpResponse( serializers.serialize('json',
+            WIPItem.objects.filter(complete=False, assignee = request.user), display=['status'], relations={'assignee': {'extras': ('get_full_name',)}, 'heading': {'fields': ('title',)}},
+                    extras=['get_heading','get_engineering_days_as_ul', 'get_history_html']))
+    else:
         return render_to_response('wip/mywip.html', {'headings': headings }, context_instance=RequestContext(request))
         
 
