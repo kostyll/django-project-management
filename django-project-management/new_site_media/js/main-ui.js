@@ -392,7 +392,8 @@ Ext.ux.dd.GridDragDropRowOrder = Ext.extend(Ext.util.Observable,
 // Navigation tree
 var tree_data = [
 					{ text: 'Projects', id: 'projectsNode', leaf: false, children: [{ text: 'View Dashboard', href: "/", leaf: true }]},
-  					{ text: 'Work In Progress', id: 'wipNode', leaf: false, children: [{ text: "All WIP Reports", href: "/WIP/", leaf: true}] },
+  					{ text: 'Work In Progress', id: 'wipNode', leaf: false, children: [{ text: "All WIP Reports", href: "/WIP/", leaf: true},
+                        { text: "My WIP Items", href: "/WIP/MyWIP/", leaf: true }] },
   					{ text: 'Rota', id: 'rotaNode', leaf: false,
     					children: [{ text: "All Rotas", href: "/Rota/ViewAll/", leaf: true}, { text: "My Teams Rota", href: "/Rota/ViewMyTeam/", leaf: true }, { text: "My Rota", href: "/Rota/ViewMyRota/", leaf: true } ]},
   					{ text: 'Documentation', id: 'docNode', leaf: false,
