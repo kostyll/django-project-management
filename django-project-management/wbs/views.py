@@ -298,7 +298,7 @@ def get_timeline(request, project_number):
     project = get_object_or_404(Project, project_number=project_number)
     check_project_read_acl(project, request.user)   # Will return Http404 if user isn't allowed to view project
 
-    t_format = "%a %d %b %Y %H:%M:%S +0000"
+    t_format = "%a %b %d %H:%M:%S %Y +0000"
 
     ret = {}
     ret['events'] = []
