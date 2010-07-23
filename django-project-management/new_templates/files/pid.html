@@ -75,7 +75,7 @@
 	</tr>
 	<tr>
       <th>Method</th>
-      <td>{{ d.method|linebreaks }}</td>
+      <td>{{ d.testing_method|linebreaks }}</td>
     </tr>
 	<tr>
       <th>Expected Result</th>
@@ -93,6 +93,7 @@
 <br>
 <h3>Stage Plan</h3>
 
+{% comment %}
 <div class="definition">
 Stages are partitions of the project with decision points.A stage is a
 collection of activities and
@@ -101,12 +102,13 @@ project and in
 PRINCE2 terms it is the element of work that the Project Manager is
 managing on behalf of
 the Project Board at any one time.</div>
+{% endcomment %}
 
 {% if project.stage_plan.all %}
 	{% for stage in project.stage_plan.all %}
 		<h4>{{ stage.stage }}</h4>
 		<br>
-		{{ stage.description|linebreaks }}
+		<blockquote>{{ stage.description|linebreaks }}</blockquote>
 		<br>
 	{% endfor %}
 {% else %}
@@ -134,7 +136,7 @@ the Project Board at any one time.</div>
     <tr>
       <td>{{ r.risk_number }}</td>
       <td>{{ r.description|linebreaks}}<br> </td>
-      <td>{{ r.owner }} </td>
+      <td>{{ r.owner.get_full_name }} </td>
       <td>{{ r.rating }}<br>
       </td>
     </tr>
