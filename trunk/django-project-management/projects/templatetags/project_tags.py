@@ -79,7 +79,7 @@ def is_project_documentation_complete(project):
 
 	# This RAG evaluation only returns RED or GREEN depending on the status of documentation
 	# We evaluate the completion of all Project Initiation items, and we also check for the presence of 
-	# at least TWO risks and TWO deliverables. If those are met return Green; if not return Red
+	# at least ONE risk and ONE deliverable. If those are met return Green; if not return Red
 
 	if project.project_status == 0:		# If the project is Proposed or On Hold
 		return 'rag_status_grey', 'Proposed'
@@ -98,10 +98,10 @@ def is_project_documentation_complete(project):
 		if eval('''project.%s''' % attribute) == '':
 			error_list += '''<li>%s is incomplete</li>''' % project._meta.get_field(attribute).verbose_name
 
-	if len(project.deliverables.all()) < 2:	
+	if len(project.deliverables.all()) < 1:	
 		error_list += '<li>Less than 2 Deliverables defined</li>'
 
-	if len(project.risks.all()) < 2:
+	if len(project.risks.all()) < 1:
 		error_list += '<li>Less than 2 Risks defined</li>'
 
 			
