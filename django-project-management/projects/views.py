@@ -55,31 +55,7 @@ def view_project(request, project_number):
         project = get_object_or_404(Project, project_number=project_number)
         check_project_read_acl(project, request.user)   # Will return Http404 if user isn't allowed to view project
 
-
-        
-        forms = {}
-        forms['DialogEditCompany'] = DialogEditCompany(instance=project)
-        forms['DialogEditProjectManager'] = DialogEditProjectManager(instance=project)
-        forms['DialogEditTeamManagers'] = DialogEditTeamManagers(instance=project)
-        forms['DialogEditProjectSponsor'] = DialogEditProjectSponsor(instance=project)
-        forms['DialogEditProjectDescription'] = DialogEditProjectDescription(instance=project)
-        forms['DialogEditBusinessCase'] = DialogEditBusinessCase(instance=project)
-        forms['DialogEditBusinessBenefits'] = DialogEditBusinessBenefits(instance=project)
-        forms['DialogEditProjectScope'] = DialogEditProjectScope(instance=project)
-        forms['DialogEditExclusions'] = DialogEditExclusions(instance=project)
-        forms['DialogEditAssumptions'] = DialogEditAssumptions(instance=project)
-        forms['RiskForm'] = RiskForm()
-        forms['DeliverableForm'] = DeliverableForm()
-        forms['IssueForm'] = IssueForm(initial={'author': request.user.id})
-        forms['LessonForm'] = LessonForm(initial={'author': request.user.id})
-        forms['DialogUploadFile'] = FileForm(initial={'author': request.user.id})
-        # There are 2 types of Executive Summary form, one for Project Managers... one for team members
-        if request.user == project.project_manager:
-                forms['ExecutiveSummary'] = DialogExecutiveSummary(initial={'author': request.user.id, 'type': 2})
-        else:
-                forms['ExecutiveSummary'] = DialogExecutiveSummary(initial={'author': request.user.id, 'type': 1})
-
-        return render_to_response('projects/view-project.html', { 'project': project, 'forms': forms }, context_instance=RequestContext(request))
+        return render_to_response('projects/view-project.html', { 'project': project }, context_instance=RequestContext(request))
 
 @login_required
 def edit_project(request, project_number, form_type):
