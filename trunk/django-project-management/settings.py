@@ -1,6 +1,6 @@
 # Django settings for dj_projects project.
 import os
-PROJECT_DIR = os.path.abspath('.')
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG

@@ -5,7 +5,10 @@ from django.utils.encoding import smart_unicode
 from django.utils.translation import ugettext as _
 from django import forms
 from django.forms.widgets import SelectMultiple
-from django.forms.fields import slug_re
+## line commented as slug_re is not in the file - defined here after date formats.
+#from django.forms.fields import slug_re
+## needed for the definition of slug_re
+import re
 
 from cms import cms_global_settings
 from cms import dynamicforms, util
@@ -36,6 +39,10 @@ DATE_FORMATS = (
     '%m/%d/%Y',              # '10/25/2006'
     '%m/%d/%y',              # '10/25/06'
 )
+
+# should be in django.forms.fields as loose line - here.
+slug_re = re.compile(r'^[-\w]+$') 
+
 
 class DateTimeWidget(forms.widgets.SplitDateTimeWidget):
     def render(self, name, value, attrs=None):

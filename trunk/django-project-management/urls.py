@@ -35,7 +35,7 @@ urlpatterns = patterns('',
 
 	# General
 	(r'^accounts/login/', login, {'template_name': 'login.html'}),
-	(r'^accounts/logout/', logout, {'template_name': 'logout.html'}),
+    (r'^accounts/logout/', logout_then_login, {'login_url': '/'}),
 
 	# TinyMCE
 	(r'^tinymce/', include('tinymce.urls')),
