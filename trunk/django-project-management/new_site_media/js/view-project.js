@@ -1473,7 +1473,7 @@ var edit_project_initiation = function(b,e){
 		},
 
 		{ xtype: "textfield", fieldLabel: "Project Sponsor", name: "project_sponsor", ttEnabled: true, cmsSlug: "project-sponsor" },
-		{ xtype: "combo", fieldLabel: "Duration Type", hiddenName: "duration_type", lazyInit: false,  store: st_duration_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all", ttEnabled: true, cmsSlug: "project-duration-type", editable: false },
+		{ xtype: "combo", fieldLabel: "Duration Time Unit", hiddenName: "duration_type", lazyInit: false,  store: st_duration_type, mode: "local", displayField: "d", valueField: "id", triggerAction: "all", ttEnabled: true, cmsSlug: "project-duration-type", editable: false },
 		{ xtype: "textarea", fieldLabel: "Project Description", name: "project_description", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "project-description" },
 		{ xtype: "textarea", fieldLabel: "Business Case", name: "business_case", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "project-business-case" },
 		{ xtype: "textarea", fieldLabel: "Business Benefits", name: "business_benefits", height: TEXTAREA_HEIGHT, width: TEXTAREA_WIDTH, ttEnabled: true, cmsSlug: "project-business-benefits" },
