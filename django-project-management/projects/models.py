@@ -30,7 +30,7 @@ class ServiceAccount(models.Model):
 
 class Company(models.Model):
 
-    company_name = models.CharField(max_length=255)
+    company_name = models.CharField(max_length=255, unique=True)
     active = models.BooleanField(default=True)
     logo = models.FileField(blank=True, upload_to="company_logos")
 
