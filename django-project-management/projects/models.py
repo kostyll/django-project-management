@@ -109,7 +109,7 @@ class Project(models.Model):
     work_item_order = models.CharField('Order of Work Items', max_length=1024, blank=True)
     executive_summary = models.ManyToManyField(ExecutiveSummary, blank=True, null=True, related_name='project')
     stage_plan = models.ManyToManyField(ProjectStage, blank=True, null=True, related_name='project')
-    duration_type = models.IntegerField(choices=DURATION_TYPE)
+    duration_type = models.IntegerField('Duration Time Unit', choices=DURATION_TYPE)
 
 
     def __str__(self):
