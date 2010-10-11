@@ -28,7 +28,7 @@ class Risk(models.Model):
         (4, 'No Change'),
     )
 
-    risk_number = models.CharField(max_length=255)
+    risk_number = models.CharField(max_length=255, unique=True)
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     description = models.TextField(max_length=10240)
