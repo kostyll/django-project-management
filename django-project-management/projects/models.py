@@ -35,6 +35,7 @@ class Company(models.Model):
     logo = models.FileField(blank=True, upload_to="company_logos")
 
     class Meta:
+        verbose_name_plural = ('Companies')
         ordering = ('company_name',)
 
     def __str__(self):
@@ -57,6 +58,7 @@ class ExecutiveSummary(models.Model):
         return '''%s''' % self.summary[:50]
 
     class Meta:
+        verbose_name_plural = ('Executive Summaries')
         ordering = ('-created_date',)
 
 class Project(models.Model):

@@ -14,6 +14,7 @@ class RotaActivity(models.Model):
                 return '''%s''' % self.activity
 
         class Meta:
+                verbose_name_plural = ('Rota activities')
                 ordering = ('activity',)
 
 class RotaItem(models.Model):
